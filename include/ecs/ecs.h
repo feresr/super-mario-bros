@@ -13,6 +13,8 @@ class World;
 
 class Component {
 
+public:
+    virtual ~Component() = default;
 };
 
 class Entity {
@@ -22,6 +24,19 @@ public:
         auto* component = new ComponentType(arguments...);
         auto typeIndex = std::type_index(typeid(ComponentType));
         components.insert_or_assign(typeIndex, component);
+    }
+
+    template<typename ComponentType>
+    bool remove() {
+        auto index = std::type_index(typeid(ComponentType));
+        auto found = components.find(index);
+        if (found != components.end()) {
+            delete found->second;
+            components.erase(found);
+            return true;
+        }
+
+        return false;
     }
 
     template<typename C>
@@ -35,9 +50,9 @@ public:
         return components.find(index) != components.end();
     }
 
-    template<typename A, typename B, typename OTHERS>
+    template<typename A, typename B, typename... OTHERS>
     [[nodiscard]] bool has() const {
-        return has<A>() && has<B, OTHERS>();
+        return has<A>() && has<B, OTHERS...>();
     }
 
     ~Entity();
@@ -59,6 +74,10 @@ public:
 
 class World {
 public:
+    World() = default;
+
+    World(const World& other) = delete;
+
     Entity* create();
 
     void registerSystem(System* system);
@@ -67,7 +86,7 @@ public:
 
     ~World();
 
-    template<typename Component>
+    template<typename... Components>
     std::vector<Entity*> find() {
         // todo: Optimize, avoid creating a new vector an returning it by copy
         std::vector<Entity*> result;
@@ -75,7 +94,7 @@ public:
                 entities.begin(),
                 entities.end(),
                 std::back_inserter(result),
-                [&](const Entity* s) { return s->has<Component>(); }
+                [&](const Entity* s) { return s->has<Components...>(); }
         );
         return result;
     }

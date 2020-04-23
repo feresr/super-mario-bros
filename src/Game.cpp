@@ -23,9 +23,12 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     isRunning = true;
 
     Entity* e = world.create();
-    e->assign<TransformComponent>(0, 4);
+    e->assign<TransformComponent>(100, 100, 200, 200);
+    e->assign<TextureComponent>("assets/mario.jpg");
+
     Entity* e2 = world.create();
-    e2->assign<TransformComponent>(0, 36);
+    e2->assign<TransformComponent>(300, 300, 30, 30);
+    e2->assign<TextureComponent>("assets/mario.jpg");
     world.registerSystem(new RenderSystem(window));
 }
 

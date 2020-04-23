@@ -16,3 +16,4 @@ set_target_properties(smb PROPERTIES OUTPUT_NAME smb-${CMAKE_BUILD_TYPE})
 target_include_directories(smb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(smb ${SDL2} ${SDL2_IMAGE})
 
+file(COPY assets DESTINATION CMAKE_RUNTIME_OUTPUT_DIRECTORY)

@@ -1,13 +1,19 @@
 #include "RenderSystem.h"
+#include <filesystem>
+
 
 void RenderSystem::tick(World* world) {
-    //todo: placeholder test code
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
-    for (auto entity : world->find<TransformComponent>()) {
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-        SDL_Rect rect{entity->get<TransformComponent>()->x, entity->get<TransformComponent>()->y, 30, 30};
-        SDL_RenderFillRect(renderer, &rect);
+    auto dstRect = SDL_Rect();
+    for (auto entity : world->find<TransformComponent, TextureComponent>()) {
+        auto transform = entity->get<TransformComponent>();
+        dstRect.x = transform->x;
+        dstRect.y = transform->y;
+        dstRect.w = transform->w;
+        dstRect.h = transform->h;
+
+        SDL_RenderCopy(renderer, getTexture(*(entity->get<TextureComponent>())), nullptr, &dstRect);
     }
     SDL_RenderPresent(renderer);
 }
@@ -36,4 +42,25 @@ RenderSystem::~RenderSystem() {
     SDL_DestroyRenderer(renderer);
 }
 
-TransformComponent::TransformComponent(int x, int y) : x(x), y(y) {}
+SDL_Texture* RenderSystem::getTexture(TextureComponent& textureComponent) {
+    if (textureComponent.texture) return textureComponent.texture;
+    std::cout << "Creating texture: " << textureComponent.path << std::endl;
+    SDL_Surface* tempSurface = IMG_Load(textureComponent.path.c_str());
+    if (!tempSurface) {
+        std::cout << "Unable to load texture: " << textureComponent.path << " - " << IMG_GetError() << std::endl;
+        return nullptr;
+    }
+    textureComponent.texture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+    SDL_FreeSurface(tempSurface);
+    if (!textureComponent.texture) {
+        std::cout << "Unable to create texture: " << textureComponent.path << " - " << IMG_GetError() << std::endl;
+        return nullptr;
+    }
+    return textureComponent.texture;
+}
+
+TransformComponent::TransformComponent(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {}
+
+TextureComponent::TextureComponent(const std::string&& path) : path{path} {
+
+}

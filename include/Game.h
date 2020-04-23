@@ -19,7 +19,7 @@ public:
 
     void clean();
 
-    bool running() const;
+    [[nodiscard]] bool running() const;
 
 private:
     bool isRunning;
