@@ -7,7 +7,7 @@ int main() {
     Uint32 frameStart, frameTime;
 
     Game* game = new Game();
-    game->init("Super Mario Bros", 640, 480, false);
+    game->init("Super Mario Bros", 512, 448, false);
 
     while (game->running()) {
         frameStart = SDL_GetTicks();

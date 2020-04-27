@@ -1,8 +1,9 @@
 #include "Game.h"
 #include "RenderSystem.h"
+#include "MapSystem.h"
 
-int Game::W_HEIGHT = 200;
-int Game::W_WIDTH = 100;
+constexpr int SNES_RESOLUTION_WIDTH = 256;
+constexpr int SNES_RESOLUTION_HEIGHT = 224;
 
 void Game::init(const char* title, int width, int height, bool fullscreen) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -18,18 +19,10 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
         SDL_Quit();
         return;
     }
-    SDL_GL_GetDrawableSize(window, &W_WIDTH, &W_HEIGHT);
 
     isRunning = true;
-
-    Entity* e = world.create();
-    e->assign<TransformComponent>(100, 100, 200, 200);
-    e->assign<TextureComponent>("assets/mario.jpg");
-
-    Entity* e2 = world.create();
-    e2->assign<TransformComponent>(300, 300, 30, 30);
-    e2->assign<TextureComponent>("assets/mario.jpg");
-    world.registerSystem(new RenderSystem(window));
+    world.registerSystem(new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT));
+    world.registerSystem(new MapSystem());
 }
 
 void gameOver() {

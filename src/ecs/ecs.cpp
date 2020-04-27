@@ -6,6 +6,12 @@ Entity* World::create() {
     return e;
 }
 
+void World::destroy(Entity* entity) {
+    if (!entity) return;
+    entities.erase(std::remove(entities.begin(), entities.end(), entity));
+    delete entity;
+}
+
 void World::registerSystem(System* system) {
     systems.push_back(system);
     system->onAddedToWorld(this);

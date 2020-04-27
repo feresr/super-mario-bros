@@ -6,25 +6,27 @@
 #include <algorithm>
 #include <unordered_map>
 #include <iostream>
+#include <utility>
 
 class System;
 
 class World;
 
-class Component {
-
-public:
+struct Component {
     virtual ~Component() = default;
 };
 
 class Entity {
 public:
+
     template<typename ComponentType, typename... Args>
     void assign(Args&& ... arguments) {
-        auto* component = new ComponentType(arguments...);
+        // std::forward will detect whether arguments is an lvalue or rvalue and perform a copy or move, respectively.
+        auto* component = new ComponentType(std::forward<Args&&>(arguments)...);
         auto typeIndex = std::type_index(typeid(ComponentType));
         components.insert_or_assign(typeIndex, component);
     }
+
 
     template<typename ComponentType>
     bool remove() {
@@ -80,11 +82,23 @@ public:
 
     Entity* create();
 
+    void destroy(Entity* entity);
+
     void registerSystem(System* system);
 
     void unregisterSystem(System* system);
 
     ~World();
+
+    template<typename... Components>
+    Entity* findFirst() {
+        auto found = std::find_if(
+                entities.begin(),
+                entities.end(),
+                [&](const Entity* s) { return s->has<Components...>(); }
+        );
+        return found != entities.end()? *found : nullptr;
+    }
 
     template<typename... Components>
     std::vector<Entity*> find() {

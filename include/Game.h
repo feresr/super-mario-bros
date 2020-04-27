@@ -8,8 +8,6 @@
 class Game {
 
 public:
-    static int W_HEIGHT;
-    static int W_WIDTH;
 
     void init(const char* title, int width, int height, bool fullscreen);
 
