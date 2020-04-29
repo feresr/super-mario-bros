@@ -5,10 +5,11 @@
 #include "Components.h"
 #include <fstream>
 #include <exception>
+#include "Constants.h"
 
 struct Tile {
     int x, y, w, h;
-    const std::string texture;
+    uint8_t textureId;
 };
 
 class Map {
@@ -17,26 +18,27 @@ public:
     Map() = delete;
 
     explicit Map(std::string&& mapPath) {
-        std::cout << "Parsing XML" << std::endl;
-        std::ifstream infile(mapPath);
+        std::cout << "Parsing" << std::endl;
+        std::ifstream infile(mapPath, std::ios::out | std::ios::binary);
         if (!infile) throw std::invalid_argument("Map path not found: " + mapPath);
 
-        char a;
-        int x = 0, y = 0;
-        int w = 16;
-        int h = 16;
+        uint8_t texture;
 
-        auto marioTexture = std::string("assets/mario.jpg");
+        uint16_t mapWidth;
+        infile.read(reinterpret_cast<char*>(&mapWidth), sizeof(uint16_t));
+        uint16_t mapHeight;
+        infile.read(reinterpret_cast<char*>(&mapHeight), sizeof(uint16_t));
 
-        while (infile.get(a)) {
-            if (a == '\n') {
-                y += h;
-                x = 0;
-                continue;
+        for (int x = 0; x < mapWidth; x++) {
+            for (int y = 0; y < mapHeight; y++) {
+                infile.read(reinterpret_cast<char*>(&texture), sizeof(uint8_t));
+                if (texture != 0) {
+                    auto tile = new Tile{x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, texture};
+                    tiles.emplace(tile);
+                }
             }
-            if (a == '1') tiles.push(new Tile{x, y, w, h, marioTexture});
-            x += w;
         }
+
         infile.close();
     }
 
@@ -58,4 +60,5 @@ public:
 
 private:
     Map map;
+    CameraComponent* camera{};
 };

@@ -1,9 +1,4 @@
 #include "Game.h"
-#include "RenderSystem.h"
-#include "MapSystem.h"
-
-constexpr int SNES_RESOLUTION_WIDTH = 256;
-constexpr int SNES_RESOLUTION_HEIGHT = 224;
 
 void Game::init(const char* title, int width, int height, bool fullscreen) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -36,8 +31,30 @@ void Game::update() {
 bool Game::running() const { return isRunning; }
 
 void Game::handleEvents() {
-    SDL_PollEvent(&event);
-    if (event.type == SDL_QUIT) isRunning = false;
+
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                isRunning = false;
+                break;
+            case SDL_KEYUP:
+                switch (event.key.keysym.scancode) {
+                    case SDL_SCANCODE_E:
+                        if (editorSystem) {
+                            world.unregisterSystem(editorSystem);
+                            editorSystem = nullptr;
+                        } else {
+                            editorSystem = new EditorSystem();
+                            world.registerSystem(editorSystem);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
+    }
+
 }
 
 void Game::clean() {

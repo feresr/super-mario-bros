@@ -1,21 +1,16 @@
 #include "MapSystem.h"
 
-MapSystem::MapSystem() : map{"assets/map1"} {
+MapSystem::MapSystem() : map{"assets/map-generated"} {
 }
 
 void MapSystem::onAddedToWorld(World* world) {
-
+    camera = world->findFirst<CameraComponent>()->get<CameraComponent>();
+    if (!camera) throw std::invalid_argument("[MapSystem] Camera entity not found");
 }
 
 void MapSystem::tick(World* world) {
     // 1. Get all the entities in the world with a [TransformComponent].
     auto transformEntities = world->find<TransformComponent>();
-    auto camera = world->findFirst<CameraComponent>()->get<CameraComponent>();
-    if (!camera) {
-        std::cout << "[MapSystem] Camera entity not found" << std::endl;
-        //todo throw?
-        return;
-    }
 
     // 2. Iterate over them and remove the ones that are outside the camera.
     for (auto entity : transformEntities) {
@@ -33,7 +28,7 @@ void MapSystem::tick(World* world) {
         std::cout << "[MapSystem] Adding item to world" << std::endl;
         auto entity = world->create();
         entity->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);
-        entity->assign<TextureComponent>(tile->texture);
+        entity->assign<TextureComponent>(tile->textureId);
         map.tiles.pop();
     }
 }

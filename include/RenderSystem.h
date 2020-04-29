@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include "Components.h"
+#include "TextureManager.h"
 
 class RenderSystem : public System {
 
@@ -21,10 +22,10 @@ public:
     ~RenderSystem() override;
 
 private:
-    SDL_Texture* getTexture(TextureComponent& path);
-
     SDL_Renderer* renderer;
 
     const int GAME_RESOLUTION_WIDTH;
     const int GAME_RESOLUTION_HEIGHT;
+    TextureManager* textureManager{};
+    CameraComponent* camera{};
 };

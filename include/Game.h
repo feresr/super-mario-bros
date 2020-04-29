@@ -4,6 +4,11 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "ecs/ecs.h"
+#include "EditorSystem.h"
+#include "RenderSystem.h"
+#include "EditorSystem.h"
+#include "MapSystem.h"
+#include "Constants.h"
 
 class Game {
 
@@ -24,4 +29,5 @@ private:
     SDL_Window* window;
     SDL_Event event;
     World world;
+    EditorSystem* editorSystem;
 };

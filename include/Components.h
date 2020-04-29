@@ -26,22 +26,45 @@ struct TransformComponent : public Component {
     }
 
     const int w, h;
-private:
     int x, y;
 
     ~TransformComponent() override = default;
 };
 
 struct TextureComponent : public Component {
-    explicit TextureComponent(std::string path) : path{std::move(path)} {};
+    explicit TextureComponent(uint8_t id) : id{id} {};
 
-    const std::string path;
-    SDL_Texture* texture = nullptr;
+    uint8_t id;
 
-    ~TextureComponent() override {
-        std::cout << "Texture component deleted" << std::endl;
-        SDL_DestroyTexture(texture);
+    ~TextureComponent() override = default;
+};
+
+struct TileSetComponent : public Component {
+    TileSetComponent(uint16_t width, uint16_t height) : mapWidth{width},
+                                                        mapHeight{height},
+                                                        tiles{new uint8_t[width * height]{}} {}
+
+    const uint16_t mapWidth;
+    const uint16_t mapHeight;
+
+    uint8_t get(int x, int y) {
+        return tiles[x + y * mapWidth];
     }
+
+    void set(int x, int y, uint8_t value) {
+        tiles[x + y * mapWidth] = value;
+    }
+
+    void clear(int x, int y) {
+        tiles[x + y * mapWidth] = 0;
+    }
+
+    ~TileSetComponent() override {
+        delete[] tiles;
+    }
+
+private:
+    uint8_t* tiles;
 };
 
 struct CameraComponent : public Component {
@@ -53,7 +76,7 @@ struct CameraComponent : public Component {
     int x, y, width, height;
 
     [[nodiscard]] int left() const {
-        return x - width / 2;
+        return std::max(0, x - width / 2);
     }
 
     [[nodiscard]] int right() const {
