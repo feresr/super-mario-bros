@@ -10,6 +10,11 @@
 struct Tile {
     int x, y, w, h;
     uint8_t textureId;
+    uint32_t properties;
+
+    [[nodiscard]] bool hasProperty(Properties property) const {
+        return properties & property;
+    }
 };
 
 class Map {
@@ -22,7 +27,7 @@ public:
         std::ifstream infile(mapPath, std::ios::out | std::ios::binary);
         if (!infile) throw std::invalid_argument("Map path not found: " + mapPath);
 
-        uint8_t texture;
+        TileType texture;
 
         uint16_t mapWidth;
         infile.read(reinterpret_cast<char*>(&mapWidth), sizeof(uint16_t));
@@ -31,9 +36,15 @@ public:
 
         for (int x = 0; x < mapWidth; x++) {
             for (int y = 0; y < mapHeight; y++) {
-                infile.read(reinterpret_cast<char*>(&texture), sizeof(uint8_t));
-                if (texture != 0) {
-                    auto tile = new Tile{x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE, texture};
+                infile.read(reinterpret_cast<char*>(&texture), sizeof(TileType));
+                if (texture.texture != 0) {
+                    auto tile = new Tile{x * TILE_SIZE,
+                                         y * TILE_SIZE,
+                                         TILE_SIZE,
+                                         TILE_SIZE,
+                                         texture.texture,
+                                         texture.properties
+                    };
                     tiles.emplace(tile);
                 }
             }

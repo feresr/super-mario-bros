@@ -28,7 +28,7 @@ void MapSystem::tick(World* world) {
         std::cout << "[MapSystem] Adding item to world" << std::endl;
         auto entity = world->create();
         entity->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);
-        entity->assign<TextureComponent>(tile->textureId);
+        if (tile->hasProperty(VISIBLE)) entity->assign<TextureComponent>(tile->textureId);
         map.tiles.pop();
     }
 }

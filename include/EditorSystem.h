@@ -3,6 +3,7 @@
 #include "ecs/ecs.h"
 #include "SDL.h"
 #include "SDL_image.h"
+#include "TileType.h"
 #include "Components.h"
 #include "Constants.h"
 
@@ -35,5 +36,7 @@ private:
     void saveToDisk();
 
     TileSetComponent* tileSet{};
+
+    std::vector<TileType> tileTypes = {FLOOR, BLOCK, BUSH_LEFT, BUSH_CENTER, BUSH_RIGHT, CLOUD};
 };
 

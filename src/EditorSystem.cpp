@@ -29,25 +29,23 @@ void EditorSystem::tick(World* world) {
     }
 
     auto* camera = world->findFirst<CameraComponent>()->get<CameraComponent>();
+    auto selectedTileType = inputState.item % tileTypes.size();
     camera->x += inputState.pan;
     if (inputState.clicked) {
         inputState.clicked = false;
         int tileX = (inputState.x + camera->left()) / TILE_SIZE;
         int tileY = (inputState.y + camera->top()) / TILE_SIZE;
-        auto existing = tileSet->get(tileX, tileY);
+        auto existing = tileSet->get(tileX, tileY).properties != NONE;
         if (existing) {
             tileSet->clear(tileX, tileY);
             std::cout << "[Editor] Tile removed" << std::endl;
         } else {
-            tileSet->set(tileX, tileY, cursor->get<TextureComponent>()->id);
+            tileSet->set(tileX, tileY, tileTypes[selectedTileType]);
             std::cout << "[Editor] Tile added" << std::endl;
         }
     }
-    if (inputState.item != 0) {
-        cursor->get<TextureComponent>()->id += inputState.item;
-        inputState.item = 0;
-    }
 
+    cursor->get<TextureComponent>()->id = tileTypes[selectedTileType].texture;
     cursor->get<TransformComponent>()->x = ((inputState.x + camera->left()) / TILE_SIZE) * TILE_SIZE;
     cursor->get<TransformComponent>()->y = ((inputState.y + camera->top()) / TILE_SIZE) * TILE_SIZE;
 }
@@ -62,7 +60,7 @@ void EditorSystem::saveToDisk() {
     for (int x = 0; x < tileSet->mapWidth; x++) {
         for (int y = 0; y < tileSet->mapHeight; y++) {
             auto tile = tileSet->get(x, y);
-            outfile.write(reinterpret_cast<char*>(&tile), sizeof(uint8_t));
+            outfile.write(reinterpret_cast<char*>(&tile), sizeof(TileType));
         }
     }
     std::cout << "[EditorSystem] Map saved to disk" << std::endl;

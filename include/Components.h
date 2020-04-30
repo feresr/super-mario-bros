@@ -4,6 +4,7 @@
 
 #include "ecs/ecs.h"
 #include "SDL.h"
+#include "TileType.h"
 
 struct TransformComponent : public Component {
 
@@ -42,29 +43,30 @@ struct TextureComponent : public Component {
 struct TileSetComponent : public Component {
     TileSetComponent(uint16_t width, uint16_t height) : mapWidth{width},
                                                         mapHeight{height},
-                                                        tiles{new uint8_t[width * height]{}} {}
+                                                        tiles{new TileType[width * height]{}} {}
 
-    const uint16_t mapWidth;
-    const uint16_t mapHeight;
-
-    uint8_t get(int x, int y) {
+    TileType get(int x, int y) {
         return tiles[x + y * mapWidth];
     }
 
-    void set(int x, int y, uint8_t value) {
+    void set(int x, int y, TileType value) {
         tiles[x + y * mapWidth] = value;
     }
 
     void clear(int x, int y) {
-        tiles[x + y * mapWidth] = 0;
+        tiles[x + y * mapWidth].properties = NONE;
+        tiles[x + y * mapWidth].texture = 0;
     }
+
+    const uint16_t mapWidth;
+    const uint16_t mapHeight;
 
     ~TileSetComponent() override {
         delete[] tiles;
     }
 
 private:
-    uint8_t* tiles;
+    TileType* tiles;
 };
 
 struct CameraComponent : public Component {

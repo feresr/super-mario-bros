@@ -24,10 +24,10 @@ void RenderSystem::tick(World* world) {
         auto tileSetComponent = tileSetEntity->get<TileSetComponent>();
         for (int x = 0; x < tileSetComponent->mapWidth; x++) {
             for (int y = 0; y < tileSetComponent->mapHeight; y++) {
-                if (!tileSetComponent->get(x, y)) continue;
+                if (!tileSetComponent->get(x, y).texture) continue;
                 dstRect.x = x * TILE_SIZE - camera->left();
                 dstRect.y = y * TILE_SIZE - camera->top();
-                textureManager->renderTexture(tileSetComponent->get(x, y), dstRect);
+                textureManager->renderTexture(tileSetComponent->get(x, y).texture, dstRect);
             }
         }
     }
