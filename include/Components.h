@@ -26,10 +26,50 @@ struct TransformComponent : public Component {
         return y + h;
     }
 
+    int getCenterX() {
+        return x + w / 2;
+    }
+
+    int getCenterY() {
+        return y + h / 2;
+    }
+
+    void setTop(int value) {
+        y = value;
+    }
+
+    void setBottom(int value) {
+        y = value - h;
+    }
+
+    void setLeft(int value) {
+        x = value;
+    }
+
+    void setRight(int value) {
+        x = value - w;
+    }
+
     const int w, h;
     int x, y;
 
     ~TransformComponent() override = default;
+};
+
+struct PlayerComponent : public Component {
+};
+struct SolidComponent : public Component {
+};
+
+struct KineticComponent : public Component {
+    float speedX = 0;
+    float speedY = 0;
+
+    float accX = 0;
+    float accY = 0;
+};
+
+struct GravityComponent : public Component {
 };
 
 struct TextureComponent : public Component {

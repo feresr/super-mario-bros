@@ -15,3 +15,9 @@ constexpr int SKY_BLUE = 254;
 
 constexpr int PAN_SPEED = 3;
 constexpr int DEFAULT_TEXTURE = 1;
+
+constexpr float GRAVITY = .08;
+constexpr float FRICTION = .8;
+
+constexpr float MARIO_ACCELERATION_X = .55f;
+constexpr float MARIO_JUMP = 18.0f;

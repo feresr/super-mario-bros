@@ -18,6 +18,14 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     isRunning = true;
     world.registerSystem(new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT));
     world.registerSystem(new MapSystem());
+    world.registerSystem(new PhysicsSystem());
+
+    auto player = world.create();
+    player->assign<PlayerComponent>();
+    player->assign<GravityComponent>();
+    player->assign<KineticComponent>();
+    player->assign<TransformComponent>(40, 40, TILE_SIZE, TILE_SIZE);
+    player->assign<TextureComponent>(52);
 }
 
 void gameOver() {
@@ -33,10 +41,12 @@ bool Game::running() const { return isRunning; }
 void Game::handleEvents() {
 
     while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            isRunning = false;
+            return;
+        }
+        world.handleEvent(event);
         switch (event.type) {
-            case SDL_QUIT:
-                isRunning = false;
-                break;
             case SDL_KEYUP:
                 switch (event.key.keysym.scancode) {
                     case SDL_SCANCODE_E:

@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <utility>
+#include <SDL_events.h>
 
 class System;
 
@@ -69,6 +70,8 @@ public:
 
     virtual void tick(World* world) = 0;
 
+    virtual void handleEvent(SDL_Event& event) {}
+
     virtual void onRemovedFromWorld(World* world) {}
 
     virtual ~System() = default;
@@ -114,6 +117,8 @@ public:
     }
 
     void tick();
+
+    void handleEvent(SDL_Event& event);
 
 private:
     std::vector<Entity*> entities;

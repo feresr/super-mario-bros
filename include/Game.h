@@ -4,10 +4,11 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "ecs/ecs.h"
-#include "EditorSystem.h"
-#include "RenderSystem.h"
-#include "EditorSystem.h"
-#include "MapSystem.h"
+#include "systems/EditorSystem.h"
+#include "systems/RenderSystem.h"
+#include "systems/EditorSystem.h"
+#include "systems/PhysicsSystem.h"
+#include "systems/MapSystem.h"
 #include "Constants.h"
 
 class Game {

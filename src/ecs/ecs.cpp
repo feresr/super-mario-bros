@@ -39,6 +39,10 @@ World::~World() {
     entities.clear();
 }
 
+void World::handleEvent(SDL_Event& event) {
+    for (auto system : systems) system->handleEvent(event);
+}
+
 Entity::~Entity() {
     for (auto component : components) delete component.second;
     components.clear();

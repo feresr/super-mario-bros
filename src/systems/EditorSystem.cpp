@@ -1,5 +1,5 @@
 #include <fstream>
-#include "EditorSystem.h"
+#include "systems/EditorSystem.h"
 #include "Constants.h"
 
 int InputWatcher(void* userData, SDL_Event* event);
