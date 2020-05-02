@@ -93,10 +93,10 @@ int InputWatcher(void* userData, SDL_Event* event) {
                 m->performSave = true;
                 break;
             case SDL_SCANCODE_A:
-                m->pan = -PAN_SPEED;
+                m->pan = -CAMERA_PAN_SPEED;
                 break;
             case SDL_SCANCODE_D:
-                m->pan = PAN_SPEED;
+                m->pan = CAMERA_PAN_SPEED;
                 break;
             case SDL_SCANCODE_UP:
                 m->item++;

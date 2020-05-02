@@ -23,11 +23,10 @@ void MapSystem::tick(World* world) {
     }
 
     // 3. Iterate over the `map` in the constructor and instantiate entities
-    // (Remove them from the map so we don't instantiate them again)
-    // TODO: (break early once we found an item that is outside the camera viewport)?
+    // Remove them from the map so they don't get instantiated again.
     while (!map.tiles.empty()) {
         auto tile = map.tiles.front();
-        //todo: if (tile->x > camera->right()) break;
+        if (tile->x > camera->right()) break;
         std::cout << "[MapSystem] Adding item to world" << std::endl;
         auto entity = world->create();
         entity->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);

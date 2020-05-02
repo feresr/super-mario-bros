@@ -28,11 +28,11 @@ void PhysicsSystem::tick(World* world) {
         std::vector<Entity*> solids = world->find<SolidComponent>();
         for (auto solid : solids) {
             auto solidTransform = solid->get<TransformComponent>();
-
+            if (solid == entity) continue;
             //Moving down
             if (transform->top() < solidTransform->top() &&
-                transform->left() < solidTransform->right() &&
-                transform->right() > solidTransform->left() &&
+                transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
+                transform->right() - TILE_ROUNDNESS> solidTransform->left() &&
                 transform->bottom() + kinetic->speedY > solidTransform->top()) {
                 kinetic->speedY = 0;
                 kinetic->accY = 0;
@@ -40,8 +40,8 @@ void PhysicsSystem::tick(World* world) {
             }
             //Moving up
             if (transform->bottom() > solidTransform->bottom() &&
-                transform->left() + 2 < solidTransform->right() &&
-                transform->right() - 2 > solidTransform->left() &&
+                transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
+                transform->right() - TILE_ROUNDNESS > solidTransform->left() &&
                 transform->top() + kinetic->speedY < solidTransform->bottom()) {
                 kinetic->speedY = 0;
                 kinetic->accY = 0;
@@ -54,7 +54,7 @@ void PhysicsSystem::tick(World* world) {
                 transform->top() < solidTransform->bottom() &&
                 transform->bottom() > solidTransform->top() &&
                 transform->left() + kinetic->speedX < solidTransform->right()) {
-                kinetic->speedX = 0;
+                kinetic->speedX = std::max(0.0f, kinetic->speedX);
                 kinetic->accX = 0;
                 transform->setLeft(solidTransform->right());
             }
@@ -65,7 +65,7 @@ void PhysicsSystem::tick(World* world) {
                 transform->top() < solidTransform->bottom() &&
                 transform->bottom() > solidTransform->top() &&
                 transform->right() + kinetic->speedX > solidTransform->left()) {
-                kinetic->speedX = 0;
+                kinetic->speedX = std::min(0.0f, kinetic->speedX);
                 kinetic->accX = 0;
                 transform->setRight(solidTransform->left());
             }
