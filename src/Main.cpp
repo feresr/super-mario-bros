@@ -1,8 +1,5 @@
 #include "Game.h"
 
-constexpr int FPS = 60;
-constexpr int frameDuration = 1000 / FPS;
-
 int main() {
     Uint32 frameStart, frameTime;
 
@@ -14,7 +11,7 @@ int main() {
         game->handleEvents();
         game->update();
         frameTime = SDL_GetTicks() - frameStart;
-        if (frameTime < frameDuration) SDL_Delay(frameDuration - frameTime);
+        if (frameTime < FRAME_DURATION) SDL_Delay(FRAME_DURATION - frameTime);
     }
 
     game->clean();

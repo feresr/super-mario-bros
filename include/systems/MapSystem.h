@@ -29,9 +29,7 @@ public:
 
         TileType texture;
 
-        uint16_t mapWidth;
         infile.read(reinterpret_cast<char*>(&mapWidth), sizeof(uint16_t));
-        uint16_t mapHeight;
         infile.read(reinterpret_cast<char*>(&mapHeight), sizeof(uint16_t));
 
         for (int x = 0; x < mapWidth; x++) {
@@ -53,6 +51,8 @@ public:
         infile.close();
     }
 
+    uint16_t mapWidth{};
+    uint16_t mapHeight{};
     std::queue<Tile*> tiles;
 };
 

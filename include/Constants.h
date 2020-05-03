@@ -1,4 +1,7 @@
 #pragma once
+constexpr int FPS = 60;
+constexpr int FRAME_DURATION = 1000 / FPS;
+
 constexpr int SNES_RESOLUTION_WIDTH = 256;
 constexpr int SNES_RESOLUTION_HEIGHT = 224;
 

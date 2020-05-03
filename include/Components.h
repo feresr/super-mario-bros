@@ -80,6 +80,37 @@ struct TextureComponent : public Component {
     ~TextureComponent() override = default;
 };
 
+struct TileComponent : public Component{};
+
+struct TileMapComponent : public Component {
+    TileMapComponent(uint16_t width, uint16_t height) : mapWidth{width},
+                                                        mapHeight{height},
+                                                        tiles{new Entity*[width * height]{}} {}
+
+    Entity* get(int x, int y) {
+        return tiles[x + y * mapWidth];
+    }
+
+    void set(int x, int y, Entity* value) {
+        tiles[x + y * mapWidth] = value;
+    }
+
+    void clear() {
+        for(int i = 0; i < mapWidth * mapHeight; i++) tiles[i] = nullptr;
+    }
+
+    const uint16_t mapWidth;
+    const uint16_t mapHeight;
+
+    ~TileMapComponent() override {
+        delete[] tiles;
+    }
+
+private:
+    Entity** tiles{};
+};
+
+
 struct TileSetComponent : public Component {
     TileSetComponent(uint16_t width, uint16_t height) : mapWidth{width},
                                                         mapHeight{height},

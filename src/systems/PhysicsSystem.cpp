@@ -9,6 +9,78 @@ void PhysicsSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);
 }
 
+bool checkCollision(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
+    auto solidTransform = solid->get<TransformComponent>();
+
+    if (kinetic->speedY > 0) {
+        //Moving down
+        if (transform->top() < solidTransform->top() &&
+            transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
+            transform->right() - TILE_ROUNDNESS > solidTransform->left() &&
+            transform->bottom() + kinetic->speedY > solidTransform->top()) {
+            kinetic->speedY = 0;
+            kinetic->accY = 0;
+            transform->setBottom(solidTransform->y);
+            return true;
+        }
+    }
+
+    //Moving up
+    if (transform->bottom() > solidTransform->bottom() &&
+        transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
+        transform->right() - TILE_ROUNDNESS > solidTransform->left() &&
+        transform->top() + kinetic->speedY < solidTransform->bottom()) {
+        kinetic->speedY = 0;
+        kinetic->accY = 0;
+        transform->setTop(solidTransform->bottom());
+        return true;
+    }
+
+    //Moving left
+    if (transform->right() > solidTransform->right() &&
+        transform->top() < solidTransform->bottom() &&
+        transform->bottom() > solidTransform->top() &&
+        transform->left() + kinetic->speedX < solidTransform->right()) {
+        if (kinetic->speedX < 0) {
+            kinetic->speedX = std::max(0.0f, kinetic->speedX);
+            kinetic->accX = 0;
+            transform->setLeft(solidTransform->right());
+            return true;
+        } else {
+            transform->x += 1;
+        }
+    }
+
+    //moving right
+    if (transform->left() < solidTransform->left() &&
+        transform->top() < solidTransform->bottom() &&
+        transform->bottom() > solidTransform->top() &&
+        transform->right() + kinetic->speedX > solidTransform->left()) {
+        if (kinetic->speedX > 0) {
+            kinetic->speedX = std::min(0.0f, kinetic->speedX);
+            kinetic->accX = 0;
+            transform->setRight(solidTransform->left());
+            return true;
+        } else {
+            transform->x -= 1;
+        }
+    }
+
+    return false;
+}
+
+constexpr std::pair<int, int> TILE_OFFSETS[9] = {
+        std::make_pair(0, 1),
+        std::make_pair(0, -1),
+        std::make_pair(-1, 0),
+        std::make_pair(1, 0),
+        std::make_pair(-1, 1),
+        std::make_pair(1, 1),
+        std::make_pair(1, -1),
+        std::make_pair(-1, -1),
+        std::make_pair(0, 0),
+};
+
 void PhysicsSystem::tick(World* world) {
     std::vector<Entity*> entities;
     entities = world->find<GravityComponent, KineticComponent>();
@@ -21,58 +93,38 @@ void PhysicsSystem::tick(World* world) {
         jump = false;
     }
 
-    entities = world->find<KineticComponent>();
+    auto tileSetEntity = world->findFirst<TileMapComponent>();
+    if (tileSetEntity) {
+        auto tileSetComponent = tileSetEntity->get<TileMapComponent>();
+        auto kineticEntities = world->find<KineticComponent, TransformComponent>();
+        //Collision against tiles
+        for (auto entity : kineticEntities) {
+            auto transform = entity->get<TransformComponent>();
+            auto kinetic = entity->get<KineticComponent>();
+
+            for (auto offset : TILE_OFFSETS) {
+                auto x = (transform->getCenterX() / TILE_SIZE) + offset.first;
+                auto y = (transform->getCenterY() / TILE_SIZE) + offset.second;
+                auto tile = tileSetComponent->get(x, y);
+                if (!tile) continue;
+                if (!(tile->get<SolidComponent>())) continue; // todo this might not go here
+                if (checkCollision(tile, transform, kinetic)) break;
+            }
+        }
+    }
+
+
+    //Collision against enemies?
     for (auto entity : entities) {
         auto transform = entity->get<TransformComponent>();
         auto kinetic = entity->get<KineticComponent>();
         std::vector<Entity*> solids = world->find<SolidComponent>();
-        for (auto solid : solids) {
-            auto solidTransform = solid->get<TransformComponent>();
-            if (solid == entity) continue;
-            //Moving down
-            if (transform->top() < solidTransform->top() &&
-                transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
-                transform->right() - TILE_ROUNDNESS> solidTransform->left() &&
-                transform->bottom() + kinetic->speedY > solidTransform->top()) {
-                kinetic->speedY = 0;
-                kinetic->accY = 0;
-                transform->setBottom(solidTransform->y);
-            }
-            //Moving up
-            if (transform->bottom() > solidTransform->bottom() &&
-                transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
-                transform->right() - TILE_ROUNDNESS > solidTransform->left() &&
-                transform->top() + kinetic->speedY < solidTransform->bottom()) {
-                kinetic->speedY = 0;
-                kinetic->accY = 0;
-                transform->setTop(solidTransform->bottom());
-            }
+        /*for (auto solid : solids) {
 
-            //if (kinetic->speedX < 0) {
-            //Moving left
-            if (transform->right() > solidTransform->right() &&
-                transform->top() < solidTransform->bottom() &&
-                transform->bottom() > solidTransform->top() &&
-                transform->left() + kinetic->speedX < solidTransform->right()) {
-                kinetic->speedX = std::max(0.0f, kinetic->speedX);
-                kinetic->accX = 0;
-                transform->setLeft(solidTransform->right());
-            }
-            //}
-            //if (kinetic->speedX > 0) {
-            //Moving right
-            if (transform->left() < solidTransform->left() &&
-                transform->top() < solidTransform->bottom() &&
-                transform->bottom() > solidTransform->top() &&
-                transform->right() + kinetic->speedX > solidTransform->left()) {
-                kinetic->speedX = std::min(0.0f, kinetic->speedX);
-                kinetic->accX = 0;
-                transform->setRight(solidTransform->left());
-            }
-            //}
-        }
+        }*/
     }
 
+    // Apply forces
     entities = world->find<TransformComponent, KineticComponent>();
     for (auto entity : entities) {
         auto transform = entity->get<TransformComponent>();
