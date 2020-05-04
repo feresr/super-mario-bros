@@ -41,6 +41,7 @@ void MapSystem::tick(World* world) {
         entity->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);
         if (tile->hasProperty(VISIBLE)) entity->assign<TextureComponent>(tile->textureId);
         if (tile->hasProperty(MASS)) entity->assign<GravityComponent>();
+        if (tile->hasProperty(BREAKABLE)) entity->assign<BreakableComponent>();
         if (tile->hasProperty(KINETIC)) {
             entity->assign<KineticComponent>();
         } else {

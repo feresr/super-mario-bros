@@ -80,12 +80,30 @@ struct TextureComponent : public Component {
     ~TextureComponent() override = default;
 };
 
-struct TileComponent : public Component{};
+struct HitFromBottomComponent : public Component {};
+struct BreakableComponent : public Component {
+    int getHeight() {
+        frames--;
+        return height[frames];
+    }
+
+    [[nodiscard]] bool finished() const {
+        return frames == 0;
+    }
+
+    void reset() {
+        frames = 6;
+    }
+private:
+    int frames = 6;
+    int height[6] = {1, 1, 1, 1, -2, -2};
+};
+struct TileComponent : public Component {};
 
 struct TileMapComponent : public Component {
     TileMapComponent(uint16_t width, uint16_t height) : mapWidth{width},
                                                         mapHeight{height},
-                                                        tiles{new Entity*[width * height]{}} {}
+                                                        tiles{new Entity* [width * height]{}} {}
 
     Entity* get(int x, int y) {
         return tiles[x + y * mapWidth];
@@ -96,7 +114,7 @@ struct TileMapComponent : public Component {
     }
 
     void clear() {
-        for(int i = 0; i < mapWidth * mapHeight; i++) tiles[i] = nullptr;
+        for (int i = 0; i < mapWidth * mapHeight; i++) tiles[i] = nullptr;
     }
 
     const uint16_t mapWidth;

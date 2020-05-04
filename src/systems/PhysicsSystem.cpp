@@ -33,6 +33,7 @@ bool checkCollision(Entity* solid, TransformComponent* transform, KineticCompone
         kinetic->speedY = 0;
         kinetic->accY = 0;
         transform->setTop(solidTransform->bottom());
+        solid->assign<HitFromBottomComponent>();
         return true;
     }
 
@@ -107,12 +108,22 @@ void PhysicsSystem::tick(World* world) {
                 auto y = (transform->getCenterY() / TILE_SIZE) + offset.second;
                 auto tile = tileSetComponent->get(x, y);
                 if (!tile) continue;
-                if (!(tile->get<SolidComponent>())) continue; // todo this might not go here
+                if (!(tile->get<SolidComponent>())) continue;
                 if (checkCollision(tile, transform, kinetic)) break;
             }
         }
     }
 
+    auto hitFromBottomEntities = world->find<BreakableComponent, HitFromBottomComponent>();
+    for (auto hitFromBottom : hitFromBottomEntities) {
+        auto breakable = hitFromBottom->get<BreakableComponent>();
+        if (!breakable->finished()) {
+            hitFromBottom->get<TransformComponent>()->y += breakable->getHeight();
+        } else {
+            hitFromBottom->remove<HitFromBottomComponent>();
+            breakable->reset();
+        }
+    }
 
     //Collision against enemies?
     for (auto entity : entities) {

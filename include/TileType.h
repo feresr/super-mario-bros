@@ -5,7 +5,8 @@ enum Properties {
     VISIBLE = 1,
     SOLID = 2,
     MASS = 4,
-    KINETIC = 8
+    KINETIC = 8,
+    BREAKABLE = 16
 };
 
 struct TileType {
@@ -22,4 +23,5 @@ static TileType BUSH_LEFT{3, VISIBLE};
 static TileType BUSH_CENTER{4, VISIBLE};
 static TileType BUSH_RIGHT{5, VISIBLE};
 static TileType BLOCK{7, VISIBLE | SOLID};
-static TileType CLOUD{52, VISIBLE | SOLID | MASS | KINETIC };
+static TileType BRICK{6, VISIBLE | SOLID | BREAKABLE};
+static TileType CLOUD{52, VISIBLE | SOLID | MASS | KINETIC};

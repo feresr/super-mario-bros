@@ -37,6 +37,6 @@ private:
 
     TileSetComponent* tileSet{};
 
-    std::vector<TileType> tileTypes = {FLOOR, BLOCK, BUSH_LEFT, BUSH_CENTER, BUSH_RIGHT, CLOUD};
+    std::vector<TileType> tileTypes = {FLOOR, BLOCK, BRICK, BUSH_LEFT, BUSH_CENTER, BUSH_RIGHT, CLOUD};
 };
 
