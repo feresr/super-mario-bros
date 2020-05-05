@@ -1,10 +1,13 @@
 #include "Game.h"
 
 int main() {
-    Uint32 frameStart, frameTime;
+    uint32_t frameStart, frameTime;
 
     Game* game = new Game();
-    game->init("Super Mario Bros", 512, 448, false);
+    game->init("Super Mario Bros",
+               SNES_RESOLUTION_WIDTH * ZOOM,
+               SNES_RESOLUTION_HEIGHT * ZOOM,
+               false);
 
     while (game->running()) {
         frameStart = SDL_GetTicks();

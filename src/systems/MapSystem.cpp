@@ -16,7 +16,7 @@ void MapSystem::onRemovedFromWorld(World* world) {
 
 void MapSystem::tick(World* world) {
     auto player = world->findFirst<PlayerComponent, TransformComponent>();
-    camera->x = std::max(camera->x, player->get<TransformComponent>()->getCenterX());
+    camera->x = std::max(camera->x, (int) player->get<TransformComponent>()->getCenterX());
     auto tileMap = world->findFirst<TileMapComponent>()->get<TileMapComponent>();
 
     // 1. Get all the entities in the world with a [TileComponent, TransformComponent].
@@ -26,7 +26,7 @@ void MapSystem::tick(World* world) {
     for (auto entity : transformEntities) {
         auto transform = entity->get<TransformComponent>();
         if (transform->right() < camera->left() || transform->top() > camera->bottom()) {
-            tileMap->set(transform->x / TILE_SIZE, transform->y / TILE_SIZE, nullptr);
+            tileMap->set((int) (transform->x / TILE_SIZE), (int) (transform->y / TILE_SIZE), nullptr);
             world->destroy(entity);
         }
     }
@@ -43,12 +43,13 @@ void MapSystem::tick(World* world) {
         if (tile->hasProperty(MASS)) entity->assign<GravityComponent>();
         if (tile->hasProperty(BREAKABLE)) entity->assign<BreakableComponent>();
         if (tile->hasProperty(KINETIC)) {
+            entity->assign<WalkComponent>(); // TODO not every kinetic in the map should Walk?
             entity->assign<KineticComponent>();
         } else {
             // 4. Each static `TileComponent` reports its location in the world to be accessed by X and Y coordinates.
             entity->assign<TileComponent>();
             auto transform = entity->get<TransformComponent>();
-            tileMap->set(transform->x / TILE_SIZE, transform->y / TILE_SIZE, entity);
+            tileMap->set((int) (transform->x / TILE_SIZE), (int) (transform->y / TILE_SIZE), entity);
         }
         if (tile->hasProperty(SOLID)) entity->assign<SolidComponent>();
         map.tiles.pop();

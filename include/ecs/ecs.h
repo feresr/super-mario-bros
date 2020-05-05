@@ -28,7 +28,6 @@ public:
         components.insert_or_assign(typeIndex, component);
     }
 
-
     template<typename ComponentType>
     bool remove() {
         auto index = std::type_index(typeid(ComponentType));
@@ -56,6 +55,11 @@ public:
     template<typename A, typename B, typename... OTHERS>
     [[nodiscard]] bool has() const {
         return has<A>() && has<B, OTHERS...>();
+    }
+
+    template<typename A, typename B, typename... OTHERS>
+    [[nodiscard]] bool hasAny() const {
+        return has<A>() || has<B, OTHERS...>();
     }
 
     ~Entity();
@@ -100,7 +104,7 @@ public:
                 entities.end(),
                 [&](const Entity* s) { return s->has<Components...>(); }
         );
-        return found != entities.end()? *found : nullptr;
+        return found != entities.end() ? *found : nullptr;
     }
 
     template<typename... Components>

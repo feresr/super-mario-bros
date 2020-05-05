@@ -10,48 +10,48 @@ struct TransformComponent : public Component {
 
     TransformComponent(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {};
 
-    [[nodiscard]] int right() const {
+    [[nodiscard]] float right() const {
         return x + w;
     }
 
-    [[nodiscard]] int left() const {
+    [[nodiscard]] float left() const {
         return x;
     }
 
-    [[nodiscard]] int top() const {
+    [[nodiscard]] float top() const {
         return y;
     }
 
-    [[nodiscard]] int bottom() const {
+    [[nodiscard]] float bottom() const {
         return y + h;
     }
 
-    int getCenterX() {
-        return x + w / 2;
+    [[nodiscard]] float getCenterX() const {
+        return x + w / 2.0f;
     }
 
-    int getCenterY() {
-        return y + h / 2;
+    [[nodiscard]] float getCenterY() const {
+        return y + h / 2.0f;
     }
 
-    void setTop(int value) {
+    void setTop(float value) {
         y = value;
     }
 
-    void setBottom(int value) {
+    void setBottom(float value) {
         y = value - h;
     }
 
-    void setLeft(int value) {
+    void setLeft(float value) {
         x = value;
     }
 
-    void setRight(int value) {
+    void setRight(float value) {
         x = value - w;
     }
 
-    const int w, h;
-    int x, y;
+    const float w, h;
+    float x, y;
 
     ~TransformComponent() override = default;
 };
@@ -80,7 +80,27 @@ struct TextureComponent : public Component {
     ~TextureComponent() override = default;
 };
 
-struct HitFromBottomComponent : public Component {};
+struct WalkComponent : public Component {
+    float speed = -.6;
+};
+
+enum class Direction {
+    NONE,
+    TOP,
+    BOTTOM,
+    LEFT,
+    RIGHT
+};
+
+struct LeftCollisionComponent : public Component {
+};
+struct RightCollisionComponent : public Component {
+};
+struct TopCollisionComponent : public Component {
+};
+struct BottomCollisionComponent : public Component {
+};
+
 struct BreakableComponent : public Component {
     int getHeight() {
         frames--;
@@ -94,11 +114,14 @@ struct BreakableComponent : public Component {
     void reset() {
         frames = 6;
     }
+
 private:
     int frames = 6;
     int height[6] = {1, 1, 1, 1, -2, -2};
 };
-struct TileComponent : public Component {};
+
+struct TileComponent : public Component {
+};
 
 struct TileMapComponent : public Component {
     TileMapComponent(uint16_t width, uint16_t height) : mapWidth{width},
@@ -106,6 +129,8 @@ struct TileMapComponent : public Component {
                                                         tiles{new Entity* [width * height]{}} {}
 
     Entity* get(int x, int y) {
+        if (x < 0 || y < 0) return nullptr;
+        if (x >= mapWidth || y >= mapHeight) return nullptr;
         return tiles[x + y * mapWidth];
     }
 

@@ -9,20 +9,18 @@ void PhysicsSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);
 }
 
-bool checkCollision(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
+Direction checkCollision(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
     auto solidTransform = solid->get<TransformComponent>();
 
-    if (kinetic->speedY > 0) {
-        //Moving down
-        if (transform->top() < solidTransform->top() &&
-            transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
-            transform->right() - TILE_ROUNDNESS > solidTransform->left() &&
-            transform->bottom() + kinetic->speedY > solidTransform->top()) {
-            kinetic->speedY = 0;
-            kinetic->accY = 0;
-            transform->setBottom(solidTransform->y);
-            return true;
-        }
+    //Moving down
+    if (transform->top() < solidTransform->top() &&
+        transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
+        transform->right() - TILE_ROUNDNESS > solidTransform->left() &&
+        transform->bottom() + kinetic->speedY > solidTransform->top()) {
+        kinetic->speedY = 0;
+        kinetic->accY = 0;
+        transform->setBottom(solidTransform->top());
+        return Direction::BOTTOM;
     }
 
     //Moving up
@@ -33,8 +31,8 @@ bool checkCollision(Entity* solid, TransformComponent* transform, KineticCompone
         kinetic->speedY = 0;
         kinetic->accY = 0;
         transform->setTop(solidTransform->bottom());
-        solid->assign<HitFromBottomComponent>();
-        return true;
+        solid->assign<BottomCollisionComponent>();
+        return Direction::TOP;
     }
 
     //Moving left
@@ -46,13 +44,13 @@ bool checkCollision(Entity* solid, TransformComponent* transform, KineticCompone
             kinetic->speedX = std::max(0.0f, kinetic->speedX);
             kinetic->accX = 0;
             transform->setLeft(solidTransform->right());
-            return true;
+            return Direction::LEFT;
         } else {
-            transform->x += 1;
+            transform->x += .5;
         }
     }
 
-    //moving right
+    //Moving right
     if (transform->left() < solidTransform->left() &&
         transform->top() < solidTransform->bottom() &&
         transform->bottom() > solidTransform->top() &&
@@ -61,13 +59,13 @@ bool checkCollision(Entity* solid, TransformComponent* transform, KineticCompone
             kinetic->speedX = std::min(0.0f, kinetic->speedX);
             kinetic->accX = 0;
             transform->setRight(solidTransform->left());
-            return true;
+            return Direction::RIGHT;
         } else {
-            transform->x -= 1;
+            transform->x -= .5;
         }
     }
 
-    return false;
+    return Direction::NONE;
 }
 
 constexpr std::pair<int, int> TILE_OFFSETS[9] = {
@@ -87,13 +85,61 @@ void PhysicsSystem::tick(World* world) {
     entities = world->find<GravityComponent, KineticComponent>();
     for (auto entity : entities) entity->get<KineticComponent>()->accY += GRAVITY;
 
-    auto player = world->findFirst<PlayerComponent, KineticComponent>();
-    player->get<KineticComponent>()->accX = dirX * MARIO_ACCELERATION_X;
-    if (jump) {
-        player->get<KineticComponent>()->speedY = -MARIO_JUMP;
-        jump = false;
+    entities = world->find<WalkComponent, KineticComponent>();
+    for (auto entity : entities) {
+        if (entity->hasAny<LeftCollisionComponent, RightCollisionComponent>()) {
+            entity->get<WalkComponent>()->speed *= -1;
+            entity->remove<LeftCollisionComponent>();
+            entity->remove<RightCollisionComponent>();
+        }
+
+        entity->get<KineticComponent>()->speedX = entity->get<WalkComponent>()->speed;
     }
 
+    auto player = world->findFirst<PlayerComponent, KineticComponent>();
+    if (player) { // TODO: REMOVE IF, FORCE A PLAYER TO BE PRESENT
+        player->get<KineticComponent>()->accX = dirX * MARIO_ACCELERATION_X;
+        if (jump) {
+            player->get<KineticComponent>()->accY = -MARIO_JUMP;
+            jump = false;
+        }
+    }
+
+    for (auto entity : world->find<BreakableComponent, BottomCollisionComponent>()) {
+        auto breakable = entity->get<BreakableComponent>();
+        if (!breakable->finished()) {
+            entity->get<TransformComponent>()->y += (float) breakable->getHeight();
+        } else {
+            entity->remove<BottomCollisionComponent>();
+            breakable->reset();
+        }
+    }
+
+    // Apply Forces
+    entities = world->find<TransformComponent, KineticComponent>();
+    for (auto entity : entities) {
+        auto transform = entity->get<TransformComponent>();
+        auto kinematic = entity->get<KineticComponent>();
+        kinematic->speedX += kinematic->accX;
+        kinematic->speedY += kinematic->accY;
+        transform->x += kinematic->speedX;
+        transform->y += kinematic->speedY;
+
+        // Apply friction
+        kinematic->speedY *= FRICTION;
+        kinematic->speedX *= FRICTION;
+        if (std::abs(kinematic->speedY) < .01) kinematic->speedY = 0;
+        if (std::abs(kinematic->speedX) < .01) kinematic->speedX = 0;
+
+        if (kinematic->speedY > MAX_SPEED) kinematic->speedY = MAX_SPEED;
+        if (kinematic->speedX > MAX_SPEED) kinematic->speedX = MAX_SPEED;
+
+        if (kinematic->speedY < -MAX_SPEED) kinematic->speedY = -MAX_SPEED;
+        if (kinematic->speedX < -MAX_SPEED) kinematic->speedX = -MAX_SPEED;
+        // --------------
+    }
+
+    // Check Collisions
     auto tileSetEntity = world->findFirst<TileMapComponent>();
     if (tileSetEntity) {
         auto tileSetComponent = tileSetEntity->get<TileMapComponent>();
@@ -109,19 +155,23 @@ void PhysicsSystem::tick(World* world) {
                 auto tile = tileSetComponent->get(x, y);
                 if (!tile) continue;
                 if (!(tile->get<SolidComponent>())) continue;
-                if (checkCollision(tile, transform, kinetic)) break;
+                switch (checkCollision(tile, transform, kinetic)) {
+                    case Direction::LEFT:
+                        entity->assign<LeftCollisionComponent>();
+                        break;
+                    case Direction::RIGHT:
+                        entity->assign<RightCollisionComponent>();
+                        break;
+                    case Direction::TOP:
+                        entity->assign<TopCollisionComponent>();
+                        break;
+                    case Direction::BOTTOM:
+                        entity->assign<BottomCollisionComponent>();
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
-    }
-
-    auto hitFromBottomEntities = world->find<BreakableComponent, HitFromBottomComponent>();
-    for (auto hitFromBottom : hitFromBottomEntities) {
-        auto breakable = hitFromBottom->get<BreakableComponent>();
-        if (!breakable->finished()) {
-            hitFromBottom->get<TransformComponent>()->y += breakable->getHeight();
-        } else {
-            hitFromBottom->remove<HitFromBottomComponent>();
-            breakable->reset();
         }
     }
 
@@ -135,21 +185,7 @@ void PhysicsSystem::tick(World* world) {
         }*/
     }
 
-    // Apply forces
-    entities = world->find<TransformComponent, KineticComponent>();
-    for (auto entity : entities) {
-        auto transform = entity->get<TransformComponent>();
-        auto kinematic = entity->get<KineticComponent>();
-        kinematic->speedY *= FRICTION;
-        kinematic->speedX *= FRICTION;
-        if (std::abs(kinematic->speedY) < .01) kinematic->speedY = 0;
-        if (std::abs(kinematic->speedX) < .01) kinematic->speedX = 0;
-        kinematic->speedX += kinematic->accX;
-        kinematic->speedY += kinematic->accY;
 
-        transform->x += (int) kinematic->speedX;
-        transform->y += (int) kinematic->speedY;
-    }
 }
 
 void PhysicsSystem::handleEvent(SDL_Event& event) {
