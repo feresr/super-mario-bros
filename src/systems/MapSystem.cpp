@@ -44,6 +44,7 @@ void MapSystem::tick(World* world) {
         if (tile->hasProperty(BREAKABLE)) entity->assign<BreakableComponent>();
         if (tile->hasProperty(KINETIC)) {
             entity->assign<WalkComponent>(); // TODO not every kinetic in the map should Walk?
+            entity->assign<EnemyComponent>(); // TODO not every kinetic in the map should be an enemy?
             entity->assign<KineticComponent>();
         } else {
             // 4. Each static `TileComponent` reports its location in the world to be accessed by X and Y coordinates.

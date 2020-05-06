@@ -23,6 +23,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     auto player = world.create();
     player->assign<PlayerComponent>();
     player->assign<GravityComponent>();
+    player->assign<SolidComponent>();
     player->assign<KineticComponent>();
     player->assign<TransformComponent>(40, 40, TILE_SIZE, TILE_SIZE);
     player->assign<TextureComponent>(52);

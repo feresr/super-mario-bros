@@ -80,6 +80,8 @@ struct TextureComponent : public Component {
     ~TextureComponent() override = default;
 };
 
+struct EnemyComponent : public Component {
+};
 struct WalkComponent : public Component {
     float speed = -.6;
 };
