@@ -26,4 +26,4 @@ constexpr float MAX_SPEED = 3;
 
 constexpr float MARIO_ACCELERATION_X = .3f;
 constexpr float MARIO_JUMP = 1.0f;
-constexpr int TILE_ROUNDNESS = 0;
+constexpr int TILE_ROUNDNESS = 8;

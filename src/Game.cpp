@@ -26,7 +26,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     player->assign<SolidComponent>();
     player->assign<KineticComponent>();
     player->assign<TransformComponent>(40, 40, TILE_SIZE, TILE_SIZE);
-    player->assign<TextureComponent>(52);
+    player->assign<TextureComponent>(9 * 13 + 9);
 }
 
 void gameOver() {

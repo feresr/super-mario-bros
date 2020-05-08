@@ -13,8 +13,8 @@ bool AABBCollision(
         float x, float y, float w, float h,
         TransformComponent* b
 ) {
-    return x < b->x + b->w &&
-           x + w > b->x &&
+    return x <= b->x + b->w &&
+           x + w >= b->x &&
            y < b->y + b->h &&
            y + h > b->y;
 }
@@ -23,35 +23,11 @@ Direction checkCollision(Entity* solid, TransformComponent* transform, KineticCo
     auto solidTransform = solid->get<TransformComponent>();
     auto direction = Direction::NONE;
 
-    // X-AXIS CHECK
-    if (AABBCollision(
-            transform->x + kinetic->speedX,
-            transform->y,   // Check previous y position
-            transform->w,
-            transform->h,
-            solidTransform)) {
-
-        float distanceLeft = abs((transform->left() + kinetic->speedX) - solidTransform->right());
-        float distanceRight = abs((transform->right() + kinetic->speedX) - solidTransform->left());
-        if (distanceLeft < distanceRight) {
-            transform->setLeft(solidTransform->right());
-            solid->assign<LeftCollisionComponent>();
-            kinetic->accX = std::min(0.0f, kinetic->accX);
-            direction = Direction::RIGHT;
-        } else {
-            transform->setRight(solidTransform->left());
-            solid->assign<RightCollisionComponent>();
-            kinetic->accX = std::max(0.0f, kinetic->accX);
-            direction = Direction::LEFT;
-        }
-        kinetic->speedX = 0;
-    }
-
     // Y AXIS CHECK
     if (AABBCollision(
-            transform->x + kinetic->speedX,    // Check with updated X position
+            transform->x + TILE_ROUNDNESS,    // Check previous x position
             transform->y + kinetic->speedY,
-            transform->w,
+            transform->w - (TILE_ROUNDNESS * 2),
             transform->h,
             solidTransform)) {
 
@@ -61,15 +37,52 @@ Direction checkCollision(Entity* solid, TransformComponent* transform, KineticCo
             transform->setBottom(solidTransform->top());
             solid->assign<TopCollisionComponent>();
             kinetic->accY = std::min(0.0f, kinetic->accY);
+            kinetic->speedY = std::min(0.0f, kinetic->speedY);
             direction = Direction::BOTTOM;
         } else {
             transform->setTop(solidTransform->bottom());
             solid->assign<BottomCollisionComponent>();
             kinetic->accY = std::max(0.0f, kinetic->accY);
+            kinetic->speedY = std::max(0.0f, kinetic->speedY);
             direction = Direction::TOP;
         }
-        kinetic->speedY = 0;
     }
+
+    // X-AXIS CHECK
+    if (AABBCollision(
+            transform->x + kinetic->speedX,
+            transform->y + kinetic->speedY,   // Check with updated y position
+            transform->w,
+            transform->h,
+            solidTransform)) {
+
+        float distanceLeft = abs((transform->left() + kinetic->speedX) - solidTransform->right());
+        float distanceRight = abs((transform->right() + kinetic->speedX) - solidTransform->left());
+        if (distanceLeft < distanceRight) {
+            if (transform->left() < solidTransform->right()) {
+                transform->x += std::min(.5f, solidTransform->right() - transform->left());
+            } else {
+                transform->setLeft(solidTransform->right());
+                solid->assign<LeftCollisionComponent>();
+                direction = Direction::RIGHT;
+            }
+            kinetic->accX = std::max(0.0f, kinetic->accX);
+            kinetic->speedX = std::max(0.0f, kinetic->speedX);
+        } else {
+            if (transform->right() > solidTransform->left()) {
+                transform->x -= std::min(.5f, transform->right() - solidTransform->left());
+            } else {
+                transform->setRight(solidTransform->left());
+                solid->assign<RightCollisionComponent>();
+                direction = Direction::LEFT;
+            }
+            kinetic->accX = std::min(0.0f, kinetic->accX);
+            kinetic->speedX = std::min(0.0f, kinetic->speedX);
+        }
+
+    }
+
+
 
     return direction;
 }
