@@ -18,7 +18,6 @@ void RenderSystem::tick(World* world) {
         textureManager->renderTexture(texture->id, dstRect);
     }
 
-    // RENDER EDITOR TILES (SLOW)
     auto tileSetEntity = world->findFirst<TileSetComponent>();
     if (tileSetEntity) {
         auto tileSetComponent = tileSetEntity->get<TileSetComponent>();

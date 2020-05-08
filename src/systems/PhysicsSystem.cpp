@@ -9,66 +9,69 @@ void PhysicsSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);
 }
 
+bool AABBCollision(
+        float x, float y, float w, float h,
+        TransformComponent* b
+) {
+    return x < b->x + b->w &&
+           x + w > b->x &&
+           y < b->y + b->h &&
+           y + h > b->y;
+}
+
 Direction checkCollision(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
     auto solidTransform = solid->get<TransformComponent>();
+    auto direction = Direction::NONE;
 
-    // Moving down
-    if (transform->top() < solidTransform->top() &&
-        transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
-        transform->right() - TILE_ROUNDNESS > solidTransform->left() &&
-        transform->bottom() + kinetic->speedY > solidTransform->top()) {
-        kinetic->speedY = 0;
-        kinetic->accY = 0;
-        transform->setBottom(solidTransform->top());
-        solid->assign<TopCollisionComponent>();
-        return Direction::BOTTOM;
-    }
+    // X-AXIS CHECK
+    if (AABBCollision(
+            transform->x + kinetic->speedX,
+            transform->y,   // Check previous y position
+            transform->w,
+            transform->h,
+            solidTransform)) {
 
-    // Moving up
-    if (transform->bottom() > solidTransform->bottom() &&
-        transform->left() + TILE_ROUNDNESS < solidTransform->right() &&
-        transform->right() - TILE_ROUNDNESS > solidTransform->left() &&
-        transform->top() + kinetic->speedY < solidTransform->bottom()) {
-        kinetic->speedY = 0;
-        kinetic->accY = 0;
-        transform->setTop(solidTransform->bottom());
-        solid->assign<BottomCollisionComponent>();
-        return Direction::TOP;
-    }
-
-    // Moving left
-    if (transform->right() > solidTransform->right() &&
-        transform->top() < solidTransform->bottom() &&
-        transform->bottom() > solidTransform->top() &&
-        transform->left() + kinetic->speedX < solidTransform->right()) {
-        if (kinetic->speedX < 0) {
-            kinetic->speedX = std::max(0.0f, kinetic->speedX);
-            kinetic->accX = 0;
+        float distanceLeft = abs((transform->left() + kinetic->speedX) - solidTransform->right());
+        float distanceRight = abs((transform->right() + kinetic->speedX) - solidTransform->left());
+        if (distanceLeft < distanceRight) {
             transform->setLeft(solidTransform->right());
-            solid->assign<RightCollisionComponent>();
-            return Direction::LEFT;
-        } else {
-            transform->x += .5;
-        }
-    }
-
-    // Moving right
-    if (transform->left() < solidTransform->left() &&
-        transform->top() < solidTransform->bottom() &&
-        transform->bottom() > solidTransform->top() &&
-        transform->right() + kinetic->speedX > solidTransform->left()) {
-        if (kinetic->speedX > 0) {
-            kinetic->speedX = std::min(0.0f, kinetic->speedX);
-            kinetic->accX = 0;
-            transform->setRight(solidTransform->left());
             solid->assign<LeftCollisionComponent>();
-            return Direction::RIGHT;
+            kinetic->accX = std::min(0.0f, kinetic->accX);
+            direction = Direction::RIGHT;
         } else {
-            transform->x -= .5;
+            transform->setRight(solidTransform->left());
+            solid->assign<RightCollisionComponent>();
+            kinetic->accX = std::max(0.0f, kinetic->accX);
+            direction = Direction::LEFT;
         }
+        kinetic->speedX = 0;
     }
 
-    return Direction::NONE;
+    // Y AXIS CHECK
+    if (AABBCollision(
+            transform->x + kinetic->speedX,    // Check with updated X position
+            transform->y + kinetic->speedY,
+            transform->w,
+            transform->h,
+            solidTransform)) {
+
+        float distanceTop = abs(solidTransform->top() - (transform->bottom() + kinetic->speedY));
+        float distanceBottom = abs((transform->top() + kinetic->speedY) - solidTransform->bottom());
+        if (distanceTop < distanceBottom) {
+            transform->setBottom(solidTransform->top());
+            solid->assign<TopCollisionComponent>();
+            kinetic->accY = std::min(0.0f, kinetic->accY);
+            direction = Direction::BOTTOM;
+        } else {
+            transform->setTop(solidTransform->bottom());
+            solid->assign<BottomCollisionComponent>();
+            kinetic->accY = std::max(0.0f, kinetic->accY);
+            direction = Direction::TOP;
+        }
+        kinetic->speedY = 0;
+    }
+
+    return direction;
 }
 
 constexpr std::pair<int, int> TILE_OFFSETS[9] = {
@@ -125,30 +128,6 @@ void PhysicsSystem::tick(World* world) {
             entity->remove<BottomCollisionComponent>();
             breakable->reset();
         }
-    }
-
-    // Apply Forces
-    entities = world->find<TransformComponent, KineticComponent>();
-    for (auto entity : entities) {
-        auto transform = entity->get<TransformComponent>();
-        auto kinematic = entity->get<KineticComponent>();
-        kinematic->speedX += kinematic->accX;
-        kinematic->speedY += kinematic->accY;
-        transform->x += kinematic->speedX;
-        transform->y += kinematic->speedY;
-
-        // Apply friction
-        kinematic->speedY *= FRICTION;
-        kinematic->speedX *= FRICTION;
-        if (std::abs(kinematic->speedY) < .01) kinematic->speedY = 0;
-        if (std::abs(kinematic->speedX) < .01) kinematic->speedX = 0;
-
-        if (kinematic->speedY > MAX_SPEED) kinematic->speedY = MAX_SPEED;
-        if (kinematic->speedX > MAX_SPEED) kinematic->speedX = MAX_SPEED;
-
-        if (kinematic->speedY < -MAX_SPEED) kinematic->speedY = -MAX_SPEED;
-        if (kinematic->speedX < -MAX_SPEED) kinematic->speedX = -MAX_SPEED;
-        // --------------
     }
 
     // Kinetic-Kinetic collisions
@@ -213,6 +192,30 @@ void PhysicsSystem::tick(World* world) {
                 }
             }
         }
+    }
+
+    // Apply Forces
+    entities = world->find<TransformComponent, KineticComponent>();
+    for (auto entity : entities) {
+        auto transform = entity->get<TransformComponent>();
+        auto kinematic = entity->get<KineticComponent>();
+
+        transform->x += kinematic->speedX;
+        transform->y += kinematic->speedY;
+        kinematic->speedX += kinematic->accX;
+        kinematic->speedY += kinematic->accY;
+
+        kinematic->speedY *= FRICTION;
+        kinematic->speedX *= FRICTION;
+        if (std::abs(kinematic->speedY) < .01) kinematic->speedY = 0;
+        if (std::abs(kinematic->speedX) < .01) kinematic->speedX = 0;
+
+        if (kinematic->speedY > MAX_SPEED) kinematic->speedY = MAX_SPEED;
+        if (kinematic->speedX > MAX_SPEED) kinematic->speedX = MAX_SPEED;
+
+        if (kinematic->speedY < -MAX_SPEED) kinematic->speedY = -MAX_SPEED;
+        if (kinematic->speedX < -MAX_SPEED) kinematic->speedX = -MAX_SPEED;
+        // --------------
     }
 }
 

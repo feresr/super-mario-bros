@@ -26,7 +26,11 @@ void MapSystem::tick(World* world) {
     for (auto entity : transformEntities) {
         auto transform = entity->get<TransformComponent>();
         if (transform->right() < camera->left() || transform->top() > camera->bottom()) {
-            tileMap->set((int) (transform->x / TILE_SIZE), (int) (transform->y / TILE_SIZE), nullptr);
+            tileMap->set(
+                    (int) (transform->getCenterX() / TILE_SIZE),
+                    (int) (transform->getCenterY() / TILE_SIZE),
+                    nullptr
+            );
             world->destroy(entity);
         }
     }
@@ -50,7 +54,11 @@ void MapSystem::tick(World* world) {
             // 4. Each static `TileComponent` reports its location in the world to be accessed by X and Y coordinates.
             entity->assign<TileComponent>();
             auto transform = entity->get<TransformComponent>();
-            tileMap->set((int) (transform->x / TILE_SIZE), (int) (transform->y / TILE_SIZE), entity);
+            tileMap->set(
+                    (int) (transform->getCenterX() / TILE_SIZE),
+                    (int) (transform->getCenterY() / TILE_SIZE),
+                    entity
+            );
         }
         if (tile->hasProperty(SOLID)) entity->assign<SolidComponent>();
         map.tiles.pop();
