@@ -11,6 +11,8 @@ void AnimationSystem::tick(World* world) {
         auto texture = entity->get<TextureComponent>();
         animation->counter++;
         if (animation->counter >= animation->duration) {
+            if (animation->flipH) texture->flipH = !texture->flipH;
+            if (animation->flipV) texture->flipV = !texture->flipV;
             animation->counter = 0;
             animation->currentTexture = (animation->currentTexture + 1) % animation->textures.size();
             texture->id = animation->textures[animation->currentTexture];

@@ -13,5 +13,5 @@ class AnimationSystem : public System {
 
     void onRemovedFromWorld(World* world) override;
 
-    ~AnimationSystem() = default;
+    ~AnimationSystem() override = default;
 };

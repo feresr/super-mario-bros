@@ -26,6 +26,6 @@ constexpr float MAX_SPEED_X = 2.5;
 constexpr float MAX_SPEED_Y = 3;
 
 constexpr float MARIO_ACCELERATION_X = .10f;
-constexpr float MARIO_JUMP = 1.0f;
+constexpr float MARIO_JUMP = 1.2f;
 constexpr float MARIO_BOUNCE = 0.4f; // when jumping on top of enemies
 constexpr int TILE_ROUNDNESS = 8;

@@ -25,3 +25,4 @@ static TileType BUSH_RIGHT{5, VISIBLE};
 static TileType BLOCK{7, VISIBLE | SOLID};
 static TileType BRICK{6, VISIBLE | SOLID | BREAKABLE};
 static TileType CLOUD{52, VISIBLE | SOLID | MASS | KINETIC};
+static TileType GOOMBA{11 * 13 + 8, VISIBLE | SOLID | MASS | KINETIC};

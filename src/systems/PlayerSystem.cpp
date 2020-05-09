@@ -66,6 +66,8 @@ void PlayerSystem::tick(World* world) {
             enemy->remove<WalkComponent>();
             enemy->remove<KineticComponent>();
             enemy->remove<TopCollisionComponent>();
+            enemy->remove<AnimationComponent>();
+            enemy->get<TextureComponent>()->id = 11 * 13 + 7;
             player->get<KineticComponent>()->accY = -MARIO_BOUNCE;
         }
     }

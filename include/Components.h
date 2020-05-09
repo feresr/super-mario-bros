@@ -75,12 +75,16 @@ struct GravityComponent : public Component {
 struct AnimationComponent : public Component {
     explicit AnimationComponent(
             std::vector<int>&& textures,
-            int duration) : textures{std::move(textures)}, duration{duration}, counter{duration} {
-    }
+            int duration,
+            bool flipH = false,
+            bool flipV = false
+    ) : textures{std::move(textures)}, duration{duration}, counter{duration}, flipH{flipH}, flipV{flipV} {}
 
     std::vector<int> textures;
     int duration = 0;
     int counter = 0;
+    bool flipH = false;
+    bool flipV = false;
     size_t currentTexture = 0;
 };
 

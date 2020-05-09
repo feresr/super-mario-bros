@@ -40,7 +40,6 @@ void MapSystem::tick(World* world) {
     while (!map.tiles.empty()) {
         auto tile = map.tiles.front();
         if (tile->x > camera->right()) break;
-        std::cout << "[MapSystem] Adding item to world" << std::endl;
         auto entity = world->create();
         entity->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);
         if (tile->hasProperty(VISIBLE)) entity->assign<TextureComponent>(tile->textureId);
@@ -49,6 +48,7 @@ void MapSystem::tick(World* world) {
         if (tile->hasProperty(KINETIC)) {
             entity->assign<WalkComponent>(); // TODO not every kinetic in the map should Walk?
             entity->assign<EnemyComponent>(); // TODO not every kinetic in the map should be an enemy?
+            entity->assign<AnimationComponent>(std::vector<int>{tile->textureId}, 15, true); // TODO not every kinetic in the map should be an enemy?
             entity->assign<KineticComponent>();
         } else {
             // 4. Each static `TileComponent` reports its location in the world to be accessed by X and Y coordinates.

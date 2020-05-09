@@ -1,10 +1,5 @@
 #include "systems/PhysicsSystem.h"
 
-
-void PhysicsSystem::onAddedToWorld(World* world) {
-    System::onAddedToWorld(world);
-}
-
 bool AABBCollision(
         float x, float y, float w, float h,
         TransformComponent* b
@@ -15,7 +10,7 @@ bool AABBCollision(
            y + h >= b->y;
 }
 
-Direction checkCollision(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
+Direction checkCollisionY(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
     auto solidTransform = solid->get<TransformComponent>();
     auto direction = Direction::NONE;
 
@@ -44,18 +39,26 @@ Direction checkCollision(Entity* solid, TransformComponent* transform, KineticCo
         }
     }
 
+    return direction;
+}
+
+Direction checkCollisionX(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
+    auto solidTransform = solid->get<TransformComponent>();
+    auto direction = Direction::NONE;
+
     // X-AXIS CHECK
     if (AABBCollision(
             transform->x + kinetic->speedX,
-            transform->y + kinetic->speedY + 1,   // Check with updated y position
+            transform->y + kinetic->speedY + 2,   // Check with updated y position
             transform->w,
-            transform->h - 2,
+            transform->h - 4,
             solidTransform)) {
 
         float distanceLeft = abs((transform->left() + kinetic->speedX) - solidTransform->right());
         float distanceRight = abs((transform->right() + kinetic->speedX) - solidTransform->left());
         if (distanceLeft < distanceRight) {
             if (transform->left() < solidTransform->right()) {
+                //Mario is inside block, push out
                 transform->x += std::min(.5f, solidTransform->right() - transform->left());
             } else {
                 transform->setLeft(solidTransform->right());
@@ -66,6 +69,7 @@ Direction checkCollision(Entity* solid, TransformComponent* transform, KineticCo
             kinetic->speedX = std::max(0.0f, kinetic->speedX);
         } else {
             if (transform->right() > solidTransform->left()) {
+                //Mario is inside block, push out
                 transform->x -= std::min(.5f, transform->right() - solidTransform->left());
             } else {
                 transform->setRight(solidTransform->left());
@@ -75,24 +79,9 @@ Direction checkCollision(Entity* solid, TransformComponent* transform, KineticCo
             kinetic->accX = std::min(0.0f, kinetic->accX);
             kinetic->speedX = std::min(0.0f, kinetic->speedX);
         }
-
     }
-
-
     return direction;
 }
-
-constexpr std::pair<int, int> TILE_OFFSETS[9] = {
-        std::make_pair(0, 1),
-        std::make_pair(0, -1),
-        std::make_pair(-1, 0),
-        std::make_pair(1, 0),
-        std::make_pair(-1, 1),
-        std::make_pair(1, 1),
-        std::make_pair(1, -1),
-        std::make_pair(-1, -1),
-        std::make_pair(0, 0),
-};
 
 void PhysicsSystem::tick(World* world) {
     std::vector<Entity*> entities;
@@ -129,18 +118,22 @@ void PhysicsSystem::tick(World* world) {
         for (auto other : entities) {
             if (entity == other) continue;
             if (!other->has<SolidComponent>()) continue;
-            switch (checkCollision(other, transform, kinetic)) {
-                case Direction::LEFT:
-                    entity->assign<LeftCollisionComponent>();
-                    break;
-                case Direction::RIGHT:
-                    entity->assign<RightCollisionComponent>();
-                    break;
+            switch (checkCollisionY(other, transform, kinetic)) {
                 case Direction::TOP:
                     entity->assign<TopCollisionComponent>();
                     break;
                 case Direction::BOTTOM:
                     entity->assign<BottomCollisionComponent>();
+                    break;
+                default:
+                    break;
+            }
+            switch (checkCollisionX(other, transform, kinetic)) {
+                case Direction::LEFT:
+                    entity->assign<LeftCollisionComponent>();
+                    break;
+                case Direction::RIGHT:
+                    entity->assign<RightCollisionComponent>();
                     break;
                 default:
                     break;
@@ -153,29 +146,43 @@ void PhysicsSystem::tick(World* world) {
     if (tileSetEntity) {
         auto tileSetComponent = tileSetEntity->get<TileMapComponent>();
         auto kineticEntities = world->find<KineticComponent, TransformComponent, SolidComponent>();
-        // Collision against tiles
         for (auto entity : kineticEntities) {
             auto transform = entity->get<TransformComponent>();
             auto kinetic = entity->get<KineticComponent>();
 
-            for (auto offset : TILE_OFFSETS) {
-                auto x = (transform->getCenterX() / TILE_SIZE) + offset.first;
-                auto y = (transform->getCenterY() / TILE_SIZE) + offset.second;
-                auto tile = tileSetComponent->get(x, y);
+            int futureLeft = (int) (transform->left() + kinetic->speedX) / TILE_SIZE;
+            int futureRight = (int) (transform->right() + kinetic->speedX) / TILE_SIZE;
+            int futureTop = (int) (transform->top() + kinetic->speedY) / TILE_SIZE;
+            int futureBottom = (int) (transform->bottom() + kinetic->speedY) / TILE_SIZE;
+            std::vector<Entity*> coordinates{
+                    tileSetComponent->get(futureRight, futureBottom),
+                    tileSetComponent->get(futureLeft, futureBottom),
+                    tileSetComponent->get(futureLeft, futureTop),
+                    tileSetComponent->get(futureRight, futureTop),
+            };
+            for (auto tile : coordinates) {
                 if (!tile) continue;
                 if (!(tile->get<SolidComponent>())) continue;
-                switch (checkCollision(tile, transform, kinetic)) {
-                    case Direction::LEFT:
-                        entity->assign<LeftCollisionComponent>();
-                        break;
-                    case Direction::RIGHT:
-                        entity->assign<RightCollisionComponent>();
-                        break;
+                switch (checkCollisionY(tile, transform, kinetic)) {
                     case Direction::TOP:
                         entity->assign<TopCollisionComponent>();
                         break;
                     case Direction::BOTTOM:
                         entity->assign<BottomCollisionComponent>();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            for (auto tile : coordinates) {
+                if (!tile) continue;
+                if (!(tile->get<SolidComponent>())) continue;
+                switch (checkCollisionX(tile, transform, kinetic)) {
+                    case Direction::LEFT:
+                        entity->assign<LeftCollisionComponent>();
+                        break;
+                    case Direction::RIGHT:
+                        entity->assign<RightCollisionComponent>();
                         break;
                     default:
                         break;
@@ -200,21 +207,10 @@ void PhysicsSystem::tick(World* world) {
         kinematic->speedY *= FRICTION;
         kinematic->speedX *= FRICTION;
 
-
         if (kinematic->speedY > MAX_SPEED_Y) kinematic->speedY = MAX_SPEED_Y;
         if (kinematic->speedX > MAX_SPEED_X) kinematic->speedX = MAX_SPEED_X;
 
         if (kinematic->speedY < -MAX_SPEED_Y) kinematic->speedY = -MAX_SPEED_Y;
         if (kinematic->speedX < -MAX_SPEED_X) kinematic->speedX = -MAX_SPEED_X;
-        // --------------
     }
 }
-
-void PhysicsSystem::handleEvent(SDL_Event& event) {
-
-}
-
-void PhysicsSystem::onRemovedFromWorld(World* world) {
-}
-
-
