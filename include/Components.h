@@ -72,11 +72,25 @@ struct KineticComponent : public Component {
 struct GravityComponent : public Component {
 };
 
+struct AnimationComponent : public Component {
+    explicit AnimationComponent(
+            std::vector<int>&& textures,
+            int duration) : textures{std::move(textures)}, duration{duration}, counter{duration} {
+    }
+
+    std::vector<int> textures;
+    int duration = 0;
+    int counter = 0;
+    size_t currentTexture = 0;
+};
+
 struct TextureComponent : public Component {
     explicit TextureComponent(uint8_t id) : id{id} {};
 
     uint8_t id;
 
+    bool flipV = false;
+    bool flipH = false;
     ~TextureComponent() override = default;
 };
 

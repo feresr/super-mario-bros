@@ -1,3 +1,5 @@
+#include <systems/AnimationSystem.h>
+#include <systems/PlayerSystem.h>
 #include "Game.h"
 
 void Game::init(const char* title, int width, int height, bool fullscreen) {
@@ -17,16 +19,10 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 
     isRunning = true;
     world.registerSystem(new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT));
+    world.registerSystem(new PlayerSystem());
     world.registerSystem(new MapSystem());
+    world.registerSystem(new AnimationSystem());
     world.registerSystem(new PhysicsSystem());
-
-    auto player = world.create();
-    player->assign<PlayerComponent>();
-    player->assign<GravityComponent>();
-    player->assign<SolidComponent>();
-    player->assign<KineticComponent>();
-    player->assign<TransformComponent>(40, 40, TILE_SIZE, TILE_SIZE);
-    player->assign<TextureComponent>(9 * 13 + 9);
 }
 
 void gameOver() {

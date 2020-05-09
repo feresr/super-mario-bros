@@ -1,9 +1,5 @@
 #include "systems/PhysicsSystem.h"
 
-float dirX = 0;
-bool jump = false;
-float left = 0;
-float right = 0;
 
 void PhysicsSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);
@@ -15,8 +11,8 @@ bool AABBCollision(
 ) {
     return x <= b->x + b->w &&
            x + w >= b->x &&
-           y < b->y + b->h &&
-           y + h > b->y;
+           y <= b->y + b->h &&
+           y + h >= b->y;
 }
 
 Direction checkCollision(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
@@ -51,9 +47,9 @@ Direction checkCollision(Entity* solid, TransformComponent* transform, KineticCo
     // X-AXIS CHECK
     if (AABBCollision(
             transform->x + kinetic->speedX,
-            transform->y + kinetic->speedY,   // Check with updated y position
+            transform->y + kinetic->speedY + 1,   // Check with updated y position
             transform->w,
-            transform->h,
+            transform->h - 2,
             solidTransform)) {
 
         float distanceLeft = abs((transform->left() + kinetic->speedX) - solidTransform->right());
@@ -81,7 +77,6 @@ Direction checkCollision(Entity* solid, TransformComponent* transform, KineticCo
         }
 
     }
-
 
 
     return direction;
@@ -113,24 +108,6 @@ void PhysicsSystem::tick(World* world) {
         }
 
         entity->get<KineticComponent>()->speedX = entity->get<WalkComponent>()->speed;
-    }
-
-    auto player = world->findFirst<PlayerComponent>();
-    if (player) { // TODO: REMOVE IF, FORCE A PLAYER TO BE PRESENT
-        player->get<KineticComponent>()->accX = dirX * MARIO_ACCELERATION_X;
-        if (jump) {
-            player->get<KineticComponent>()->accY = -MARIO_JUMP;
-            jump = false;
-        }
-
-        for (auto enemy : world->find<EnemyComponent>()) {
-            if (enemy->has<TopCollisionComponent>()) {
-                enemy->remove<WalkComponent>();
-                enemy->remove<KineticComponent>();
-                enemy->remove<TopCollisionComponent>();
-                player->get<KineticComponent>()->accY = -.4f;
-            }
-        }
     }
 
     for (auto entity : world->find<BreakableComponent, BottomCollisionComponent>()) {
@@ -218,53 +195,23 @@ void PhysicsSystem::tick(World* world) {
         kinematic->speedX += kinematic->accX;
         kinematic->speedY += kinematic->accY;
 
+        if (std::abs(kinematic->speedY) < .1) kinematic->speedY = 0;
+        if (std::abs(kinematic->speedX) < .1) kinematic->speedX = 0;
         kinematic->speedY *= FRICTION;
         kinematic->speedX *= FRICTION;
-        if (std::abs(kinematic->speedY) < .01) kinematic->speedY = 0;
-        if (std::abs(kinematic->speedX) < .01) kinematic->speedX = 0;
 
-        if (kinematic->speedY > MAX_SPEED) kinematic->speedY = MAX_SPEED;
-        if (kinematic->speedX > MAX_SPEED) kinematic->speedX = MAX_SPEED;
 
-        if (kinematic->speedY < -MAX_SPEED) kinematic->speedY = -MAX_SPEED;
-        if (kinematic->speedX < -MAX_SPEED) kinematic->speedX = -MAX_SPEED;
+        if (kinematic->speedY > MAX_SPEED_Y) kinematic->speedY = MAX_SPEED_Y;
+        if (kinematic->speedX > MAX_SPEED_X) kinematic->speedX = MAX_SPEED_X;
+
+        if (kinematic->speedY < -MAX_SPEED_Y) kinematic->speedY = -MAX_SPEED_Y;
+        if (kinematic->speedX < -MAX_SPEED_X) kinematic->speedX = -MAX_SPEED_X;
         // --------------
     }
 }
 
 void PhysicsSystem::handleEvent(SDL_Event& event) {
-    if (event.type != SDL_KEYDOWN && event.type != SDL_KEYUP) return;
 
-    switch (event.type) {
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.scancode) {
-                case SDL_SCANCODE_A:
-                    left = true;
-                    break;
-                case SDL_SCANCODE_D:
-                    right = true;
-                    break;
-                case SDL_SCANCODE_W:
-                    jump = true;
-                    break;
-                default:
-                    break;
-            }
-            break;
-        case SDL_KEYUP:
-            switch (event.key.keysym.scancode) {
-                case SDL_SCANCODE_A:
-                    left = false;
-                    break;
-                case SDL_SCANCODE_D:
-                    right = false;
-                    break;
-                default:
-                    break;
-            }
-    }
-
-    dirX = right - left;
 }
 
 void PhysicsSystem::onRemovedFromWorld(World* world) {

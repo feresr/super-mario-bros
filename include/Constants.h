@@ -21,9 +21,11 @@ constexpr int EDITOR_CAMERA_PAN_SPEED = 3;
 constexpr int DEFAULT_TEXTURE = 1;
 
 constexpr float GRAVITY = .05;
-constexpr float FRICTION = .85;
-constexpr float MAX_SPEED = 3;
+constexpr float FRICTION = .94;
+constexpr float MAX_SPEED_X = 2.5;
+constexpr float MAX_SPEED_Y = 3;
 
-constexpr float MARIO_ACCELERATION_X = .3f;
+constexpr float MARIO_ACCELERATION_X = .10f;
 constexpr float MARIO_JUMP = 1.0f;
+constexpr float MARIO_BOUNCE = 0.4f; // when jumping on top of enemies
 constexpr int TILE_ROUNDNESS = 8;

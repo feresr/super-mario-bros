@@ -15,7 +15,7 @@ void RenderSystem::tick(World* world) {
         dstRect.h = transform->h;
 
         auto texture = entity->get<TextureComponent>();
-        textureManager->renderTexture(texture->id, dstRect);
+        textureManager->renderTexture(texture->id, dstRect, texture->flipH, texture->flipV);
     }
 
     auto tileSetEntity = world->findFirst<TileSetComponent>();

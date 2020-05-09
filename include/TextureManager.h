@@ -10,11 +10,13 @@ class TextureManager {
 public:
     explicit TextureManager(SDL_Renderer* renderer);
 
-    void renderTexture(uint8_t textureId, SDL_Rect& dstRect);
+    void renderTexture(uint8_t textureId, SDL_Rect& dstRect, bool flipH = false, bool flipV = false);
 
     SDL_Texture* texture;
 private:
-    SDL_Rect textureSrc(uint8_t textureId);
+    void loadTextureSrc(uint8_t textureId);
 
     SDL_Renderer* renderer;
+
+    SDL_Rect srcRect{};
 };
