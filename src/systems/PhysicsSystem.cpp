@@ -142,9 +142,9 @@ void PhysicsSystem::tick(World* world) {
     }
 
     // Check Kinetic-Tiles Collisions
-    auto tileSetEntity = world->findFirst<TileMapComponent>();
-    if (tileSetEntity) {
-        auto tileSetComponent = tileSetEntity->get<TileMapComponent>();
+    auto tileMapEntity = world->findFirst<TileMapComponent>();
+    if (tileMapEntity) {
+        auto tileMapComponent = tileMapEntity->get<TileMapComponent>();
         auto kineticEntities = world->find<KineticComponent, TransformComponent, SolidComponent>();
         for (auto entity : kineticEntities) {
             auto transform = entity->get<TransformComponent>();
@@ -155,10 +155,10 @@ void PhysicsSystem::tick(World* world) {
             int futureTop = (int) (transform->top() + kinetic->speedY) / TILE_SIZE;
             int futureBottom = (int) (transform->bottom() + kinetic->speedY) / TILE_SIZE;
             std::vector<Entity*> coordinates{
-                    tileSetComponent->get(futureRight, futureBottom),
-                    tileSetComponent->get(futureLeft, futureBottom),
-                    tileSetComponent->get(futureLeft, futureTop),
-                    tileSetComponent->get(futureRight, futureTop),
+                    tileMapComponent->get(futureRight, futureBottom),
+                    tileMapComponent->get(futureLeft, futureBottom),
+                    tileMapComponent->get(futureLeft, futureTop),
+                    tileMapComponent->get(futureRight, futureTop),
             };
             for (auto tile : coordinates) {
                 if (!tile) continue;
@@ -202,8 +202,8 @@ void PhysicsSystem::tick(World* world) {
         kinematic->speedX += kinematic->accX;
         kinematic->speedY += kinematic->accY;
 
-        if (std::abs(kinematic->speedY) < .1) kinematic->speedY = 0;
-        if (std::abs(kinematic->speedX) < .1) kinematic->speedX = 0;
+        if (std::abs(kinematic->speedY) < MARIO_ACCELERATION_X) kinematic->speedY = 0;
+        if (std::abs(kinematic->speedX) < MARIO_ACCELERATION_X) kinematic->speedX = 0;
         kinematic->speedY *= FRICTION;
         kinematic->speedX *= FRICTION;
 

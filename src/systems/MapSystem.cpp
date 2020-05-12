@@ -62,6 +62,7 @@ void MapSystem::tick(World* world) {
         }
         if (tile->hasProperty(SOLID)) entity->assign<SolidComponent>();
         map.tiles.pop();
+        delete tile;
     }
 }
 

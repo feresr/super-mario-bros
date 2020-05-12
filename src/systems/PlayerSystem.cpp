@@ -43,9 +43,10 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
 void PlayerSystem::tick(World* world) {
     auto kinetic = player->get<KineticComponent>();
 
-    kinetic->accX = (float) dirX * MARIO_ACCELERATION_X;
+
 
     if (player->has<BottomCollisionComponent>()) {
+        kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.5;
         if (jump) player->get<KineticComponent>()->accY = -MARIO_JUMP;
         if ((bool) std::abs(kinetic->speedX) || (bool) std::abs(kinetic->accX)) {
             if ((kinetic->speedX > 0 && kinetic->accX < 0) ||
@@ -58,6 +59,7 @@ void PlayerSystem::tick(World* world) {
             setAnimation(STANDING);
         }
     } else {
+        kinetic->accX = (float) (dirX) * (MARIO_ACCELERATION_X);
         setAnimation(JUMPING);
     }
 
