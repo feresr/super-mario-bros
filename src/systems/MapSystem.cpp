@@ -45,6 +45,19 @@ void MapSystem::tick(World* world) {
         if (tile->hasProperty(VISIBLE)) entity->assign<TextureComponent>(tile->textureId);
         if (tile->hasProperty(MASS)) entity->assign<GravityComponent>();
         if (tile->hasProperty(BREAKABLE)) entity->assign<BreakableComponent>();
+        if (tile->hasProperty(QUESTION)) {
+            entity->assign<QuestionBlockComponent>();
+            entity->assign<AnimationComponent>(
+                    std::vector<int>{
+                            QUESTION_BLOCK_TEXTURE_1,
+                            QUESTION_BLOCK_TEXTURE_1,
+                            QUESTION_BLOCK_TEXTURE_1,
+                            QUESTION_BLOCK_TEXTURE_2,
+                            QUESTION_BLOCK_TEXTURE_3,
+                            QUESTION_BLOCK_TEXTURE_2
+                    },
+                    10); // TODO not every kinetic in the map should be an enemy?
+        }
         if (tile->hasProperty(KINETIC)) {
             entity->assign<WalkComponent>(); // TODO not every kinetic in the map should Walk?
             entity->assign<EnemyComponent>(); // TODO not every kinetic in the map should be an enemy?

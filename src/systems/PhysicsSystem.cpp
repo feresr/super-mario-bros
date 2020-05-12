@@ -51,7 +51,7 @@ Direction checkCollisionX(Entity* solid, TransformComponent* transform, KineticC
             transform->x + kinetic->speedX,
             transform->y + kinetic->speedY + 2,   // Check with updated y position
             transform->w,
-            transform->h - 4,
+            transform->h - 8, //Ideally should be -4, but this favours Mario ending up on TOP of a tile.
             solidTransform)) {
 
         float distanceLeft = abs((transform->left() + kinetic->speedX) - solidTransform->right());
@@ -97,16 +97,6 @@ void PhysicsSystem::tick(World* world) {
         }
 
         entity->get<KineticComponent>()->speedX = entity->get<WalkComponent>()->speed;
-    }
-
-    for (auto entity : world->find<BreakableComponent, BottomCollisionComponent>()) {
-        auto breakable = entity->get<BreakableComponent>();
-        if (!breakable->finished()) {
-            entity->get<TransformComponent>()->y += (float) breakable->getHeight();
-        } else {
-            entity->remove<BottomCollisionComponent>();
-            breakable->reset();
-        }
     }
 
     // Kinetic-Kinetic collisions

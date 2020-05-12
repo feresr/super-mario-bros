@@ -8,7 +8,10 @@
 #include "systems/RenderSystem.h"
 #include "systems/EditorSystem.h"
 #include "systems/PhysicsSystem.h"
+#include "systems/TileSystem.h"
 #include "systems/MapSystem.h"
+#include "systems/AnimationSystem.h"
+#include "systems/PlayerSystem.h"
 #include "Constants.h"
 
 class Game {

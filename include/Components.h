@@ -121,6 +121,9 @@ struct TopCollisionComponent : public Component {
 struct BottomCollisionComponent : public Component {
 };
 
+struct QuestionBlockComponent : public Component {
+};
+
 struct BreakableComponent : public Component {
     int getHeight() {
         frames--;
@@ -132,12 +135,12 @@ struct BreakableComponent : public Component {
     }
 
     void reset() {
-        frames = 6;
+        frames = 13;
     }
 
 private:
-    int frames = 6;
-    int height[6] = {1, 1, 1, 1, -2, -2};
+    int frames = 13;
+    int height[13] = {-2, 1, 3, 2, 1, 1, 1, 0, 0, -1, -1, -4, -1};
 };
 
 struct TileComponent : public Component {

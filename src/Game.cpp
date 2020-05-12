@@ -1,5 +1,4 @@
-#include <systems/AnimationSystem.h>
-#include <systems/PlayerSystem.h>
+
 #include "Game.h"
 
 void Game::init(const char* title, int width, int height, bool fullscreen) {
@@ -22,6 +21,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     world.registerSystem(new PlayerSystem());
     world.registerSystem(new MapSystem());
     world.registerSystem(new AnimationSystem());
+    world.registerSystem(new TileSystem());
     world.registerSystem(new PhysicsSystem());
 }
 
