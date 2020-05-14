@@ -19,4 +19,7 @@ public:
 
     virtual ~TileSystem() = default;
 
+private:
+    TileMapComponent* tileMap;
+
 };

@@ -45,7 +45,7 @@ void EditorSystem::tick(World* world) {
         }
     }
 
-    cursor->get<TextureComponent>()->id = tileTypes[selectedTileType].texture;
+    cursor->get<TextureComponent>()->id = tileTypes[selectedTileType].editor_texture;
     cursor->get<TransformComponent>()->x = ((inputState.x + camera->left()) / TILE_SIZE) * TILE_SIZE;
     cursor->get<TransformComponent>()->y = ((inputState.y + camera->top()) / TILE_SIZE) * TILE_SIZE;
 }

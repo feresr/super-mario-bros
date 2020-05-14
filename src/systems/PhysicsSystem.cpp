@@ -58,26 +58,27 @@ Direction checkCollisionX(Entity* solid, TransformComponent* transform, KineticC
         float distanceRight = abs((transform->right() + kinetic->speedX) - solidTransform->left());
         if (distanceLeft < distanceRight) {
             if (transform->left() < solidTransform->right()) {
-                //Mario is inside block, push out
+                //item is inside block, push out
                 transform->x += std::min(.5f, solidTransform->right() - transform->left());
             } else {
+                //item about to get inside the block
                 transform->setLeft(solidTransform->right());
-                solid->assign<LeftCollisionComponent>();
-                direction = Direction::RIGHT;
             }
             kinetic->accX = std::max(0.0f, kinetic->accX);
             kinetic->speedX = std::max(0.0f, kinetic->speedX);
+            solid->assign<RightCollisionComponent>();
+            direction = Direction::LEFT;
         } else {
             if (transform->right() > solidTransform->left()) {
-                //Mario is inside block, push out
+                //item is inside block, push out
                 transform->x -= std::min(.5f, transform->right() - solidTransform->left());
             } else {
                 transform->setRight(solidTransform->left());
-                solid->assign<RightCollisionComponent>();
-                direction = Direction::LEFT;
             }
             kinetic->accX = std::min(0.0f, kinetic->accX);
             kinetic->speedX = std::min(0.0f, kinetic->speedX);
+            solid->assign<LeftCollisionComponent>();
+            direction = Direction::RIGHT;
         }
     }
     return direction;
@@ -87,17 +88,6 @@ void PhysicsSystem::tick(World* world) {
     std::vector<Entity*> entities;
     entities = world->find<GravityComponent, KineticComponent>();
     for (auto entity : entities) entity->get<KineticComponent>()->accY += GRAVITY;
-
-    entities = world->find<WalkComponent, KineticComponent>();
-    for (auto entity : entities) {
-        if (entity->hasAny<LeftCollisionComponent, RightCollisionComponent>()) {
-            entity->get<WalkComponent>()->speed *= -1;
-            entity->remove<LeftCollisionComponent>();
-            entity->remove<RightCollisionComponent>();
-        }
-
-        entity->get<KineticComponent>()->speedX = entity->get<WalkComponent>()->speed;
-    }
 
     // Kinetic-Kinetic collisions
     entities = world->find<TransformComponent, KineticComponent>();

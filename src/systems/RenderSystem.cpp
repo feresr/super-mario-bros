@@ -26,7 +26,7 @@ void RenderSystem::tick(World* world) {
                 if (!tileSetComponent->get(x, y).texture) continue;
                 dstRect.x = x * TILE_SIZE - camera->left();
                 dstRect.y = y * TILE_SIZE - camera->top();
-                textureManager->renderTexture(tileSetComponent->get(x, y).texture, dstRect);
+                textureManager->renderTexture(tileSetComponent->get(x, y).editor_texture, dstRect);
             }
         }
     }

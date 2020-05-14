@@ -46,7 +46,7 @@ void MapSystem::tick(World* world) {
         if (tile->hasProperty(MASS)) entity->assign<GravityComponent>();
         if (tile->hasProperty(BREAKABLE)) entity->assign<BreakableComponent>();
         if (tile->hasProperty(QUESTION)) {
-            entity->assign<QuestionBlockComponent>();
+            entity->assign<QuestionBlockComponent>(tile->hasProperty(SPAWN));
             entity->assign<AnimationComponent>(
                     std::vector<int>{
                             QUESTION_BLOCK_TEXTURE_1,

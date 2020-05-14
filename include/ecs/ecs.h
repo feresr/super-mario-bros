@@ -98,6 +98,7 @@ public:
     ~World();
 
     template<typename... Components>
+    //TODO this should return the component? to avoid world->findFirst<TileComponent>()->get<TileComponent>()
     Entity* findFirst() {
         auto found = std::find_if(
                 entities.begin(),
@@ -116,6 +117,19 @@ public:
                 entities.end(),
                 std::back_inserter(result),
                 [&](const Entity* s) { return s->has<Components...>(); }
+        );
+        return result;
+    }
+
+    template<typename... Components>
+    std::vector<Entity*> findAny() {
+        // todo: Optimize, avoid creating a new vector an returning it by copy
+        std::vector<Entity*> result;
+        std::copy_if(
+                entities.begin(),
+                entities.end(),
+                std::back_inserter(result),
+                [&](const Entity* s) { return s->hasAny<Components...>(); }
         );
         return result;
     }

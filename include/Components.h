@@ -101,6 +101,10 @@ struct TextureComponent : public Component {
 struct EnemyComponent : public Component {
 };
 struct WalkComponent : public Component {
+    WalkComponent() = default;
+
+    WalkComponent(float speed) : speed{speed} {}
+
     float speed = -.6;
 };
 
@@ -122,9 +126,26 @@ struct BottomCollisionComponent : public Component {
 };
 
 struct QuestionBlockComponent : public Component {
+    explicit QuestionBlockComponent(bool spawn) : spawn{spawn} {}
+
+    QuestionBlockComponent() = default;
+
+    bool spawn = false;
+};
+
+struct GrowComponent : public Component {
+    [[nodiscard]] bool finished() {
+        frames--;
+        return frames <= 0;
+    }
+
+private:
+    int frames = 64;
 };
 
 struct BreakableComponent : public Component {
+    bool hit = false;
+
     int getHeight() {
         frames--;
         return height[frames];

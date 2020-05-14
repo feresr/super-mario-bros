@@ -39,6 +39,7 @@ private:
 
     std::vector<TileType> tileTypes = {FLOOR,
                                        QUESTION_BLOCK,
+                                       QUESTION_BLOCK_MUSHROOM,
                                        TUBE_TOP_LEFT, TUBE_TOP_RIGHT, TUBE_LEFT, TUBE_RIGHT,
                                        BLOCK, BRICK,
                                        BUSH_LEFT, BUSH_CENTER, BUSH_RIGHT,

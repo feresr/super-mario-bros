@@ -42,11 +42,8 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
 
 void PlayerSystem::tick(World* world) {
     auto kinetic = player->get<KineticComponent>();
-
-
-
     if (player->has<BottomCollisionComponent>()) {
-        kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.5;
+        kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.5f;
         if (jump) player->get<KineticComponent>()->accY = -MARIO_JUMP;
         if ((bool) std::abs(kinetic->speedX) || (bool) std::abs(kinetic->accX)) {
             if ((kinetic->speedX > 0 && kinetic->accX < 0) ||
@@ -79,6 +76,9 @@ void PlayerSystem::tick(World* world) {
     player->get<TextureComponent>()->flipH = lookingLeft;
     jump = false;
     player->remove<BottomCollisionComponent>();
+    player->remove<LeftCollisionComponent>();
+    player->remove<RightCollisionComponent>();
+    player->remove<TopCollisionComponent>();
 }
 
 void PlayerSystem::handleEvent(SDL_Event& event) {
