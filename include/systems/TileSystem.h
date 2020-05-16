@@ -9,17 +9,17 @@ class TileSystem : public System {
 public:
     TileSystem() = default;
 
-    virtual void onAddedToWorld(World* world);
+    void onAddedToWorld(World* world) override;
 
-    virtual void tick(World* world);
+    void tick(World* world) override;
 
-    virtual void handleEvent(SDL_Event& event);
+    void handleEvent(SDL_Event& event) override;
 
-    virtual void onRemovedFromWorld(World* world);
+    void onRemovedFromWorld(World* world) override;
 
-    virtual ~TileSystem() = default;
+    ~TileSystem() override = default;
 
 private:
-    TileMapComponent* tileMap;
+    TileMapComponent* tileMap{};
 
 };

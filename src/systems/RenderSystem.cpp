@@ -2,22 +2,18 @@
 #include <filesystem>
 #include <Components.h>
 
+auto dstRect = SDL_Rect();
+
 void RenderSystem::tick(World* world) {
-    SDL_SetRenderDrawColor(renderer, SKY_RED, SKY_GREEN, SKY_BLUE, 255);
     SDL_RenderClear(renderer);
-    auto dstRect = SDL_Rect();
 
-    for (auto entity : world->find<TransformComponent, TextureComponent>()) {
-        auto transform = entity->get<TransformComponent>();
-        dstRect.x = transform->left() - camera->left();
-        dstRect.y = transform->top() - camera->top();
-        dstRect.w = transform->w;
-        dstRect.h = transform->h;
+    renderEntities(world->find<GrowComponent, TransformComponent, TextureComponent>());
+    renderEntities(world->find<TileComponent, TransformComponent, TextureComponent>());
+    renderEntities(world->find<EnemyComponent, TransformComponent, TextureComponent>());
+    renderEntities(world->find<CollectibleComponent, TransformComponent, TextureComponent>());
+    renderEntities(world->find<PlayerComponent, TransformComponent, TextureComponent>());
 
-        auto texture = entity->get<TextureComponent>();
-        textureManager->renderTexture(texture->id, dstRect, texture->flipH, texture->flipV);
-    }
-
+    //Editor
     auto tileSetEntity = world->findFirst<TileSetComponent>();
     if (tileSetEntity) {
         auto tileSetComponent = tileSetEntity->get<TileSetComponent>();
@@ -35,6 +31,7 @@ void RenderSystem::tick(World* world) {
 
 void RenderSystem::onAddedToWorld(World* world) {
     auto* entity = world->create();
+    SDL_SetRenderDrawColor(renderer, SKY_RED, SKY_GREEN, SKY_BLUE, 255);
     entity->assign<CameraComponent>(GAME_RESOLUTION_WIDTH / 2,
                                     GAME_RESOLUTION_HEIGHT / 2,
                                     GAME_RESOLUTION_WIDTH,
@@ -65,4 +62,17 @@ RenderSystem::RenderSystem(SDL_Window* window, int gameResolutionWidth, int game
 RenderSystem::~RenderSystem() {
     delete textureManager;
     SDL_DestroyRenderer(renderer);
+}
+
+void RenderSystem::renderEntities(std::vector<Entity*> entities) {
+    for (auto entity : entities) {
+        auto transform = entity->get<TransformComponent>();
+        dstRect.x = transform->left() - camera->left();
+        dstRect.y = transform->top() - camera->top();
+        dstRect.w = transform->w;
+        dstRect.h = transform->h;
+
+        auto texture = entity->get<TextureComponent>();
+        textureManager->renderTexture(texture->id, dstRect, texture->flipH, texture->flipV);
+    }
 }

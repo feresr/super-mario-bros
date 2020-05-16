@@ -50,7 +50,7 @@ struct TransformComponent : public Component {
         x = value - w;
     }
 
-    const float w, h;
+    float w, h;
     float x, y;
 
     ~TransformComponent() override = default;
@@ -59,6 +59,23 @@ struct TransformComponent : public Component {
 struct PlayerComponent : public Component {
 };
 struct SolidComponent : public Component {
+};
+struct CollectibleComponent : public Component {
+};
+
+struct SuperMarioComponent : public Component {
+};
+
+struct DestroyDelayedComponent : public Component {
+    explicit DestroyDelayedComponent(int time) : timer {time} {}
+
+    bool shouldDestroy() {
+        timer--;
+        return timer < 0;
+    }
+
+private:
+    int timer;
 };
 
 struct KineticComponent : public Component {

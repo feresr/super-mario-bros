@@ -28,4 +28,6 @@ private:
     const int GAME_RESOLUTION_HEIGHT;
     TextureManager* textureManager{};
     CameraComponent* camera{};
+
+    void renderEntities(std::vector<Entity*> entities);
 };

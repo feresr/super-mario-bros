@@ -13,6 +13,7 @@ void EditorSystem::onAddedToWorld(World* world) {
 
     cursor = world->create();
     cursor->assign<TextureComponent>(DEFAULT_TEXTURE);
+    cursor->assign<TileComponent>();
     cursor->assign<TransformComponent>(0, 0, TILE_SIZE, TILE_SIZE);
 }
 

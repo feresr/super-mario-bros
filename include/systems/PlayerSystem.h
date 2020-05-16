@@ -7,6 +7,7 @@
 class PlayerSystem : public System {
 
     Entity* player;
+    CameraComponent* camera;
 
     enum ANIMATION_STATE {
         RUNNING,
@@ -25,8 +26,10 @@ class PlayerSystem : public System {
 
     void onRemovedFromWorld(World* world) override;
 
-    void setAnimation(ANIMATION_STATE animationState);
-
     ~PlayerSystem() override = default;
+
+private:
+    void setAnimation(ANIMATION_STATE animationState);
+    void eatMushroom();
 
 };

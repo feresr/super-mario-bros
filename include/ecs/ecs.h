@@ -41,6 +41,11 @@ public:
         return false;
     }
 
+    bool clearComponents() {
+        components.clear();
+        return true;
+    }
+
     template<typename C>
     C* get() {
         return static_cast<C*>(components[std::type_index(typeid(C))]);

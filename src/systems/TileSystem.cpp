@@ -70,6 +70,7 @@ void TileSystem::tick(World* world) {
             entity->assign<WalkComponent>(MUSHROOM_MOVE_SPEED);
             entity->assign<SolidComponent>();
             entity->assign<KineticComponent>();
+            entity->assign<CollectibleComponent>();
             entity->assign<GravityComponent>();
         }
     }
@@ -97,6 +98,12 @@ void TileSystem::tick(World* world) {
                 entity->remove<QuestionBlockComponent>();
                 entity->remove<BreakableComponent>();
             }
+        }
+    }
+
+    for (auto destroy : world->find<DestroyDelayedComponent>()) {
+        if (destroy->get<DestroyDelayedComponent>()->shouldDestroy()) {
+            world->destroy(destroy);
         }
     }
 

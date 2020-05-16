@@ -25,7 +25,10 @@ void MapSystem::tick(World* world) {
     // 2. Iterate over them and remove the ones that are outside the camera.
     for (auto entity : transformEntities) {
         auto transform = entity->get<TransformComponent>();
-        if (transform->right() < camera->left() || transform->top() > camera->bottom()) {
+        if (transform->right() < camera->left() - CAMERA_WORLD_OFFSET
+        || transform->left() > camera->right() + CAMERA_WORLD_OFFSET
+        || transform->top() > camera->bottom()
+        ) {
             tileMap->set(
                     (int) (transform->getCenterX() / TILE_SIZE),
                     (int) (transform->getCenterY() / TILE_SIZE),
@@ -39,7 +42,7 @@ void MapSystem::tick(World* world) {
     // Remove them from the map so they don't get instantiated again.
     while (!map.tiles.empty()) {
         auto tile = map.tiles.front();
-        if (tile->x > camera->right()) break;
+        if (tile->x > camera->right() + CAMERA_WORLD_OFFSET) break;
         auto entity = world->create();
         entity->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);
         if (tile->hasProperty(VISIBLE)) entity->assign<TextureComponent>(tile->textureId);

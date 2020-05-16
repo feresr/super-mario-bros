@@ -12,6 +12,16 @@ constexpr int STANDING_TEXTURE_ID = 9 * 13 + 9;
 constexpr int JUMPING_TEXTURE_ID = 10 * 13 + 9;
 constexpr int DRAFTING_TEXTURE_ID = 9 * 13 + 13;
 
+bool AABBCollision(
+        TransformComponent* a,
+        TransformComponent* b
+) {
+    return a->x <= b->x + b->w &&
+           a->x + a->w >= b->x &&
+           a->y <= b->y + b->h &&
+           a->y + a->h >= b->y;
+}
+
 void PlayerSystem::setAnimation(ANIMATION_STATE state) {
     if (currentState == state) return;
     player->remove<AnimationComponent>();
@@ -42,6 +52,15 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
 
 void PlayerSystem::tick(World* world) {
     auto kinetic = player->get<KineticComponent>();
+    auto transform = player->get<TransformComponent>();
+
+    // Avoid walking back
+    if (transform->left() < camera->left()) {
+        transform->setLeft(camera->left());
+        kinetic->accX = 0;
+        kinetic->speedX = 0;
+    }
+
     if (player->has<BottomCollisionComponent>()) {
         kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.5f;
         if (jump) player->get<KineticComponent>()->accY = -MARIO_JUMP;
@@ -60,15 +79,40 @@ void PlayerSystem::tick(World* world) {
         setAnimation(JUMPING);
     }
 
-    for (auto enemy : world->find<EnemyComponent>()) {
+    // Step on enemies
+    for (auto enemy : world->find<EnemyComponent, TransformComponent>()) {
+        if (!AABBCollision(enemy->get<TransformComponent>(), transform)) continue;
         if (enemy->has<TopCollisionComponent>()) {
-            enemy->remove<WalkComponent>();
-            enemy->remove<KineticComponent>();
-            enemy->remove<TopCollisionComponent>();
-            enemy->remove<AnimationComponent>();
-            enemy->get<TextureComponent>()->id = 11 * 13 + 7;
-            player->get<TransformComponent>()->setBottom(enemy->get<TransformComponent>()->getCenterY());
-            player->get<KineticComponent>()->accY = -MARIO_BOUNCE;
+            auto enemyTransform = enemy->get<TransformComponent>();
+            transform->setBottom(enemyTransform->getCenterY());
+            enemy->clearComponents();
+            enemy->assign<TileComponent>();
+            enemy->assign<DestroyDelayedComponent>(50);
+            enemy->assign<TextureComponent>(GOOMBA_CRUSHED_TEXTURE);
+            enemy->assign<TransformComponent>(*enemyTransform);
+            kinetic->accY = -MARIO_BOUNCE;
+            kinetic->speedY = 0;
+        } else {
+            player->remove<SuperMarioComponent>();
+            transform->h = TILE_SIZE;
+        }
+    }
+
+    // Break bricks
+    if (player->has<SuperMarioComponent>()) {
+        for (auto breakable : world->find<BreakableComponent, TransformComponent, BottomCollisionComponent>()) {
+            if (!breakable->has<QuestionBlockComponent>() &&
+                AABBCollision(breakable->get<TransformComponent>(), transform)) {
+                breakable->clearComponents();
+            }
+        }
+    }
+
+    // Eat mushrooms
+    for (auto collectible : world->find<CollectibleComponent, TransformComponent>()) {
+        if (AABBCollision(collectible->get<TransformComponent>(), player->get<TransformComponent>())) {
+            eatMushroom();
+            world->destroy(collectible);
         }
     }
 
@@ -79,6 +123,21 @@ void PlayerSystem::tick(World* world) {
     player->remove<LeftCollisionComponent>();
     player->remove<RightCollisionComponent>();
     player->remove<TopCollisionComponent>();
+}
+
+void PlayerSystem::eatMushroom() {
+    if (player->has<SuperMarioComponent>()) return;
+    player->assign<SuperMarioComponent>();
+    auto transform = player->get<TransformComponent>();
+    auto x = transform->x;
+    auto y = transform->y - TILE_SIZE;
+    auto w = transform->w;
+    auto h = transform->h * 2;
+    player->remove<TransformComponent>();
+    player->assign<TransformComponent>(x, y, w, h);
+    // TODO: Animation
+    // player->assign<AnimationComponent>(std::vector<int>{}, 10);
+    SDL_Delay(1000);
 }
 
 void PlayerSystem::handleEvent(SDL_Event& event) {
@@ -117,6 +176,7 @@ void PlayerSystem::handleEvent(SDL_Event& event) {
 }
 
 void PlayerSystem::onRemovedFromWorld(World* world) {
+    camera = nullptr;
     System::onRemovedFromWorld(world);
     world->destroy(player);
 }
@@ -124,6 +184,7 @@ void PlayerSystem::onRemovedFromWorld(World* world) {
 void PlayerSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);
 
+    camera = world->findFirst<CameraComponent>()->get<CameraComponent>();
     player = world->create();
     player->assign<PlayerComponent>();
 

@@ -98,6 +98,7 @@ void PhysicsSystem::tick(World* world) {
         for (auto other : entities) {
             if (entity == other) continue;
             if (!other->has<SolidComponent>()) continue;
+            if (other->has<CollectibleComponent>()) continue;
             switch (checkCollisionY(other, transform, kinetic)) {
                 case Direction::TOP:
                     entity->assign<TopCollisionComponent>();
@@ -134,7 +135,7 @@ void PhysicsSystem::tick(World* world) {
             int futureRight = (int) (transform->right() + kinetic->speedX) / TILE_SIZE;
             int futureTop = (int) (transform->top() + kinetic->speedY) / TILE_SIZE;
             int futureBottom = (int) (transform->bottom() + kinetic->speedY) / TILE_SIZE;
-            std::vector<Entity*> coordinates{
+            std::unordered_set<Entity*> coordinates{
                     tileMapComponent->get(futureRight, futureBottom),
                     tileMapComponent->get(futureLeft, futureBottom),
                     tileMapComponent->get(futureLeft, futureTop),
