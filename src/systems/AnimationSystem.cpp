@@ -16,6 +16,9 @@ void AnimationSystem::tick(World* world) {
             animation->counter = 0;
             animation->currentTexture = (animation->currentTexture + 1) % animation->textures.size();
             texture->id = animation->textures[animation->currentTexture];
+            if (!animation->loop && animation->currentTexture == animation->textures.size() - 1) {
+                entity->remove<AnimationComponent>();
+            }
         }
     }
 }

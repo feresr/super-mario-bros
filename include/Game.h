@@ -8,6 +8,7 @@
 #include "systems/RenderSystem.h"
 #include "systems/EditorSystem.h"
 #include "systems/PhysicsSystem.h"
+#include "systems/CallbackSystem.h"
 #include "systems/TileSystem.h"
 #include "systems/MapSystem.h"
 #include "systems/AnimationSystem.h"

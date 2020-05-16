@@ -24,31 +24,67 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
 
     switch (state) {
         case RUNNING: {
-            player->assign<AnimationComponent>(
-                    std::vector<TextureId>{
-                            TextureId::MARIO_RUN_1,
-                            TextureId::MARIO_RUN_2,
-                            TextureId::MARIO_RUN_3},
-                    RUNNING_ANIMATION_SPEED
-            );
+            if (player->has<SuperMarioComponent>()) {
+                player->assign<AnimationComponent>(
+                        std::vector<TextureId>{
+                                TextureId::SUPER_MARIO_RUN_1,
+                                TextureId::SUPER_MARIO_RUN_2,
+                                TextureId::SUPER_MARIO_RUN_3},
+                        RUNNING_ANIMATION_SPEED
+                );
+            } else {
+                player->assign<AnimationComponent>(
+                        std::vector<TextureId>{
+                                TextureId::MARIO_RUN_1,
+                                TextureId::MARIO_RUN_2,
+                                TextureId::MARIO_RUN_3},
+                        RUNNING_ANIMATION_SPEED
+                );
+            }
+
             break;
         }
         case STANDING:
-            player->assign<TextureComponent>(TextureId::MARIO_STAND);
+            player->assign<TextureComponent>(
+                    player->has<SuperMarioComponent>() ?
+                    TextureId::SUPER_MARIO_STAND :
+                    TextureId::MARIO_STAND);
             break;
         case JUMPING:
-            player->assign<TextureComponent>(TextureId::MARIO_JUMP);
+            player->assign<TextureComponent>(
+                    player->has<SuperMarioComponent>() ?
+                    TextureId::SUPER_MARIO_JUMP :
+                    TextureId::MARIO_JUMP);
             break;
         case DRIFTING:
-            player->assign<TextureComponent>(TextureId::MARIO_DRIFT);
+            player->assign<TextureComponent>(
+                    player->has<SuperMarioComponent>() ?
+                    TextureId::SUPER_MARIO_DRIFT :
+                    TextureId::MARIO_DRIFT);
             break;
     }
     currentState = state;
 }
 
 void PlayerSystem::tick(World* world) {
-    auto kinetic = player->get<KineticComponent>();
     auto transform = player->get<TransformComponent>();
+
+    if (player->has<FrozenComponent>()) { // Mario Growing after eating mushroom
+        if ((player->get<TextureComponent>()->id == TextureId::SUPER_MARIO_STAND ||
+             player->get<TextureComponent>()->id == TextureId::MARIO_GROWING)
+            && transform->h <= TILE_SIZE) {
+            transform->h = TILE_SIZE * 2;
+            transform->y -= TILE_SIZE;
+        }
+        if (player->get<TextureComponent>()->id == TextureId::MARIO_STAND
+            && transform->h > TILE_SIZE) {
+            transform->h = TILE_SIZE;
+            transform->y += TILE_SIZE;
+        }
+        return;
+    }
+
+    auto kinetic = player->get<KineticComponent>();
 
     // Avoid walking back
     if (transform->left() < camera->left()) {
@@ -124,25 +160,22 @@ void PlayerSystem::tick(World* world) {
 void PlayerSystem::eatMushroom() {
     if (player->has<SuperMarioComponent>()) return;
     player->assign<SuperMarioComponent>();
-    auto transform = player->get<TransformComponent>();
-    auto x = transform->x;
-    auto y = transform->y - TILE_SIZE;
-    auto w = transform->w;
-    auto h = transform->h * 2;
-    player->remove<TransformComponent>();
-    player->assign<TransformComponent>(x, y, w, h);
-//    player->assign<AnimationComponent>(std::vector<TextureId>{
-//                                               15 * 13 + 8,
-//                                               14 * 13 + 0,
-//                                               15 * 13 + 8,
-//                                               13 * 13 + 0,
-//                                               15 * 13 + 8,
-//                                               14 * 13 + 0,
-//                                               14 * 13 + 0,
-//                                       },
-//                                       10
-//    );
-    SDL_Delay(1000);
+    player->assign<AnimationComponent>(
+            std::vector<TextureId>{
+                    TextureId::MARIO_STAND,
+                    TextureId::MARIO_GROWING,
+                    TextureId::MARIO_STAND,
+                    TextureId::MARIO_GROWING,
+                    TextureId::SUPER_MARIO_STAND,
+                    TextureId::MARIO_STAND,
+                    TextureId::MARIO_GROWING,
+                    TextureId::SUPER_MARIO_STAND,
+                    TextureId::MARIO_STAND,
+                    TextureId::SUPER_MARIO_STAND
+            }, 8, false, false, false);
+
+    player->assign<FrozenComponent>();
+    player->assign<CallbackComponent>([&]() { player->remove<FrozenComponent>(); }, 80);
 }
 
 void PlayerSystem::handleEvent(SDL_Event& event) {

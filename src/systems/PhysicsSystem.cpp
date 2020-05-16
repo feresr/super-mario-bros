@@ -175,6 +175,7 @@ void PhysicsSystem::tick(World* world) {
     // Apply Forces
     entities = world->find<TransformComponent, KineticComponent>();
     for (auto entity : entities) {
+        if (entity->has<FrozenComponent>()) continue;
         auto transform = entity->get<TransformComponent>();
         auto kinematic = entity->get<KineticComponent>();
 

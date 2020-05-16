@@ -90,19 +90,35 @@ struct KineticComponent : public Component {
 struct GravityComponent : public Component {
 };
 
+struct CallbackComponent : public Component {
+    CallbackComponent(std::function<void(void)> callback, int time) : callback{callback}, time{time} {};
+
+    int time;
+    std::function<void(void)> callback;
+};
+
+struct FrozenComponent : public Component {};
+
 struct AnimationComponent : public Component {
     explicit AnimationComponent(
             std::vector<TextureId>&& textures,
             int duration,
             bool flipH = false,
-            bool flipV = false
-    ) : textures{std::move(textures)}, duration{duration}, counter{duration}, flipH{flipH}, flipV{flipV} {}
+            bool flipV = false,
+            bool loop = true
+    ) : textures{std::move(textures)},
+        duration{duration},
+        counter{duration},
+        flipH{flipH},
+        flipV{flipV},
+        loop{loop} {}
 
     std::vector<TextureId> textures;
     int duration = 0;
     int counter = 0;
     bool flipH = false;
     bool flipV = false;
+    bool loop = true;
     size_t currentTexture = 0;
 };
 

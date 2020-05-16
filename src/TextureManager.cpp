@@ -16,7 +16,14 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(MARIO_RUN_3, new SDL_Rect{51, 254, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(MARIO_JUMP, new SDL_Rect{85, 254, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(MARIO_DRIFT, new SDL_Rect{68, 254, TILE_SIZE, TILE_SIZE});
-    // TODO: big mario
+    //big mario
+    textures.insert_or_assign(MARIO_GROWING, new SDL_Rect{136, 271, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(SUPER_MARIO_STAND, new SDL_Rect{0, 221, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(SUPER_MARIO_RUN_1, new SDL_Rect{17, 221, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(SUPER_MARIO_RUN_2, new SDL_Rect{34, 221, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(SUPER_MARIO_RUN_3, new SDL_Rect{51, 221, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(SUPER_MARIO_JUMP, new SDL_Rect{85, 221, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(SUPER_MARIO_DRIFT, new SDL_Rect{68, 221, TILE_SIZE, TILE_SIZE * 2});
 
     //tiles
     textures.insert_or_assign(FLOOR, new SDL_Rect{0, 0, TILE_SIZE, TILE_SIZE});
@@ -54,8 +61,6 @@ void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool 
         SDL_RenderCopyEx(renderer, texture, txt->second, &dstRect, 0.0, nullptr,
                          (SDL_RendererFlip) (SDL_FLIP_NONE | (SDL_FLIP_HORIZONTAL * flipH) |
                                              (SDL_FLIP_VERTICAL * flipV)));
-    } else {
-        //TODO: throw std::invalid_argument(&"TextureId not found:"[textureId]);
     }
 }
 
