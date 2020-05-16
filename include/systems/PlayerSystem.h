@@ -3,6 +3,7 @@
 #include "ecs/ecs.h"
 #include "Components.h"
 #include "Constants.h"
+#include "TextureManager.h"
 
 class PlayerSystem : public System {
 
@@ -31,5 +32,4 @@ class PlayerSystem : public System {
 private:
     void setAnimation(ANIMATION_STATE animationState);
     void eatMushroom();
-
 };

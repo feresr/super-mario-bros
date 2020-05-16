@@ -37,12 +37,27 @@ private:
 
     TileSetComponent* tileSet{};
 
-    std::vector<TileType> tileTypes = {FLOOR,
-                                       QUESTION_BLOCK,
-                                       QUESTION_BLOCK_MUSHROOM,
-                                       TUBE_TOP_LEFT, TUBE_TOP_RIGHT, TUBE_LEFT, TUBE_RIGHT,
-                                       BLOCK, BRICK,
-                                       BUSH_LEFT, BUSH_CENTER, BUSH_RIGHT,
-                                       CLOUD, GOOMBA};
+    std::vector<TileType> tileTypes = {
+            Tiles::FLOOR,
+            Tiles::QUESTION_BLOCK,
+            Tiles::QUESTION_BLOCK_MUSHROOM,
+            Tiles::TUBE_TOP_LEFT,
+            Tiles::TUBE_TOP_RIGHT,
+            Tiles::TUBE_LEFT,
+            Tiles::TUBE_RIGHT,
+            Tiles::BLOCK,
+            Tiles::BRICK,
+            Tiles::BUSH_LEFT,
+            Tiles::BUSH_CENTER,
+            Tiles::BUSH_RIGHT,
+            Tiles::CLOUD,
+            Tiles::GOOMBA,
+            Tiles::BACKGROUND_CLOUD_TOP_LEFT,
+            Tiles::BACKGROUND_CLOUD_TOP_CENTER,
+            Tiles::BACKGROUND_CLOUD_TOP_RIGHT,
+            Tiles::BACKGROUND_CLOUD_BOTTOM_LEFT,
+            Tiles::BACKGROUND_CLOUD_BOTTOM_CENTER,
+            Tiles::BACKGROUND_CLOUD_BOTTOM_RIGHT
+    };
 };
 

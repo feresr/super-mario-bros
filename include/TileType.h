@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Constants.h"
+#include "TextureManager.h"
 
 enum Properties {
     NONE = 0,
@@ -16,32 +17,42 @@ enum Properties {
 struct TileType {
     TileType() = default;
 
-    TileType(uint8_t texture, uint32_t properties) :
+    TileType(TextureId texture, uint32_t properties) :
             texture{texture},
             editor_texture{texture},
             properties{properties} {}
 
-    TileType(uint8_t texture, uint32_t properties, uint8_t editor_texture) :
+    TileType(TextureId texture, uint32_t properties, TextureId editor_texture) :
             texture{texture},
             editor_texture{editor_texture},
             properties{properties} {}
 
-    uint8_t texture = 0;
-    uint8_t editor_texture = texture;
+    TextureId texture = TextureId::EMPTY;
+    TextureId editor_texture = texture;
     uint32_t properties = NONE;
 };
 
-static TileType FLOOR{1, VISIBLE | SOLID};
-static TileType TUBE_TOP_LEFT{2 * 13 + 1, VISIBLE | SOLID};
-static TileType TUBE_TOP_RIGHT{2 * 13 + 2, VISIBLE | SOLID};
-static TileType TUBE_RIGHT{3 * 13 + 1, VISIBLE | SOLID};
-static TileType TUBE_LEFT{3 * 13 + 2, VISIBLE | SOLID};
-static TileType QUESTION_BLOCK{QUESTION_BLOCK_TEXTURE_1, VISIBLE | SOLID | BREAKABLE | QUESTION};
-static TileType QUESTION_BLOCK_MUSHROOM{QUESTION_BLOCK_TEXTURE_1, VISIBLE | SOLID | BREAKABLE | QUESTION | SPAWN, MUSHROOM_TEXTURE};
-static TileType BUSH_LEFT{3, VISIBLE};
-static TileType BUSH_CENTER{4, VISIBLE};
-static TileType BUSH_RIGHT{5, VISIBLE};
-static TileType BLOCK{7, VISIBLE | SOLID};
-static TileType BRICK{6, VISIBLE | SOLID | BREAKABLE};
-static TileType CLOUD{52, VISIBLE | SOLID | MASS | KINETIC};
-static TileType GOOMBA{11 * 13 + 8, VISIBLE | SOLID | MASS | KINETIC};
+namespace Tiles {
+    static TileType FLOOR{TextureId::FLOOR, VISIBLE | SOLID};
+    static TileType TUBE_TOP_LEFT{TextureId::TUBE_TOP_LEFT, VISIBLE | SOLID};
+    static TileType TUBE_TOP_RIGHT{TextureId::TUBE_TOP_RIGHT, VISIBLE | SOLID};
+    static TileType TUBE_RIGHT{TextureId::TUBE_RIGHT, VISIBLE | SOLID};
+    static TileType TUBE_LEFT{TextureId::TUBE_LEFT, VISIBLE | SOLID};
+    static TileType QUESTION_BLOCK{TextureId::QUESTION_BLOCK_1, VISIBLE | SOLID | BREAKABLE | QUESTION};
+    static TileType QUESTION_BLOCK_MUSHROOM{TextureId::QUESTION_BLOCK_1, VISIBLE | SOLID | BREAKABLE | QUESTION | SPAWN,
+                                            TextureId::MUSHROOM};
+    static TileType BUSH_LEFT{TextureId::BUSH_LEFT, VISIBLE};
+    static TileType BUSH_CENTER{TextureId::BUSH_CENTER, VISIBLE};
+    static TileType BUSH_RIGHT{TextureId::BUSH_RIGHT, VISIBLE};
+    static TileType BLOCK{TextureId::BLOCK, VISIBLE | SOLID};
+    static TileType BRICK{TextureId::BRICK, VISIBLE | SOLID | BREAKABLE};
+    static TileType CLOUD{TextureId::CLOUD, VISIBLE | SOLID | MASS | KINETIC};
+    static TileType GOOMBA{TextureId::GOOMBA, VISIBLE | SOLID | MASS | KINETIC};
+
+    static TileType BACKGROUND_CLOUD_TOP_LEFT{TextureId::BACKGROUND_CLOUD_TOP_LEFT, VISIBLE};
+    static TileType BACKGROUND_CLOUD_TOP_CENTER{TextureId::BACKGROUND_CLOUD_TOP_CENTER, VISIBLE};
+    static TileType BACKGROUND_CLOUD_TOP_RIGHT{TextureId::BACKGROUND_CLOUD_TOP_RIGHT, VISIBLE};
+    static TileType BACKGROUND_CLOUD_BOTTOM_LEFT{TextureId::BACKGROUND_CLOUD_BOTTOM_LEFT, VISIBLE};
+    static TileType BACKGROUND_CLOUD_BOTTOM_CENTER{TextureId::BACKGROUND_CLOUD_BOTTOM_CENTER, VISIBLE};
+    static TileType BACKGROUND_CLOUD_BOTTOM_RIGHT{TextureId::BACKGROUND_CLOUD_BOTTOM_RIGHT, VISIBLE};
+}

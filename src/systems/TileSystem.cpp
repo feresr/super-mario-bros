@@ -16,7 +16,7 @@ void TileSystem::onRemovedFromWorld(World* world) {
 
 void createMushroom(World* world, Entity* block) {
     auto mushroom = world->create();
-    mushroom->assign<TextureComponent>(MUSHROOM_TEXTURE);
+    mushroom->assign<TextureComponent>(TextureId::MUSHROOM);
     mushroom->assign<TransformComponent>(
             block->get<TransformComponent>()->left(),
             block->get<TransformComponent>()->top(),
@@ -85,7 +85,7 @@ void TileSystem::tick(World* world) {
 
         if (entity->has<QuestionBlockComponent>()) {
             entity->remove<AnimationComponent>();
-            entity->get<TextureComponent>()->id = QUESTION_BLOCK_TEXTURE_HIT;
+            entity->get<TextureComponent>()->id = TextureId::QUESTION_BLOCK_OFF;
         }
 
         if (!breakable->finished()) {

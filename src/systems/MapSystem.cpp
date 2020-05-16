@@ -51,20 +51,20 @@ void MapSystem::tick(World* world) {
         if (tile->hasProperty(QUESTION)) {
             entity->assign<QuestionBlockComponent>(tile->hasProperty(SPAWN));
             entity->assign<AnimationComponent>(
-                    std::vector<int>{
-                            QUESTION_BLOCK_TEXTURE_1,
-                            QUESTION_BLOCK_TEXTURE_1,
-                            QUESTION_BLOCK_TEXTURE_1,
-                            QUESTION_BLOCK_TEXTURE_2,
-                            QUESTION_BLOCK_TEXTURE_3,
-                            QUESTION_BLOCK_TEXTURE_2
+                    std::vector<TextureId>{
+                            TextureId::QUESTION_BLOCK_1,
+                            TextureId::QUESTION_BLOCK_1,
+                            TextureId::QUESTION_BLOCK_1,
+                            TextureId::QUESTION_BLOCK_2,
+                            TextureId::QUESTION_BLOCK_3,
+                            TextureId::QUESTION_BLOCK_2
                     },
                     10); // TODO not every kinetic in the map should be an enemy?
         }
         if (tile->hasProperty(KINETIC)) {
             entity->assign<WalkComponent>(); // TODO not every kinetic in the map should Walk?
             entity->assign<EnemyComponent>(); // TODO not every kinetic in the map should be an enemy?
-            entity->assign<AnimationComponent>(std::vector<int>{tile->textureId}, 15, true); // TODO not every kinetic in the map should be an enemy?
+            entity->assign<AnimationComponent>(std::vector<TextureId>{tile->textureId}, 15, true); // TODO not every kinetic in the map should be an enemy?
             entity->assign<KineticComponent>();
         } else {
             // 4. Each static `TileComponent` reports its location in the world to be accessed by X and Y coordinates.

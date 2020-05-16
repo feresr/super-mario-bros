@@ -9,7 +9,7 @@
 
 struct Tile {
     int x, y, w, h;
-    uint8_t textureId;
+    TextureId textureId;
     uint32_t properties;
 
     [[nodiscard]] bool hasProperty(Properties property) const {

@@ -6,11 +6,7 @@ int left = 0;
 int right = 0;
 int lookingLeft = 0;
 
-constexpr int RUNNING_TEXTURE_ID = 9 * 13 + 10;
 constexpr int RUNNING_ANIMATION_SPEED = 5;
-constexpr int STANDING_TEXTURE_ID = 9 * 13 + 9;
-constexpr int JUMPING_TEXTURE_ID = 10 * 13 + 9;
-constexpr int DRAFTING_TEXTURE_ID = 9 * 13 + 13;
 
 bool AABBCollision(
         TransformComponent* a,
@@ -29,22 +25,22 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
     switch (state) {
         case RUNNING: {
             player->assign<AnimationComponent>(
-                    std::vector<int>{
-                            RUNNING_TEXTURE_ID,
-                            RUNNING_TEXTURE_ID + 1,
-                            RUNNING_TEXTURE_ID + 2},
+                    std::vector<TextureId>{
+                            TextureId::MARIO_RUN_1,
+                            TextureId::MARIO_RUN_2,
+                            TextureId::MARIO_RUN_3},
                     RUNNING_ANIMATION_SPEED
             );
             break;
         }
         case STANDING:
-            player->assign<TextureComponent>(STANDING_TEXTURE_ID);
+            player->assign<TextureComponent>(TextureId::MARIO_STAND);
             break;
         case JUMPING:
-            player->assign<TextureComponent>(JUMPING_TEXTURE_ID);
+            player->assign<TextureComponent>(TextureId::MARIO_JUMP);
             break;
         case DRIFTING:
-            player->assign<TextureComponent>(DRAFTING_TEXTURE_ID);
+            player->assign<TextureComponent>(TextureId::MARIO_DRIFT);
             break;
     }
     currentState = state;
@@ -63,7 +59,7 @@ void PlayerSystem::tick(World* world) {
 
     if (player->has<BottomCollisionComponent>()) {
         kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.5f;
-        if (jump) player->get<KineticComponent>()->accY = -MARIO_JUMP;
+        if (jump) player->get<KineticComponent>()->accY = -MARIO_JUMP_ACCELERATION;
         if ((bool) std::abs(kinetic->speedX) || (bool) std::abs(kinetic->accX)) {
             if ((kinetic->speedX > 0 && kinetic->accX < 0) ||
                 (kinetic->speedX < 0 && kinetic->accX > 0)) {
@@ -88,7 +84,7 @@ void PlayerSystem::tick(World* world) {
             enemy->clearComponents();
             enemy->assign<TileComponent>();
             enemy->assign<DestroyDelayedComponent>(50);
-            enemy->assign<TextureComponent>(GOOMBA_CRUSHED_TEXTURE);
+            enemy->assign<TextureComponent>(TextureId::GOOMBA_CRUSHED);
             enemy->assign<TransformComponent>(*enemyTransform);
             kinetic->accY = -MARIO_BOUNCE;
             kinetic->speedY = 0;
@@ -135,8 +131,17 @@ void PlayerSystem::eatMushroom() {
     auto h = transform->h * 2;
     player->remove<TransformComponent>();
     player->assign<TransformComponent>(x, y, w, h);
-    // TODO: Animation
-    // player->assign<AnimationComponent>(std::vector<int>{}, 10);
+//    player->assign<AnimationComponent>(std::vector<TextureId>{
+//                                               15 * 13 + 8,
+//                                               14 * 13 + 0,
+//                                               15 * 13 + 8,
+//                                               13 * 13 + 0,
+//                                               15 * 13 + 8,
+//                                               14 * 13 + 0,
+//                                               14 * 13 + 0,
+//                                       },
+//                                       10
+//    );
     SDL_Delay(1000);
 }
 

@@ -4,6 +4,7 @@
 
 #include "ecs/ecs.h"
 #include "SDL.h"
+#include "TextureManager.h"
 #include "TileType.h"
 
 struct TransformComponent : public Component {
@@ -67,7 +68,7 @@ struct SuperMarioComponent : public Component {
 };
 
 struct DestroyDelayedComponent : public Component {
-    explicit DestroyDelayedComponent(int time) : timer {time} {}
+    explicit DestroyDelayedComponent(int time) : timer{time} {}
 
     bool shouldDestroy() {
         timer--;
@@ -91,13 +92,13 @@ struct GravityComponent : public Component {
 
 struct AnimationComponent : public Component {
     explicit AnimationComponent(
-            std::vector<int>&& textures,
+            std::vector<TextureId>&& textures,
             int duration,
             bool flipH = false,
             bool flipV = false
     ) : textures{std::move(textures)}, duration{duration}, counter{duration}, flipH{flipH}, flipV{flipV} {}
 
-    std::vector<int> textures;
+    std::vector<TextureId> textures;
     int duration = 0;
     int counter = 0;
     bool flipH = false;
@@ -106,17 +107,19 @@ struct AnimationComponent : public Component {
 };
 
 struct TextureComponent : public Component {
-    explicit TextureComponent(uint8_t id) : id{id} {};
+    explicit TextureComponent(TextureId id) : id{id} {};
 
-    uint8_t id;
+    TextureId id;
 
     bool flipV = false;
     bool flipH = false;
+
     ~TextureComponent() override = default;
 };
 
 struct EnemyComponent : public Component {
 };
+
 struct WalkComponent : public Component {
     WalkComponent() = default;
 
@@ -230,7 +233,7 @@ struct TileSetComponent : public Component {
 
     void clear(int x, int y) {
         tiles[x + y * mapWidth].properties = NONE;
-        tiles[x + y * mapWidth].texture = 0;
+        tiles[x + y * mapWidth].texture = TextureId::EMPTY;
     }
 
     const uint16_t mapWidth;

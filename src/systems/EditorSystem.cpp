@@ -1,6 +1,7 @@
 #include <fstream>
 #include "systems/EditorSystem.h"
 #include "Constants.h"
+#include "TextureManager.h"
 
 int InputWatcher(void* userData, SDL_Event* event);
 
@@ -12,7 +13,7 @@ void EditorSystem::onAddedToWorld(World* world) {
     tileSet = entity->get<TileSetComponent>();
 
     cursor = world->create();
-    cursor->assign<TextureComponent>(DEFAULT_TEXTURE);
+    cursor->assign<TextureComponent>(TextureId::EMPTY);
     cursor->assign<TileComponent>();
     cursor->assign<TransformComponent>(0, 0, TILE_SIZE, TILE_SIZE);
 }
