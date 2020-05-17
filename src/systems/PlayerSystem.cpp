@@ -7,8 +7,8 @@ int left = 0;
 int right = 0;
 int lookingLeft = 0;
 
-int SMALL_MARIO_HEIGHT = TILE_SIZE - 2;
-int SUPER_MARIO_HEIGHT = (TILE_SIZE * 2) - 4;
+const int SMALL_MARIO_COLLIDER_HEIGHT = TILE_SIZE - 2;
+const int SUPER_MARIO_COLLIDER_HEIGHT = (TILE_SIZE * 2) - 4;
 
 constexpr int RUNNING_ANIMATION_SPEED = 5;
 
@@ -102,10 +102,15 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
             }
     }
 
+    if (player->has<SuperMarioComponent>()) {
+        player->get<TextureComponent>()->h = TILE_SIZE * 2;
+        player->get<TextureComponent>()->offSetY = -3;
+    } else {
+        player->get<TextureComponent>()->h = TILE_SIZE;
+        player->get<TextureComponent>()->offSetY = -1;
+    }
     player->get<TextureComponent>()->w = TILE_SIZE;
-    player->get<TextureComponent>()->h = TILE_SIZE;
     player->get<TextureComponent>()->offSetX = -2;
-    player->get<TextureComponent>()->offSetY = -1;
     currentState = state;
 }
 
@@ -116,12 +121,14 @@ void PlayerSystem::tick(World* world) {
         if ((player->get<TextureComponent>()->id == TextureId::SUPER_MARIO_STAND ||
              player->get<TextureComponent>()->id == TextureId::MARIO_GROWING)
             && transform->h <= TILE_SIZE) {
-            transform->h = TILE_SIZE * 2;
+            player->get<TextureComponent>()->h = TILE_SIZE * 2;
+            transform->h = SUPER_MARIO_COLLIDER_HEIGHT;
             transform->y -= TILE_SIZE;
         }
         if (player->get<TextureComponent>()->id == TextureId::MARIO_STAND
             && transform->h > TILE_SIZE) {
-            transform->h = TILE_SIZE;
+            player->get<TextureComponent>()->h = TILE_SIZE;
+            transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
             transform->y += TILE_SIZE;
         }
         return;
@@ -170,7 +177,7 @@ void PlayerSystem::tick(World* world) {
             kinetic->speedY = -MARIO_BOUNCE;
         } else {
             player->remove<SuperMarioComponent>();
-            transform->h = SMALL_MARIO_HEIGHT;
+            transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
         }
     }
 
@@ -280,5 +287,5 @@ void PlayerSystem::onAddedToWorld(World* world) {
     player->assign<GravityComponent>();
     player->assign<SolidComponent>();
     player->assign<KineticComponent>();
-    player->assign<TransformComponent>(40, 40, TILE_SIZE - 4, SMALL_MARIO_HEIGHT);
+    player->assign<TransformComponent>(40, 40, TILE_SIZE - 4, SMALL_MARIO_COLLIDER_HEIGHT);
 }

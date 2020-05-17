@@ -17,11 +17,14 @@ void TileSystem::onRemovedFromWorld(World* world) {
 void createMushroom(World* world, Entity* block) {
     auto mushroom = world->create();
     mushroom->assign<TextureComponent>(TextureId::MUSHROOM);
+    mushroom->get<TextureComponent>()->w = TILE_SIZE;
+    mushroom->get<TextureComponent>()->offSetX = -4;
+
     mushroom->assign<CollectibleComponent>();
     mushroom->assign<TransformComponent>(
-            block->get<TransformComponent>()->left(),
+            block->get<TransformComponent>()->left() + 4,
             block->get<TransformComponent>()->top(),
-            TILE_SIZE,
+            TILE_SIZE - 8,
             TILE_SIZE
     );
     mushroom->assign<GrowComponent>();
