@@ -2,6 +2,7 @@
 
 int dirX = 0;
 bool jump = false;
+bool duck = false;
 int left = 0;
 int right = 0;
 int lookingLeft = 0;
@@ -92,6 +93,10 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
                     TextureId::SUPER_MARIO_DRIFT :
                     TextureId::MARIO_DRIFT);
             break;
+        case DUCKING:
+            if (player->has<SuperMarioComponent>()) {
+                player->assign<TextureComponent>(TextureId::SUPER_MARIO_DUCK);
+            }
     }
     currentState = state;
 }
@@ -123,22 +128,28 @@ void PlayerSystem::tick(World* world) {
         kinetic->speedX = 0;
     }
 
-    if (player->has<BottomCollisionComponent>()) {
-        kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.5f;
-        if (jump) player->get<KineticComponent>()->accY = -MARIO_JUMP_ACCELERATION;
-        if ((bool) std::abs(kinetic->speedX) || (bool) std::abs(kinetic->accX)) {
-            if ((kinetic->speedX > 0 && kinetic->accX < 0) ||
-                (kinetic->speedX < 0 && kinetic->accX > 0)) {
-                setAnimation(DRIFTING);
-            } else {
-                setAnimation(RUNNING);
-            }
-        } else {
-            setAnimation(STANDING);
-        }
+    if (duck && player->has<SuperMarioComponent>()) {
+        setAnimation(DUCKING);
+        kinetic->accX = 0;
     } else {
-        kinetic->accX = (float) (dirX) * (MARIO_ACCELERATION_X);
-        setAnimation(JUMPING);
+        if (player->has<BottomCollisionComponent>()) {
+            kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.7f;
+            if (jump) player->get<KineticComponent>()->accY = -MARIO_JUMP_ACCELERATION;
+            if ((bool) std::abs(kinetic->speedX) || (bool) std::abs(kinetic->accX)) {
+                if ((kinetic->speedX > 0 && kinetic->accX < 0) ||
+                    (kinetic->speedX < 0 && kinetic->accX > 0)) {
+                    setAnimation(DRIFTING);
+                } else {
+                    setAnimation(RUNNING);
+                }
+            } else {
+                setAnimation(STANDING);
+            }
+
+        } else {
+            kinetic->accX = (float) (dirX) * (MARIO_ACCELERATION_X);
+            setAnimation(JUMPING);
+        }
     }
 
     // Step on enemies
@@ -224,6 +235,9 @@ void PlayerSystem::handleEvent(SDL_Event& event) {
                 case SDL_SCANCODE_W:
                     jump = true;
                     break;
+                case SDL_SCANCODE_S:
+                    duck = true;
+                    break;
                 default:
                     break;
             }
@@ -235,6 +249,9 @@ void PlayerSystem::handleEvent(SDL_Event& event) {
                     break;
                 case SDL_SCANCODE_D:
                     right = false;
+                    break;
+                case SDL_SCANCODE_S:
+                    duck = false;
                     break;
                 default:
                     break;

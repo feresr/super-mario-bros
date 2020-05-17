@@ -24,6 +24,7 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(SUPER_MARIO_RUN_3, new SDL_Rect{51, 221, TILE_SIZE, TILE_SIZE * 2});
     textures.insert_or_assign(SUPER_MARIO_JUMP, new SDL_Rect{85, 221, TILE_SIZE, TILE_SIZE * 2});
     textures.insert_or_assign(SUPER_MARIO_DRIFT, new SDL_Rect{68, 221, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(SUPER_MARIO_DUCK, new SDL_Rect{102, 221, TILE_SIZE, TILE_SIZE * 2});
 
     //tiles
     textures.insert_or_assign(FLOOR, new SDL_Rect{0, 0, TILE_SIZE, TILE_SIZE});

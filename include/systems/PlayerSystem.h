@@ -14,6 +14,7 @@ class PlayerSystem : public System {
         RUNNING,
         STANDING,
         DRIFTING,
+        DUCKING,
         JUMPING
     };
 
