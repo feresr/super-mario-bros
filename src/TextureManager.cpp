@@ -58,6 +58,16 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(BRICK_DEBRIS_2, new SDL_Rect{144, 153, 8, 8});
     textures.insert_or_assign(BRICK_DEBRIS_3, new SDL_Rect{136, 161, 8, 8});
     textures.insert_or_assign(BRICK_DEBRIS_4, new SDL_Rect{144, 161, 8, 8});
+
+    textures.insert_or_assign(BACKGROUND_MOUNTAIN_1, new SDL_Rect{0, 17, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(BACKGROUND_MOUNTAIN_2, new SDL_Rect{17, 17, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(BACKGROUND_MOUNTAIN_3, new SDL_Rect{34, 17, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(BACKGROUND_MOUNTAIN_4, new SDL_Rect{17, 0, TILE_SIZE, TILE_SIZE});
+
+    textures.insert_or_assign(COIN_1, new SDL_Rect{153, 153, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(COIN_2, new SDL_Rect{170, 153, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(COIN_3, new SDL_Rect{187, 153, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(COIN_4, new SDL_Rect{204, 153, TILE_SIZE, TILE_SIZE});
 }
 
 void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {

@@ -57,7 +57,12 @@ private:
             Tiles::BACKGROUND_CLOUD_TOP_RIGHT,
             Tiles::BACKGROUND_CLOUD_BOTTOM_LEFT,
             Tiles::BACKGROUND_CLOUD_BOTTOM_CENTER,
-            Tiles::BACKGROUND_CLOUD_BOTTOM_RIGHT
+            Tiles::BACKGROUND_CLOUD_BOTTOM_RIGHT,
+            Tiles::MOUNTAIN_1,
+            Tiles::MOUNTAIN_2,
+            Tiles::MOUNTAIN_3,
+            Tiles::MOUNTAIN_4,
+            Tiles::QUESTION_BLOCK_COIN,
     };
 };
 

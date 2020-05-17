@@ -49,6 +49,14 @@ enum TextureId {
     BRICK_DEBRIS_2,
     BRICK_DEBRIS_3,
     BRICK_DEBRIS_4,
+    BACKGROUND_MOUNTAIN_1,
+    BACKGROUND_MOUNTAIN_2,
+    BACKGROUND_MOUNTAIN_3,
+    BACKGROUND_MOUNTAIN_4,
+    COIN_1,
+    COIN_2,
+    COIN_3,
+    COIN_4,
 };
 
 class TextureManager {

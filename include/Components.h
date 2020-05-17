@@ -167,11 +167,12 @@ struct BottomCollisionComponent : public Component {
 };
 
 struct QuestionBlockComponent : public Component {
-    explicit QuestionBlockComponent(bool spawn) : spawn{spawn} {}
+    explicit QuestionBlockComponent(bool spawn = false, bool coin = false) : spawn{spawn}, coin{coin} {}
 
     QuestionBlockComponent() = default;
 
     bool spawn = false;
+    bool coin = false;
 };
 
 struct GrowComponent : public Component {

@@ -12,6 +12,7 @@ enum Properties {
     BREAKABLE = 16,
     QUESTION = 32,
     SPAWN = 64,
+    COIN = 128,
 };
 
 struct TileType {
@@ -55,4 +56,13 @@ namespace Tiles {
     static TileType BACKGROUND_CLOUD_BOTTOM_LEFT{TextureId::BACKGROUND_CLOUD_BOTTOM_LEFT, VISIBLE};
     static TileType BACKGROUND_CLOUD_BOTTOM_CENTER{TextureId::BACKGROUND_CLOUD_BOTTOM_CENTER, VISIBLE};
     static TileType BACKGROUND_CLOUD_BOTTOM_RIGHT{TextureId::BACKGROUND_CLOUD_BOTTOM_RIGHT, VISIBLE};
+
+    static TileType MOUNTAIN_1{TextureId::BACKGROUND_MOUNTAIN_1, VISIBLE};
+    static TileType MOUNTAIN_2{TextureId::BACKGROUND_MOUNTAIN_2, VISIBLE};
+    static TileType MOUNTAIN_3{TextureId::BACKGROUND_MOUNTAIN_3, VISIBLE};
+    static TileType MOUNTAIN_4{TextureId::BACKGROUND_MOUNTAIN_4, VISIBLE};
+
+    static TileType QUESTION_BLOCK_COIN{TextureId::QUESTION_BLOCK_1,
+                                        VISIBLE | SOLID | BREAKABLE | QUESTION | COIN,
+                                            TextureId::COIN_1};
 }

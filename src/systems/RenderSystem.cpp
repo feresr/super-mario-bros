@@ -10,7 +10,6 @@ void RenderSystem::tick(World* world) {
     renderEntities(world->find<GrowComponent, TransformComponent, TextureComponent>());
     renderEntities(world->find<TileComponent, TransformComponent, TextureComponent>());
     renderEntities(world->find<EnemyComponent, TransformComponent, TextureComponent>());
-    renderEntities(world->find<CollectibleComponent, TransformComponent, TextureComponent>());
     renderEntities(world->find<PlayerComponent, TransformComponent, TextureComponent>());
 
     //Editor

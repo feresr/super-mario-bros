@@ -17,6 +17,7 @@ void TileSystem::onRemovedFromWorld(World* world) {
 void createMushroom(World* world, Entity* block) {
     auto mushroom = world->create();
     mushroom->assign<TextureComponent>(TextureId::MUSHROOM);
+    mushroom->assign<CollectibleComponent>();
     mushroom->assign<TransformComponent>(
             block->get<TransformComponent>()->left(),
             block->get<TransformComponent>()->top(),
@@ -24,6 +25,27 @@ void createMushroom(World* world, Entity* block) {
             TILE_SIZE
     );
     mushroom->assign<GrowComponent>();
+}
+
+void createCoin(World* world, Entity* block) {
+    auto coin = world->create();
+    coin->assign<TextureComponent>(TextureId::COIN_1);
+
+    coin->assign<AnimationComponent>(
+            std::vector<TextureId>{
+                    TextureId::COIN_1, TextureId::COIN_2, TextureId::COIN_3, TextureId::COIN_4
+            }, 5);
+
+    coin->assign<TransformComponent>(
+            block->get<TransformComponent>()->left(),
+            block->get<TransformComponent>()->top(),
+            TILE_SIZE,
+            TILE_SIZE
+    );
+    coin->assign<GravityComponent>();
+    coin->assign<TileComponent>();
+    coin->assign<KineticComponent>(0.0f, -20.0f);
+    coin->assign<CallbackComponent>([=]() { coin->clearComponents(); }, 20);
 }
 
 void TileSystem::tick(World* world) {
@@ -69,8 +91,8 @@ void TileSystem::tick(World* world) {
             entity->remove<GrowComponent>();
             entity->assign<WalkComponent>(MUSHROOM_MOVE_SPEED);
             entity->assign<SolidComponent>();
+            entity->assign<TileComponent>();
             entity->assign<KineticComponent>();
-            entity->assign<CollectibleComponent>();
             entity->assign<GravityComponent>();
         }
     }
@@ -95,6 +117,7 @@ void TileSystem::tick(World* world) {
             entity->get<BreakableComponent>()->hit = false;
             if (entity->has<QuestionBlockComponent>()) {
                 if (entity->get<QuestionBlockComponent>()->spawn) createMushroom(world, entity);
+                if (entity->get<QuestionBlockComponent>()->coin) createCoin(world, entity);
                 entity->remove<QuestionBlockComponent>();
                 entity->remove<BreakableComponent>();
             }
