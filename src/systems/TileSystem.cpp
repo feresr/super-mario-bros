@@ -66,22 +66,6 @@ void TileSystem::tick(World* world) {
         }
     }
 
-    //WALKABLE
-    auto entities = world->find<WalkComponent, LeftCollisionComponent>();
-    for (auto entity : entities) {
-        auto walkComponent = entity->get<WalkComponent>();
-        walkComponent->speed = std::abs(walkComponent->speed);
-    }
-
-    for (auto entity : world->find<WalkComponent, RightCollisionComponent>()) {
-        auto walkComponent = entity->get<WalkComponent>();
-        walkComponent->speed = -std::abs(walkComponent->speed);
-    }
-
-    for (auto entity : world->find<WalkComponent, KineticComponent>()) {
-        entity->get<KineticComponent>()->speedX = entity->get<WalkComponent>()->speed;
-    }
-
     //Growing mushrooms
     for (auto entity : world->find<GrowComponent, TransformComponent>()) {
         auto grow = entity->get<GrowComponent>();
@@ -130,12 +114,7 @@ void TileSystem::tick(World* world) {
         }
     }
 
-    for (auto entity : world->findAny<
-            BottomCollisionComponent,
-            TopCollisionComponent,
-            LeftCollisionComponent,
-            RightCollisionComponent>()) {
-        if (entity->has<PlayerComponent>()) continue; // handled in PlayerSystem
+    for (auto entity : world->find<TileComponent>()) {
         entity->remove<BottomCollisionComponent>();
         entity->remove<TopCollisionComponent>();
         entity->remove<LeftCollisionComponent>();

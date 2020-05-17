@@ -156,13 +156,8 @@ void PlayerSystem::tick(World* world) {
     for (auto enemy : world->find<EnemyComponent, TransformComponent>()) {
         if (!AABBCollision(enemy->get<TransformComponent>(), transform)) continue;
         if (enemy->has<TopCollisionComponent>()) {
-            auto enemyTransform = enemy->get<TransformComponent>();
-            transform->setBottom(enemyTransform->getCenterY());
-            enemy->clearComponents();
-            enemy->assign<TileComponent>();
-            enemy->assign<DestroyDelayedComponent>(50);
-            enemy->assign<TextureComponent>(TextureId::GOOMBA_CRUSHED);
-            enemy->assign<TransformComponent>(*enemyTransform);
+            enemy->assign<CrushedComponent>();
+            transform->setBottom(enemy->get<TransformComponent>()->top());
             kinetic->accY = -MARIO_BOUNCE;
             kinetic->speedY = 0;
         } else {

@@ -13,6 +13,7 @@ enum Properties {
     QUESTION = 32,
     SPAWN = 64,
     COIN = 128,
+    ENEMY = 256
 };
 
 struct TileType {
@@ -48,7 +49,8 @@ namespace Tiles {
     static TileType BLOCK{TextureId::BLOCK, VISIBLE | SOLID};
     static TileType BRICK{TextureId::BRICK, VISIBLE | SOLID | BREAKABLE};
     static TileType CLOUD{TextureId::CLOUD, VISIBLE | SOLID | MASS | KINETIC};
-    static TileType GOOMBA{TextureId::GOOMBA, VISIBLE | SOLID | MASS | KINETIC};
+    static TileType GOOMBA{TextureId::GOOMBA, VISIBLE | SOLID | MASS | KINETIC | ENEMY};
+    static TileType TURTLE{TextureId::TURTLE_1, VISIBLE | SOLID | MASS | KINETIC | ENEMY};
 
     static TileType BACKGROUND_CLOUD_TOP_LEFT{TextureId::BACKGROUND_CLOUD_TOP_LEFT, VISIBLE};
     static TileType BACKGROUND_CLOUD_TOP_CENTER{TextureId::BACKGROUND_CLOUD_TOP_CENTER, VISIBLE};

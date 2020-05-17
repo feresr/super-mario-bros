@@ -58,6 +58,10 @@ enum TextureId {
     COIN_2,
     COIN_3,
     COIN_4,
+    TURTLE_1,
+    TURTLE_2,
+    TURTLE_SHELL_1,
+    TURTLE_SHELL_2,
 };
 
 class TextureManager {

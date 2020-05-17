@@ -63,6 +63,7 @@ private:
             Tiles::MOUNTAIN_3,
             Tiles::MOUNTAIN_4,
             Tiles::QUESTION_BLOCK_COIN,
+            Tiles::TURTLE,
     };
 };
 

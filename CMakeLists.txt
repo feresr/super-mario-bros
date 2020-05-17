@@ -9,7 +9,7 @@ find_package(SDL2_image REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
-add_executable(smb src/Main.cpp src/Game.cpp src/ecs/ecs.cpp src/systems/RenderSystem.cpp src/systems/MapSystem.cpp src/systems/EditorSystem.cpp src/TextureManager.cpp src/systems/PhysicsSystem.cpp src/systems/AnimationSystem.cpp src/systems/PlayerSystem.cpp src/systems/TileSystem.cpp src/systems/CallbackSystem.cpp)
+add_executable(smb src/Main.cpp src/Game.cpp src/ecs/ecs.cpp src/systems/RenderSystem.cpp src/systems/MapSystem.cpp src/systems/EditorSystem.cpp src/TextureManager.cpp src/systems/PhysicsSystem.cpp src/systems/AnimationSystem.cpp src/systems/PlayerSystem.cpp src/systems/TileSystem.cpp src/systems/CallbackSystem.cpp src/systems/EnemySystem.cpp)
 
 set_property(TARGET smb PROPERTY CXX_STANDARD 17)
 set_target_properties(smb PROPERTIES OUTPUT_NAME smb-${CMAKE_BUILD_TYPE})

@@ -69,6 +69,11 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(COIN_2, new SDL_Rect{170, 153, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(COIN_3, new SDL_Rect{187, 153, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(COIN_4, new SDL_Rect{204, 153, TILE_SIZE, TILE_SIZE});
+
+    textures.insert_or_assign(TURTLE_1, new SDL_Rect{119, 221, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(TURTLE_2, new SDL_Rect{136, 221, TILE_SIZE, TILE_SIZE * 2});
+    textures.insert_or_assign(TURTLE_SHELL_1, new SDL_Rect{153, 237, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(TURTLE_SHELL_2, new SDL_Rect{170, 237, TILE_SIZE, TILE_SIZE});
 }
 
 void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {

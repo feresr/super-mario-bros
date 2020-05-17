@@ -60,13 +60,33 @@ void MapSystem::tick(World* world) {
                             TextureId::QUESTION_BLOCK_3,
                             TextureId::QUESTION_BLOCK_2
                     },
-                    10); // TODO not every kinetic in the map should be an enemy?
+                    10);
+        }
+
+        if (tile->hasProperty(ENEMY)) {
+
+            if (tile->textureId == TextureId::GOOMBA) {
+                entity->assign<WalkComponent>();
+                entity->assign<AnimationComponent>(std::vector<TextureId>{tile->textureId},
+                                                   15,
+                                                   true);
+                entity->assign<EnemyComponent>(Enemy::Type::GOOMBA);
+            }
+            if (tile->textureId == TextureId::TURTLE_1) {
+                entity->assign<WalkComponent>(-.4f);
+                entity->assign<AnimationComponent>(std::vector<TextureId>{
+                                                           TextureId::TURTLE_1,
+                                                           TextureId::TURTLE_2,
+                                                   },
+                                                   10,
+                                                   false);
+                entity->get<TransformComponent>()->h = TILE_SIZE * 2;
+                entity->get<TransformComponent>()->y -= TILE_SIZE;
+                entity->assign<EnemyComponent>(Enemy::Type::TURTLE);
+            }
+
         }
         if (tile->hasProperty(KINETIC)) {
-            entity->assign<WalkComponent>(); // TODO not every kinetic in the map should Walk?
-            entity->assign<EnemyComponent>(); // TODO not every kinetic in the map should be an enemy?
-            entity->assign<AnimationComponent>(std::vector<TextureId>{tile->textureId}, 15,
-                                               true); // TODO not every kinetic in the map should be an enemy?
             entity->assign<KineticComponent>();
         } else {
             entity->assign<TileComponent>();

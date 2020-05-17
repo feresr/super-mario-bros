@@ -7,11 +7,12 @@ void CallbackSystem::onAddedToWorld(World* world) {
 void CallbackSystem::tick(World* world) {
     for (auto entities : world->find<CallbackComponent>()) {
         auto callback = entities->get<CallbackComponent>();
-        callback->time--;
         if (callback->time <= 0) {
-            callback->callback();
             entities->remove<CallbackComponent>();
+            continue;
         }
+        callback->time--;
+        if (callback->time <= 0) callback->callback();
     }
 }
 

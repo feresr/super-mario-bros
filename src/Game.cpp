@@ -20,6 +20,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     world.registerSystem(new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT));
     world.registerSystem(new PlayerSystem());
     world.registerSystem(new MapSystem());
+    world.registerSystem(new EnemySystem());
     world.registerSystem(new CallbackSystem());
     world.registerSystem(new AnimationSystem());
     world.registerSystem(new TileSystem());

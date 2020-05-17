@@ -95,7 +95,7 @@ struct GravityComponent : public Component {
 };
 
 struct CallbackComponent : public Component {
-    CallbackComponent(std::function<void(void)> callback, int time) : callback{callback}, time{time} {};
+    CallbackComponent(std::function<void(void)> callback, int time) : callback{std::move(callback)}, time{time} {};
 
     int time;
     std::function<void(void)> callback;
@@ -138,7 +138,18 @@ struct TextureComponent : public Component {
     ~TextureComponent() override = default;
 };
 
+namespace Enemy {
+    enum Type {
+        GOOMBA,
+        TURTLE,
+        TURTLE_SHELL
+    };
+}
+
 struct EnemyComponent : public Component {
+    EnemyComponent(Enemy::Type type) : type{type} {}
+
+    Enemy::Type type;
 };
 
 struct WalkComponent : public Component {
@@ -207,6 +218,9 @@ private:
 };
 
 struct TileComponent : public Component {
+};
+
+struct CrushedComponent : public Component {
 };
 
 struct TileMapComponent : public Component {
