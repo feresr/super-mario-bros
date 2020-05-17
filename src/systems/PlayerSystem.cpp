@@ -18,6 +18,36 @@ bool AABBCollision(
            a->y + a->h >= b->y;
 }
 
+void createDebris(World* world, TransformComponent* brickTransform) {
+    auto debris1 = world->create();
+    debris1->assign<GravityComponent>();
+    debris1->assign<KineticComponent>(-2.0f, -16.0f);
+    debris1->assign<TileComponent>();
+    debris1->assign<TextureComponent>(TextureId::BRICK_DEBRIS_1);
+    debris1->assign<TransformComponent>(brickTransform->x, brickTransform->y, 8, 8);
+
+    auto debris2 = world->create();
+    debris2->assign<GravityComponent>();
+    debris2->assign<KineticComponent>(2.0f, -16.0f);
+    debris2->assign<TileComponent>();
+    debris2->assign<TextureComponent>(TextureId::BRICK_DEBRIS_2);
+    debris2->assign<TransformComponent>(brickTransform->x + 8, brickTransform->y, 8, 8);
+
+    auto debris3 = world->create();
+    debris3->assign<GravityComponent>();
+    debris3->assign<KineticComponent>(-2.0f, -10.0f);
+    debris3->assign<TileComponent>();
+    debris3->assign<TextureComponent>(TextureId::BRICK_DEBRIS_3);
+    debris3->assign<TransformComponent>(brickTransform->x, brickTransform->y + 8, 8, 8);
+
+    auto debris4 = world->create();
+    debris4->assign<GravityComponent>();
+    debris4->assign<KineticComponent>(2.0f, -10.0f);
+    debris4->assign<TileComponent>();
+    debris4->assign<TextureComponent>(TextureId::BRICK_DEBRIS_4);
+    debris4->assign<TransformComponent>(brickTransform->x + 8, brickTransform->y + 8, 8, 8);
+}
+
 void PlayerSystem::setAnimation(ANIMATION_STATE state) {
     if (currentState == state) return;
     player->remove<AnimationComponent>();
@@ -135,6 +165,7 @@ void PlayerSystem::tick(World* world) {
         for (auto breakable : world->find<BreakableComponent, TransformComponent, BottomCollisionComponent>()) {
             if (!breakable->has<QuestionBlockComponent>() &&
                 AABBCollision(breakable->get<TransformComponent>(), transform)) {
+                createDebris(world, breakable->get<TransformComponent>());
                 breakable->clearComponents();
             }
         }

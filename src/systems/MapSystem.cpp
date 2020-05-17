@@ -19,11 +19,9 @@ void MapSystem::tick(World* world) {
     camera->x = std::max(camera->x, (int) player->get<TransformComponent>()->getCenterX());
     auto tileMap = world->findFirst<TileMapComponent>()->get<TileMapComponent>();
 
-    // 1. Get all the entities in the world with a [TileComponent, TransformComponent].
-    auto transformEntities = world->find<TileComponent, TransformComponent>();
 
     // 2. Iterate over them and remove the ones that are outside the camera.
-    for (auto entity : transformEntities) {
+    for (auto entity : world->find<TransformComponent>()) {
         auto transform = entity->get<TransformComponent>();
         if (transform->right() < camera->left() - CAMERA_WORLD_OFFSET
         || transform->left() > camera->right() + CAMERA_WORLD_OFFSET
@@ -67,7 +65,6 @@ void MapSystem::tick(World* world) {
             entity->assign<AnimationComponent>(std::vector<TextureId>{tile->textureId}, 15, true); // TODO not every kinetic in the map should be an enemy?
             entity->assign<KineticComponent>();
         } else {
-            // 4. Each static `TileComponent` reports its location in the world to be accessed by X and Y coordinates.
             entity->assign<TileComponent>();
             auto transform = entity->get<TransformComponent>();
             tileMap->set(

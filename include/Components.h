@@ -80,6 +80,10 @@ private:
 };
 
 struct KineticComponent : public Component {
+    KineticComponent() {}
+
+    KineticComponent(float accX, float accY) : speedX{accX}, speedY{accY} {}
+
     float speedX = 0;
     float speedY = 0;
 
@@ -97,7 +101,8 @@ struct CallbackComponent : public Component {
     std::function<void(void)> callback;
 };
 
-struct FrozenComponent : public Component {};
+struct FrozenComponent : public Component {
+};
 
 struct AnimationComponent : public Component {
     explicit AnimationComponent(

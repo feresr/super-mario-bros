@@ -53,6 +53,11 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(BACKGROUND_CLOUD_BOTTOM_LEFT, new SDL_Rect{0, 136, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(BACKGROUND_CLOUD_BOTTOM_CENTER, new SDL_Rect{17, 136, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(BACKGROUND_CLOUD_BOTTOM_RIGHT, new SDL_Rect{34, 136, TILE_SIZE, TILE_SIZE});
+
+    textures.insert_or_assign(BRICK_DEBRIS_1, new SDL_Rect{136, 153, 8, 8});
+    textures.insert_or_assign(BRICK_DEBRIS_2, new SDL_Rect{144, 153, 8, 8});
+    textures.insert_or_assign(BRICK_DEBRIS_3, new SDL_Rect{136, 161, 8, 8});
+    textures.insert_or_assign(BRICK_DEBRIS_4, new SDL_Rect{144, 161, 8, 8});
 }
 
 void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {
