@@ -14,31 +14,43 @@ Direction checkCollisionY(Entity* solid, TransformComponent* transform, KineticC
     auto solidTransform = solid->get<TransformComponent>();
     auto direction = Direction::NONE;
 
-    // Y AXIS CHECK
-    if (AABBCollision(
-            transform->x + TILE_ROUNDNESS,    // Check previous x position
-            transform->y + kinetic->speedY,
-            transform->w - (TILE_ROUNDNESS * 2),
-            transform->h,
-            solidTransform)) {
-
-        float distanceTop = abs(solidTransform->top() - (transform->bottom() + kinetic->speedY));
-        float distanceBottom = abs((transform->top() + kinetic->speedY) - solidTransform->bottom());
-        if (distanceTop < distanceBottom) {
-            transform->setBottom(solidTransform->top());
-            solid->assign<TopCollisionComponent>();
-            kinetic->accY = std::min(0.0f, kinetic->accY);
-            kinetic->speedY = std::min(0.0f, kinetic->speedY);
-            direction = Direction::BOTTOM;
-        } else {
-            transform->setTop(solidTransform->bottom());
-            solid->assign<BottomCollisionComponent>();
-            kinetic->accY = std::max(0.0f, kinetic->accY);
-            kinetic->speedY = std::max(0.0f, kinetic->speedY);
-            direction = Direction::TOP;
+    if (kinetic->speedY >= 0.0f) {
+        // Falling
+        if (AABBCollision(
+                transform->x + TILE_ROUNDNESS / 2,    // Check previous x position
+                transform->y + kinetic->speedY,
+                transform->w - (TILE_ROUNDNESS),
+                transform->h,
+                solidTransform)) {
+            float distanceTop = abs(solidTransform->top() - (transform->bottom() + kinetic->speedY));
+            float distanceBottom = abs((transform->top() + kinetic->speedY) - solidTransform->bottom());
+            if (distanceTop < distanceBottom) {
+                transform->setBottom(solidTransform->top());
+                solid->assign<TopCollisionComponent>();
+                kinetic->accY = std::min(0.0f, kinetic->accY);
+                kinetic->speedY = std::min(0.0f, kinetic->speedY);
+                direction = Direction::BOTTOM;
+            }
+        }
+    } else {
+        // Jumping
+        if (AABBCollision(
+                transform->x + TILE_ROUNDNESS,    // Check previous x position
+                transform->y + kinetic->speedY,
+                transform->w - (TILE_ROUNDNESS * 2),
+                transform->h,
+                solidTransform)) {
+            float distanceTop = abs(solidTransform->top() - (transform->bottom() + kinetic->speedY));
+            float distanceBottom = abs((transform->top() + kinetic->speedY) - solidTransform->bottom());
+            if (distanceTop > distanceBottom) {
+                transform->setTop(solidTransform->bottom());
+                solid->assign<BottomCollisionComponent>();
+                kinetic->accY = std::max(0.0f, kinetic->accY);
+                kinetic->speedY = std::max(0.0f, kinetic->speedY);
+                direction = Direction::TOP;
+            }
         }
     }
-
     return direction;
 }
 
