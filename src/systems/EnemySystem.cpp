@@ -19,11 +19,11 @@ void EnemySystem::tick(World* world) {
                 break;
             case Enemy::Type::TURTLE: {
                 enemy->get<EnemyComponent>()->type = Enemy::Type::TURTLE_SHELL;
-                enemy->get<TransformComponent>()->h = TILE_SIZE;
-                enemy->get<TransformComponent>()->y += TILE_SIZE;
                 enemy->remove<AnimationComponent>();
                 enemy->remove<WalkComponent>();
-                enemy->assign<TextureComponent>(TextureId::TURTLE_SHELL_1);
+                enemy->get<TextureComponent>()->id = TextureId::TURTLE_SHELL_1;
+                enemy->get<TextureComponent>()->offSetY = 0;
+                enemy->get<TextureComponent>()->h = TILE_SIZE;
                 enemy->assign<CallbackComponent>([=]() {
                     enemy->assign<AnimationComponent>(std::vector<TextureId>{
                                                               TextureId::TURTLE_SHELL_1,
@@ -33,7 +33,10 @@ void EnemySystem::tick(World* world) {
                                                       false);
 
                     enemy->assign<CallbackComponent>([=]() {
-                        enemy->assign<TextureComponent>(TextureId::TURTLE_1);
+                        enemy->get<TextureComponent>()->id = TextureId::TURTLE_1;
+                        enemy->get<TextureComponent>()->offSetY = -TILE_SIZE;
+                        enemy->get<TextureComponent>()->h = TILE_SIZE * 2;
+                        enemy->get<TextureComponent>()->flipH = false;
                         enemy->get<EnemyComponent>()->type = Enemy::Type::TURTLE;
                         enemy->get<KineticComponent>()->accX = 0.0f;
                         enemy->get<KineticComponent>()->speedX = 0.0f;
@@ -43,8 +46,6 @@ void EnemySystem::tick(World* world) {
                                                           },
                                                           10,
                                                           false);
-                        enemyTransform->h = TILE_SIZE * 2;
-                        enemyTransform->y -= TILE_SIZE;
                         enemy->assign<WalkComponent>(-.4f);
                     }, 100);
 

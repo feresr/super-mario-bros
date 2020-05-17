@@ -43,7 +43,9 @@ void MapSystem::tick(World* world) {
         if (tile->x > camera->right() + CAMERA_WORLD_OFFSET) break;
         auto entity = world->create();
         entity->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);
-        if (tile->hasProperty(VISIBLE)) entity->assign<TextureComponent>(tile->textureId);
+        if (tile->hasProperty(VISIBLE))  {
+            entity->assign<TextureComponent>(tile->textureId);
+        }
         if (tile->hasProperty(MASS)) entity->assign<GravityComponent>();
         if (tile->hasProperty(BREAKABLE)) entity->assign<BreakableComponent>();
         if (tile->hasProperty(QUESTION)) {
@@ -80,11 +82,10 @@ void MapSystem::tick(World* world) {
                                                    },
                                                    10,
                                                    false);
-                entity->get<TransformComponent>()->h = TILE_SIZE * 2;
-                entity->get<TransformComponent>()->y -= TILE_SIZE;
+                entity->get<TextureComponent>()->h = TILE_SIZE * 2;
+                entity->get<TextureComponent>()->offSetY = -TILE_SIZE;
                 entity->assign<EnemyComponent>(Enemy::Type::TURTLE);
             }
-
         }
         if (tile->hasProperty(KINETIC)) {
             entity->assign<KineticComponent>();

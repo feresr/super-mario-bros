@@ -135,6 +135,11 @@ struct TextureComponent : public Component {
     bool flipV = false;
     bool flipH = false;
 
+    int w = 0;
+    int h = 0;
+    int offSetX = 0;
+    int offSetY = 0;
+
     ~TextureComponent() override = default;
 };
 

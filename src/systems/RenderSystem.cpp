@@ -66,12 +66,13 @@ RenderSystem::~RenderSystem() {
 void RenderSystem::renderEntities(std::vector<Entity*> entities) {
     for (auto entity : entities) {
         auto transform = entity->get<TransformComponent>();
-        dstRect.x = transform->left() - camera->left();
-        dstRect.y = transform->top() - camera->top();
-        dstRect.w = transform->w;
-        dstRect.h = transform->h;
-
         auto texture = entity->get<TextureComponent>();
+        dstRect.x = transform->left() - camera->left() + texture->offSetX;
+        dstRect.y = transform->top() - camera->top() + texture->offSetY;
+
+        dstRect.w = texture->w > 0 ? texture->w : transform->w;
+        dstRect.h = texture->h > 0 ? texture->h : transform->h;
+
         textureManager->renderTexture(texture->id, dstRect, texture->flipH, texture->flipV);
     }
 }

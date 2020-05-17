@@ -7,6 +7,9 @@ int left = 0;
 int right = 0;
 int lookingLeft = 0;
 
+int SMALL_MARIO_HEIGHT = TILE_SIZE - 2;
+int SUPER_MARIO_HEIGHT = (TILE_SIZE * 2) - 4;
+
 constexpr int RUNNING_ANIMATION_SPEED = 5;
 
 bool AABBCollision(
@@ -98,6 +101,11 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
                 player->assign<TextureComponent>(TextureId::SUPER_MARIO_DUCK);
             }
     }
+
+    player->get<TextureComponent>()->w = TILE_SIZE;
+    player->get<TextureComponent>()->h = TILE_SIZE;
+    player->get<TextureComponent>()->offSetX = -2;
+    player->get<TextureComponent>()->offSetY = -1;
     currentState = state;
 }
 
@@ -158,11 +166,11 @@ void PlayerSystem::tick(World* world) {
         if (enemy->has<TopCollisionComponent>()) {
             enemy->assign<CrushedComponent>();
             transform->setBottom(enemy->get<TransformComponent>()->top());
-            kinetic->accY = -MARIO_BOUNCE;
-            kinetic->speedY = 0;
+            kinetic->accY = -0.2f;
+            kinetic->speedY = -MARIO_BOUNCE;
         } else {
             player->remove<SuperMarioComponent>();
-            transform->h = TILE_SIZE;
+            transform->h = SMALL_MARIO_HEIGHT;
         }
     }
 
@@ -272,5 +280,5 @@ void PlayerSystem::onAddedToWorld(World* world) {
     player->assign<GravityComponent>();
     player->assign<SolidComponent>();
     player->assign<KineticComponent>();
-    player->assign<TransformComponent>(40, 40, TILE_SIZE, TILE_SIZE);
+    player->assign<TransformComponent>(40, 40, TILE_SIZE - 4, SMALL_MARIO_HEIGHT);
 }
