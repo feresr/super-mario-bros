@@ -30,4 +30,4 @@ constexpr float MARIO_BOUNCE = 4.0f; // when jumping on top of enemies
 constexpr int TILE_ROUNDNESS = 4;
 
 constexpr float MUSHROOM_GROW_SPEED = .25f;
-constexpr float MUSHROOM_MOVE_SPEED = 1.0f;
+constexpr float MUSHROOM_MOVE_SPEED = 0.8f;

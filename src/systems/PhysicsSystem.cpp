@@ -27,8 +27,7 @@ Direction checkCollisionY(Entity* solid, TransformComponent* transform, KineticC
             if (distanceTop < distanceBottom) {
                 transform->setBottom(solidTransform->top());
                 solid->assign<TopCollisionComponent>();
-                kinetic->accY = std::min(0.0f, kinetic->accY);
-                kinetic->speedY = std::min(0.0f, kinetic->speedY);
+
                 direction = Direction::BOTTOM;
             }
         }
@@ -45,8 +44,7 @@ Direction checkCollisionY(Entity* solid, TransformComponent* transform, KineticC
             if (distanceTop > distanceBottom) {
                 transform->setTop(solidTransform->bottom());
                 solid->assign<BottomCollisionComponent>();
-                kinetic->accY = std::max(0.0f, kinetic->accY);
-                kinetic->speedY = std::max(0.0f, kinetic->speedY);
+
                 direction = Direction::TOP;
             }
         }
@@ -76,8 +74,7 @@ Direction checkCollisionX(Entity* solid, TransformComponent* transform, KineticC
                 //item about to get inside the block
                 transform->setLeft(solidTransform->right());
             }
-            kinetic->accX = std::max(0.0f, kinetic->accX);
-            kinetic->speedX = std::max(0.0f, kinetic->speedX);
+
             solid->assign<RightCollisionComponent>();
             direction = Direction::LEFT;
         } else {
@@ -87,8 +84,7 @@ Direction checkCollisionX(Entity* solid, TransformComponent* transform, KineticC
             } else {
                 transform->setRight(solidTransform->left());
             }
-            kinetic->accX = std::min(0.0f, kinetic->accX);
-            kinetic->speedX = std::min(0.0f, kinetic->speedX);
+
             solid->assign<LeftCollisionComponent>();
             direction = Direction::RIGHT;
         }
@@ -158,9 +154,13 @@ void PhysicsSystem::tick(World* world) {
                 if (!(tile->get<SolidComponent>())) continue;
                 switch (checkCollisionY(tile, transform, kinetic)) {
                     case Direction::TOP:
+                        kinetic->accY = std::max(0.0f, kinetic->accY);
+                        kinetic->speedY = std::max(0.0f, kinetic->speedY);
                         entity->assign<TopCollisionComponent>();
                         break;
                     case Direction::BOTTOM:
+                        kinetic->accY = std::min(0.0f, kinetic->accY);
+                        kinetic->speedY = std::min(0.0f, kinetic->speedY);
                         entity->assign<BottomCollisionComponent>();
                         break;
                     default:
@@ -172,9 +172,13 @@ void PhysicsSystem::tick(World* world) {
                 if (!(tile->get<SolidComponent>())) continue;
                 switch (checkCollisionX(tile, transform, kinetic)) {
                     case Direction::LEFT:
+                        kinetic->accX = std::max(0.0f, kinetic->accX);
+                        kinetic->speedX = std::max(0.0f, kinetic->speedX);
                         entity->assign<LeftCollisionComponent>();
                         break;
                     case Direction::RIGHT:
+                        kinetic->accX = std::min(0.0f, kinetic->accX);
+                        kinetic->speedX = std::min(0.0f, kinetic->speedX);
                         entity->assign<RightCollisionComponent>();
                         break;
                     default:

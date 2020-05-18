@@ -4,7 +4,37 @@ void EnemySystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);
 }
 
+void turtleShellInteractions(World* world, Entity* shell) {
+    if (shell->hasAny<LeftCollisionComponent, RightCollisionComponent>()) {
+        for (auto other : world->find<EnemyComponent, KineticComponent>()) {
+            if (shell == other) continue;
+            if (AABBCollision(shell->get<TransformComponent>(), other->get<TransformComponent>())) {
+                other->remove<SolidComponent>();
+                other->assign<TileComponent>();
+                other->get<TextureComponent>()->flipV = true;
+                other->get<KineticComponent>()->speedY = -8;
+                shell->remove<LeftCollisionComponent>();
+                shell->remove<RightCollisionComponent>();
+            }
+        }
+
+        if (shell->has<LeftCollisionComponent>()) {
+            shell->get<KineticComponent>()->accX = 3.0f;
+            shell->get<KineticComponent>()->speedX = 3.0f;
+        }
+        if (shell->has<RightCollisionComponent>()) {
+            shell->get<KineticComponent>()->accX = -3.0f;
+            shell->get<KineticComponent>()->speedX = -3.0f;
+        }
+    }
+}
+
 void EnemySystem::tick(World* world) {
+    for (auto shell : world->find<EnemyComponent, KineticComponent>()) {
+        if (shell->get<EnemyComponent>()->type == Enemy::Type::TURTLE_SHELL) {
+            turtleShellInteractions(world, shell);
+        }
+    }
 
     for (auto enemy : world->find<EnemyComponent, TransformComponent, CrushedComponent>()) {
         auto enemyTransform = enemy->get<TransformComponent>();
@@ -54,20 +84,6 @@ void EnemySystem::tick(World* world) {
                 break;
             case Enemy::Type::TURTLE_SHELL: {
                 enemy->get<KineticComponent>()->accX = -3.0f;
-            }
-        }
-    }
-
-
-    for (auto shell : world->find<EnemyComponent, KineticComponent>()) {
-        if (shell->get<EnemyComponent>()->type == Enemy::Type::TURTLE_SHELL) {
-            if (shell->has<LeftCollisionComponent>()) {
-                shell->get<KineticComponent>()->accX = 3.0f;
-                shell->get<KineticComponent>()->speedX = 3.0f;
-            }
-            if (shell->has<RightCollisionComponent>()) {
-                shell->get<KineticComponent>()->accX = -3.0f;
-                shell->get<KineticComponent>()->speedX = -3.0f;
             }
         }
     }

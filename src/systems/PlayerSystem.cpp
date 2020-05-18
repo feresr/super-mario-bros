@@ -12,16 +12,6 @@ const int SUPER_MARIO_COLLIDER_HEIGHT = (TILE_SIZE * 2) - 4;
 
 constexpr int RUNNING_ANIMATION_SPEED = 5;
 
-bool AABBCollision(
-        TransformComponent* a,
-        TransformComponent* b
-) {
-    return a->x <= b->x + b->w &&
-           a->x + a->w >= b->x &&
-           a->y <= b->y + b->h &&
-           a->y + a->h >= b->y;
-}
-
 void createDebris(World* world, TransformComponent* brickTransform) {
     auto debris1 = world->create();
     debris1->assign<GravityComponent>();
