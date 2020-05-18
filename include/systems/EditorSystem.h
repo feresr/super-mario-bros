@@ -6,6 +6,8 @@
 #include "TileType.h"
 #include "Components.h"
 #include "Constants.h"
+#include <fstream>
+#include "TextureManager.h"
 
 struct InputState {
     int x{SNES_RESOLUTION_WIDTH / 2}, y{SNES_RESOLUTION_HEIGHT / 2};

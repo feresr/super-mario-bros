@@ -16,7 +16,7 @@ void MapSystem::onRemovedFromWorld(World* world) {
 
 void MapSystem::tick(World* world) {
     auto player = world->findFirst<PlayerComponent, TransformComponent>();
-    camera->x = std::max(camera->x, (int) player->get<TransformComponent>()->getCenterX());
+    if (player)camera->x = std::max(camera->x, (int) player->get<TransformComponent>()->getCenterX());
     auto tileMap = world->findFirst<TileMapComponent>()->get<TileMapComponent>();
 
 

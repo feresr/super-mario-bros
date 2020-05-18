@@ -1,7 +1,5 @@
-#include <fstream>
 #include "systems/EditorSystem.h"
-#include "Constants.h"
-#include "TextureManager.h"
+
 
 int InputWatcher(void* userData, SDL_Event* event);
 
@@ -33,6 +31,7 @@ void EditorSystem::tick(World* world) {
     auto* camera = world->findFirst<CameraComponent>()->get<CameraComponent>();
     auto selectedTileType = inputState.item % tileTypes.size();
     camera->x += inputState.pan;
+    camera->x =  std::max(0, camera->x);
     if (inputState.clicked) {
         inputState.clicked = false;
         int tileX = (inputState.x + camera->left()) / TILE_SIZE;

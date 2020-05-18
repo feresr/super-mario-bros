@@ -14,6 +14,7 @@ enum TextureId {
     MARIO_RUN_3,
     MARIO_JUMP,
     MARIO_DRIFT,
+    MARIO_DEAD,
     MARIO_GROWING,
     SUPER_MARIO_STAND,
     SUPER_MARIO_RUN_1,

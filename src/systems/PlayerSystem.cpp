@@ -10,7 +10,7 @@ int lookingLeft = 0;
 const int SMALL_MARIO_COLLIDER_HEIGHT = TILE_SIZE - 2;
 const int SUPER_MARIO_COLLIDER_HEIGHT = (TILE_SIZE * 2) - 4;
 
-constexpr int RUNNING_ANIMATION_SPEED = 5;
+constexpr int RUNNING_ANIMATION_SPEED = 4;
 
 void createDebris(World* world, TransformComponent* brickTransform) {
     auto debris1 = world->create();
@@ -40,6 +40,34 @@ void createDebris(World* world, TransformComponent* brickTransform) {
     debris4->assign<TileComponent>();
     debris4->assign<TextureComponent>(TextureId::BRICK_DEBRIS_4);
     debris4->assign<TransformComponent>(brickTransform->x + 8, brickTransform->y + 8, 8, 8);
+}
+
+void onGameOver(World* world, Entity* player) {
+    auto kinetic = player->get<KineticComponent>();
+    player->get<TextureComponent>()->id = TextureId::MARIO_DEAD;
+    player->assign<DeadComponent>();
+
+    player->remove<AnimationComponent>();
+    kinetic->speedY = 0.0f;
+    kinetic->speedX = 0.0f;
+    kinetic->accY = 0.0f;
+    kinetic->accX = 0.0f;
+
+    for (auto walkable : world->findAny<WalkComponent, KineticComponent>()) {
+        if (walkable == player) continue;
+        walkable->remove<WalkComponent>();
+        walkable->remove<KineticComponent>();
+        walkable->remove<AnimationComponent>();
+        walkable->remove<CallbackComponent>();
+    }
+
+    player->assign<CallbackComponent>([=]() {
+        player->remove<SolidComponent>();
+        kinetic->speedY = -10.0f;
+        kinetic->speedX = 0.0f;
+        kinetic->accY = 0.0f;
+        kinetic->accX = 0.0f;
+    }, 50);
 }
 
 void PlayerSystem::setAnimation(ANIMATION_STATE state) {
@@ -105,6 +133,8 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
 }
 
 void PlayerSystem::tick(World* world) {
+    if (player->has<DeadComponent>()) return;
+
     auto transform = player->get<TransformComponent>();
 
     if (player->has<FrozenComponent>()) { // Mario Growing after eating mushroom
@@ -157,7 +187,6 @@ void PlayerSystem::tick(World* world) {
         }
     }
 
-    // Step on enemies
     for (auto enemy : world->find<EnemyComponent, TransformComponent>()) {
         if (!AABBCollision(enemy->get<TransformComponent>(), transform)) continue;
         if (enemy->has<TopCollisionComponent>()) {
@@ -166,8 +195,13 @@ void PlayerSystem::tick(World* world) {
             kinetic->accY = -0.2f;
             kinetic->speedY = -MARIO_BOUNCE;
         } else {
-            player->remove<SuperMarioComponent>();
-            transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
+            if (player->has<SuperMarioComponent>()) {
+                player->remove<SuperMarioComponent>();
+                transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
+            } else {
+                onGameOver(world, player);
+                return;
+            }
         }
     }
 

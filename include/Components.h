@@ -104,6 +104,9 @@ struct CallbackComponent : public Component {
 struct FrozenComponent : public Component {
 };
 
+struct DeadComponent : public Component {
+};
+
 struct AnimationComponent : public Component {
     explicit AnimationComponent(
             std::vector<TextureId>&& textures,
