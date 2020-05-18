@@ -53,7 +53,7 @@ void createCoin(World* world, Entity* block) {
 
 void TileSystem::tick(World* world) {
 
-    for (auto entity : world->find<BottomCollisionComponent, TransformComponent, KineticComponent>()) {
+    for (auto entity : world->find<BottomCollisionComponent, TileComponent, KineticComponent>()) {
         auto transform = entity->get<TransformComponent>();
         auto bottomTile = tileMap->get(
                 (int) (transform->getCenterX() / TILE_SIZE),
