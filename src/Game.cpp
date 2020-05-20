@@ -2,7 +2,7 @@
 #include "Game.h"
 
 void Game::init(const char* title, int width, int height, bool fullscreen) {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return;
     }
@@ -20,6 +20,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     world.registerSystem(new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT));
     world.registerSystem(new PlayerSystem());
     world.registerSystem(new MapSystem());
+    world.registerSystem(new SoundSystem());
     world.registerSystem(new EnemySystem());
     world.registerSystem(new CallbackSystem());
     world.registerSystem(new AnimationSystem());

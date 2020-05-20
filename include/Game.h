@@ -14,6 +14,7 @@
 #include "systems/MapSystem.h"
 #include "systems/AnimationSystem.h"
 #include "systems/PlayerSystem.h"
+#include "systems/SoundSystem.h"
 #include "Constants.h"
 
 class Game {

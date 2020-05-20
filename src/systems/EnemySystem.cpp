@@ -74,7 +74,7 @@ void turtleShellInteractions(World* world, Entity* shell) {
 
 void EnemySystem::tick(World* world) {
     for (auto shell : world->find<EnemyComponent, KineticComponent>()) {
-        if (shell->get<EnemyComponent>()->type == Enemy::Type::TURTLE_SHELL) {
+        if (shell->has<EnemyComponent>() && shell->get<EnemyComponent>()->type == Enemy::Type::TURTLE_SHELL) {
             turtleShellInteractions(world, shell);
         }
     }
