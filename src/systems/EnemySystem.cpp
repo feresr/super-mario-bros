@@ -81,6 +81,7 @@ void EnemySystem::tick(World* world) {
 
     for (auto enemy : world->find<EnemyComponent, TransformComponent, CrushedComponent>()) {
         auto enemyTransform = enemy->get<TransformComponent>();
+        world->create()->assign<SoundComponent>(Sound::Id::STOMP);
         switch (enemy->get<EnemyComponent>()->type) {
             case Enemy::Type::GOOMBA: {
                 enemy->clearComponents();

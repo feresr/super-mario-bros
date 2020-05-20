@@ -40,9 +40,15 @@ void createDebris(World* world, TransformComponent* brickTransform) {
     debris4->assign<TileComponent>();
     debris4->assign<TextureComponent>(TextureId::BRICK_DEBRIS_4);
     debris4->assign<TransformComponent>(brickTransform->x + 8, brickTransform->y + 8, 8, 8);
+
+    world->create()->assign<SoundComponent>(Sound::Id::BLOCK_BREAK);
 }
 
 void onGameOver(World* world, Entity* player) {
+    world->create()->assign<SoundComponent>(Sound::Id::DEATH);
+    auto music = world->findFirst<MusicComponent>();
+    if (music) world->destroy(music);
+
     auto kinetic = player->get<KineticComponent>();
     player->get<TextureComponent>()->id = TextureId::MARIO_DEAD;
     player->assign<DeadComponent>();
@@ -169,7 +175,11 @@ void PlayerSystem::tick(World* world) {
     } else {
         if (player->has<BottomCollisionComponent>()) {
             kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.7f;
-            if (jump) player->get<KineticComponent>()->accY = -MARIO_JUMP_ACCELERATION;
+            if (jump) {
+                player->get<KineticComponent>()->accY = -MARIO_JUMP_ACCELERATION;
+                auto jumpsound = world->create();
+                jumpsound->assign<SoundComponent>(Sound::Id::JUMP);
+            }
             if ((bool) std::abs(kinetic->speedX) || (bool) std::abs(kinetic->accX)) {
                 if ((kinetic->speedX > 0 && kinetic->accX < 0) ||
                     (kinetic->speedX < 0 && kinetic->accX > 0)) {
@@ -196,6 +206,7 @@ void PlayerSystem::tick(World* world) {
             kinetic->speedY = -MARIO_BOUNCE;
         } else {
             if (player->has<SuperMarioComponent>()) {
+                world->create()->assign<SoundComponent>(Sound::Id::SHRINK);
                 player->remove<SuperMarioComponent>();
                 transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
             } else {
@@ -219,7 +230,7 @@ void PlayerSystem::tick(World* world) {
     // Eat mushrooms
     for (auto collectible : world->find<CollectibleComponent, TransformComponent>()) {
         if (AABBCollision(collectible->get<TransformComponent>(), player->get<TransformComponent>())) {
-            eatMushroom();
+            eatMushroom(world);
             world->destroy(collectible);
         }
     }
@@ -233,8 +244,9 @@ void PlayerSystem::tick(World* world) {
     player->remove<TopCollisionComponent>();
 }
 
-void PlayerSystem::eatMushroom() {
+void PlayerSystem::eatMushroom(World* world) {
     if (player->has<SuperMarioComponent>()) return;
+    world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_EAT);
     player->assign<SuperMarioComponent>();
     player->assign<AnimationComponent>(
             std::vector<TextureId>{

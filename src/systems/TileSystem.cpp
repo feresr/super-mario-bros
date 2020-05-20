@@ -27,6 +27,7 @@ void createMushroom(World* world, Entity* block) {
             TILE_SIZE - 8,
             TILE_SIZE
     );
+    world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_GROW);
     mushroom->assign<GrowComponent>();
 }
 
@@ -49,6 +50,8 @@ void createCoin(World* world, Entity* block) {
     coin->assign<TileComponent>();
     coin->assign<KineticComponent>(0.0f, -20.0f);
     coin->assign<CallbackComponent>([=]() { coin->clearComponents(); }, 20);
+
+    world->create()->assign<SoundComponent>(Sound::Id::COIN);
 }
 
 void TileSystem::tick(World* world) {
@@ -85,6 +88,7 @@ void TileSystem::tick(World* world) {
     }
 
     for (auto entity : world->find<BreakableComponent, BottomCollisionComponent>()) {
+        world->create()->assign<SoundComponent>(Sound::Id::BLOCK_HIT);
         entity->get<BreakableComponent>()->hit = true;
     }
 

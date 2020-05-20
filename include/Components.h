@@ -6,6 +6,7 @@
 #include "SDL.h"
 #include "TextureManager.h"
 #include "TileType.h"
+#include "SoundManger.h"
 
 struct TransformComponent : public Component {
 
@@ -223,6 +224,16 @@ struct BreakableComponent : public Component {
 private:
     int frames = 13;
     int height[13] = {-2, 1, 3, 2, 1, 1, 1, 0, 0, -1, -1, -4, -1};
+};
+
+struct MusicComponent : public Component {
+    explicit MusicComponent() = default;
+};
+
+struct SoundComponent : public Component {
+    explicit SoundComponent(Sound::Id sound) : sound{sound} {}
+
+    Sound::Id sound;
 };
 
 struct TileComponent : public Component {

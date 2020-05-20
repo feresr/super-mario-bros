@@ -2,6 +2,7 @@
 #include "ecs/ecs.h"
 #include <SDL_mixer.h>
 #include "SoundManger.h"
+#include "Components.h"
 
 class SoundSystem : public System {
 

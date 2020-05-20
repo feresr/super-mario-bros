@@ -33,5 +33,5 @@ class PlayerSystem : public System {
 
 private:
     void setAnimation(ANIMATION_STATE animationState);
-    void eatMushroom();
+    void eatMushroom(World* world);
 };
