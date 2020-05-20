@@ -167,6 +167,18 @@ void PhysicsSystem::tick(World* world) {
                         break;
                 }
             }
+
+            futureLeft = (int) (transform->left() + kinetic->speedX) / TILE_SIZE;
+            futureRight = (int) (transform->right() + kinetic->speedX) / TILE_SIZE;
+            futureTop = (int) (transform->top() + 1) / TILE_SIZE;
+            futureBottom = (int) (transform->bottom() - 1) / TILE_SIZE;
+            coordinates = {
+                    tileMapComponent->get(futureRight, futureBottom),
+                    tileMapComponent->get(futureLeft, futureBottom),
+                    tileMapComponent->get(futureLeft, futureTop),
+                    tileMapComponent->get(futureRight, futureTop),
+            };
+
             for (auto tile : coordinates) {
                 if (!tile) continue;
                 if (!(tile->get<SolidComponent>())) continue;

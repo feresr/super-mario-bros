@@ -197,13 +197,13 @@ void PlayerSystem::tick(World* world) {
         }
     }
 
+    auto bounce = false;
     for (auto enemy : world->find<EnemyComponent, TransformComponent>()) {
         if (!AABBCollision(enemy->get<TransformComponent>(), transform)) continue;
-        if (enemy->has<TopCollisionComponent>()) {
+        if (kinetic->speedY > 0) {
             enemy->assign<CrushedComponent>();
             transform->setBottom(enemy->get<TransformComponent>()->top());
-            kinetic->accY = -0.2f;
-            kinetic->speedY = -MARIO_BOUNCE;
+            bounce = true;
         } else {
             if (player->has<SuperMarioComponent>()) {
                 world->create()->assign<SoundComponent>(Sound::Id::SHRINK);
@@ -214,6 +214,11 @@ void PlayerSystem::tick(World* world) {
                 return;
             }
         }
+    }
+
+    if (bounce) {
+        kinetic->accY = -0.2f;
+        kinetic->speedY = -MARIO_BOUNCE;
     }
 
     // Break bricks
@@ -245,8 +250,8 @@ void PlayerSystem::tick(World* world) {
 }
 
 void PlayerSystem::eatMushroom(World* world) {
-    if (player->has<SuperMarioComponent>()) return;
     world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_EAT);
+    if (player->has<SuperMarioComponent>()) return;
     player->assign<SuperMarioComponent>();
     player->assign<AnimationComponent>(
             std::vector<TextureId>{
