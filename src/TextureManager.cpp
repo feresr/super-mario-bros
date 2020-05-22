@@ -64,6 +64,7 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(BACKGROUND_MOUNTAIN_2, new SDL_Rect{17, 17, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(BACKGROUND_MOUNTAIN_3, new SDL_Rect{34, 17, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(BACKGROUND_MOUNTAIN_4, new SDL_Rect{17, 0, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(BACKGROUND_MOUNTAIN_5, new SDL_Rect{51, 17, TILE_SIZE, TILE_SIZE});
 
     textures.insert_or_assign(COIN_1, new SDL_Rect{153, 153, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(COIN_2, new SDL_Rect{170, 153, TILE_SIZE, TILE_SIZE});

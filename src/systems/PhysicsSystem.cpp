@@ -1,15 +1,5 @@
 #include "systems/PhysicsSystem.h"
 
-bool AABBCollision(
-        float x, float y, float w, float h,
-        TransformComponent* b
-) {
-    return x <= b->x + b->w &&
-           x + w >= b->x &&
-           y <= b->y + b->h &&
-           y + h >= b->y;
-}
-
 Direction checkCollisionY(Entity* solid, TransformComponent* transform, KineticComponent* kinetic) {
     auto solidTransform = solid->get<TransformComponent>();
     auto direction = Direction::NONE;
@@ -19,7 +9,7 @@ Direction checkCollisionY(Entity* solid, TransformComponent* transform, KineticC
         if (AABBCollision(
                 transform->x + TILE_ROUNDNESS / 2,    // Check previous x position
                 transform->y + kinetic->speedY,
-                transform->w - (TILE_ROUNDNESS),
+                transform->w - TILE_ROUNDNESS,
                 transform->h,
                 solidTransform)) {
             float distanceTop = abs(solidTransform->top() - (transform->bottom() + kinetic->speedY));
@@ -27,7 +17,6 @@ Direction checkCollisionY(Entity* solid, TransformComponent* transform, KineticC
             if (distanceTop < distanceBottom) {
                 transform->setBottom(solidTransform->top());
                 solid->assign<TopCollisionComponent>();
-
                 direction = Direction::BOTTOM;
             }
         }
@@ -44,7 +33,6 @@ Direction checkCollisionY(Entity* solid, TransformComponent* transform, KineticC
             if (distanceTop > distanceBottom) {
                 transform->setTop(solidTransform->bottom());
                 solid->assign<BottomCollisionComponent>();
-
                 direction = Direction::TOP;
             }
         }
@@ -74,7 +62,6 @@ Direction checkCollisionX(Entity* solid, TransformComponent* transform, KineticC
                 //item about to get inside the block
                 transform->setLeft(solidTransform->right());
             }
-
             solid->assign<RightCollisionComponent>();
             direction = Direction::LEFT;
         } else {
@@ -82,6 +69,7 @@ Direction checkCollisionX(Entity* solid, TransformComponent* transform, KineticC
                 //item is inside block, push out
                 transform->x -= std::min(.5f, transform->right() - solidTransform->left());
             } else {
+                //item about to get inside the block
                 transform->setRight(solidTransform->left());
             }
 

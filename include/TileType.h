@@ -63,6 +63,7 @@ namespace Tiles {
     static TileType MOUNTAIN_2{TextureId::BACKGROUND_MOUNTAIN_2, VISIBLE};
     static TileType MOUNTAIN_3{TextureId::BACKGROUND_MOUNTAIN_3, VISIBLE};
     static TileType MOUNTAIN_4{TextureId::BACKGROUND_MOUNTAIN_4, VISIBLE};
+    static TileType MOUNTAIN_5{TextureId::BACKGROUND_MOUNTAIN_5, VISIBLE};
 
     static TileType QUESTION_BLOCK_COIN{TextureId::QUESTION_BLOCK_1,
                                         VISIBLE | SOLID | BREAKABLE | QUESTION | COIN,
