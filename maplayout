@@ -1,0 +1,14 @@
+[MAP_WIDTH uint16_t][MAP_HEIGHT uint16_t]
+    [TEXTURE_ID - uint8_t] [PROPERTIES uint32_t]
+    [TEXTURE_ID][PROPERTIES]
+    [TEXTURE_ID][PROPERTIES]
+    [TEXTURE_ID][PROPERTIES]
+    [TEXTURE_ID][PROPERTIES]
+    ...
+    [TEXTURE_ID][PROPERTIES]
+
+PROPERTIES = uint32_t where each bit represents a component [SUPERPOWER?,COLLECTABLE?,COLLIDABLE?]
+                             or a specific thing [brick, flower, questionmark, mushroom]
+
+
+
