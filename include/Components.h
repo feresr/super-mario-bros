@@ -67,6 +67,12 @@ struct CollectibleComponent : public Component {
 
 struct SuperMarioComponent : public Component {
 };
+struct BlinkingComponent : public Component {
+    explicit BlinkingComponent(int blinkSpeed) : speed { blinkSpeed} {}
+
+    const int speed;
+    int current = 0;
+};
 
 struct DestroyDelayedComponent : public Component {
     explicit DestroyDelayedComponent(int time) : timer{time} {}

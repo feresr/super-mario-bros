@@ -101,12 +101,14 @@ void PhysicsSystem::tick(World* world) {
     entities = world->find<TransformComponent, KineticComponent>();
     for (auto entity : entities) {
         if (!entity->has<SolidComponent>()) continue;
+        if (entity->has<BlinkingComponent>()) continue;
         auto transform = entity->get<TransformComponent>();
         auto kinetic = entity->get<KineticComponent>();
         for (auto other : entities) {
             if (entity == other) continue;
             if (!other->has<SolidComponent>()) continue;
             if (other->has<CollectibleComponent>()) continue;
+            if (other->has<BlinkingComponent>()) continue;
             switch (checkCollisionY(other, transform, kinetic)) {
                 case Direction::TOP:
                     entity->assign<TopCollisionComponent>();

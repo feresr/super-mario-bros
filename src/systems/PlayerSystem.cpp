@@ -12,6 +12,30 @@ const int SUPER_MARIO_COLLIDER_HEIGHT = (TILE_SIZE * 2) - 4;
 
 constexpr int RUNNING_ANIMATION_SPEED = 4;
 
+void shrink(World* world, Entity* player) {
+    world->create()->assign<SoundComponent>(Sound::Id::SHRINK);
+    player->assign<AnimationComponent>(
+            std::vector<TextureId>{
+                    TextureId::MARIO_STAND,
+                    TextureId::MARIO_GROWING,
+                    TextureId::MARIO_STAND,
+                    TextureId::MARIO_GROWING,
+                    TextureId::SUPER_MARIO_STAND,
+                    TextureId::MARIO_STAND,
+                    TextureId::SUPER_MARIO_STAND,
+                    TextureId::MARIO_STAND
+            }, 8, false, false, false);
+
+    player->assign<FrozenComponent>();
+    player->assign<BlinkingComponent>(10);
+    player->remove<SuperMarioComponent>();
+
+    player->assign<CallbackComponent>([player]() {
+        player->remove<FrozenComponent>();
+        player->assign<CallbackComponent>([player]() { player->remove<BlinkingComponent>(); }, 150);
+    }, 64);
+}
+
 void createDebris(World* world, TransformComponent* brickTransform) {
     auto debris1 = world->create();
     debris1->assign<GravityComponent>();
@@ -77,6 +101,16 @@ void onGameOver(World* world, Entity* player) {
 }
 
 void PlayerSystem::setAnimation(ANIMATION_STATE state) {
+    if (player->has<BlinkingComponent>()) {
+        auto blink = player->get<BlinkingComponent>();
+        blink->current++;
+        if ((blink->current / blink->speed) % 2) {
+            player->remove<AnimationComponent>();
+            currentState = BLINKING;
+            player->get<TextureComponent>()->id = TextureId::EMPTY;
+            return;
+        }
+    }
     if (currentState == state) return;
     player->remove<AnimationComponent>();
 
@@ -124,6 +158,9 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
             if (player->has<SuperMarioComponent>()) {
                 player->assign<TextureComponent>(TextureId::SUPER_MARIO_DUCK);
             }
+            break;
+        case BLINKING:
+            break;
     }
 
     if (player->has<SuperMarioComponent>()) {
@@ -142,20 +179,23 @@ void PlayerSystem::tick(World* world) {
     if (player->has<DeadComponent>()) return;
 
     auto transform = player->get<TransformComponent>();
+    auto texture = player->get<TextureComponent>();
 
-    if (player->has<FrozenComponent>()) { // Mario Growing after eating mushroom
-        if ((player->get<TextureComponent>()->id == TextureId::SUPER_MARIO_STAND ||
-             player->get<TextureComponent>()->id == TextureId::MARIO_GROWING)
-            && transform->h <= TILE_SIZE) {
-            player->get<TextureComponent>()->h = TILE_SIZE * 2;
+    if (player->has<FrozenComponent>()) {
+        if ((texture->id == TextureId::SUPER_MARIO_STAND ||
+             player->get<TextureComponent>()->id == TextureId::MARIO_GROWING) &&
+            transform->h != SUPER_MARIO_COLLIDER_HEIGHT) {
+            texture->h = TILE_SIZE * 2;
             transform->h = SUPER_MARIO_COLLIDER_HEIGHT;
-            transform->y -= TILE_SIZE;
+            transform->y -= SUPER_MARIO_COLLIDER_HEIGHT - SMALL_MARIO_COLLIDER_HEIGHT;
+            texture->offSetY = -3;
         }
-        if (player->get<TextureComponent>()->id == TextureId::MARIO_STAND
-            && transform->h > TILE_SIZE) {
-            player->get<TextureComponent>()->h = TILE_SIZE;
+        if (texture->id == TextureId::MARIO_STAND
+            && transform->h != SMALL_MARIO_COLLIDER_HEIGHT) {
+            texture->h = TILE_SIZE;
+            texture->offSetY = -1;
             transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
-            transform->y += TILE_SIZE;
+            transform->y += SUPER_MARIO_COLLIDER_HEIGHT - SMALL_MARIO_COLLIDER_HEIGHT;
         }
         return;
     }
@@ -165,6 +205,7 @@ void PlayerSystem::tick(World* world) {
     // Avoid walking back
     if (transform->left() < camera->left()) {
         transform->setLeft(camera->left());
+        kinetic->accX = 0;
         kinetic->accX = 0;
         kinetic->speedX = 0;
     }
@@ -205,12 +246,12 @@ void PlayerSystem::tick(World* world) {
             transform->setBottom(enemy->get<TransformComponent>()->top());
             bounce = true;
         } else {
-            if (player->has<SuperMarioComponent>()) {
-                world->create()->assign<SoundComponent>(Sound::Id::SHRINK);
-                player->remove<SuperMarioComponent>();
-                transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
-            } else {
-                onGameOver(world, player);
+            if (!player->has<BlinkingComponent>()) {
+                if (player->has<SuperMarioComponent>()) {
+                    shrink(world, player);
+                } else {
+                    onGameOver(world, player);
+                }
                 return;
             }
         }
@@ -265,10 +306,10 @@ void PlayerSystem::eatMushroom(World* world) {
                     TextureId::SUPER_MARIO_STAND,
                     TextureId::MARIO_STAND,
                     TextureId::SUPER_MARIO_STAND
-            }, 8, false, false, false);
+            }, 6, false, false, false);
 
     player->assign<FrozenComponent>();
-    player->assign<CallbackComponent>([&]() { player->remove<FrozenComponent>(); }, 80);
+    player->assign<CallbackComponent>([&]() { player->remove<FrozenComponent>(); }, 60);
 }
 
 void PlayerSystem::handleEvent(SDL_Event& event) {

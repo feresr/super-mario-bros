@@ -12,6 +12,7 @@ class PlayerSystem : public System {
     CameraComponent* camera;
 
     enum ANIMATION_STATE {
+        BLINKING,
         RUNNING,
         STANDING,
         DRIFTING,
