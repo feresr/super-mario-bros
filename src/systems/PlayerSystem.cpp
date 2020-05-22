@@ -246,6 +246,7 @@ void PlayerSystem::tick(World* world) {
             transform->setBottom(enemy->get<TransformComponent>()->top());
             bounce = true;
         } else {
+            if (enemy->get<EnemyComponent>()->type == Enemy::TURTLE_SHELL) continue; // ?
             if (!player->has<BlinkingComponent>()) {
                 if (player->has<SuperMarioComponent>()) {
                     shrink(world, player);

@@ -95,7 +95,15 @@ void EnemySystem::tick(World* world) {
                 stepOnTurtle(enemy);
                 break;
             case Enemy::Type::TURTLE_SHELL: {
-                enemy->get<KineticComponent>()->accX = -3.0f;
+                if (enemy->get<KineticComponent>()->accX == 0) {
+                    auto player = world->findFirst<PlayerComponent>()->get<TransformComponent>()->getCenterX();
+                    auto turtle = enemy->get<TransformComponent>()->getCenterX();
+                    auto direction = turtle > player ? 3.0f : -3.0f;
+                    enemy->get<KineticComponent>()->accX = direction;
+                } else {
+                    enemy->get<KineticComponent>()->accX = 0.0f;
+                    enemy->get<KineticComponent>()->speedX = 0.0f;
+                }
             }
         }
     }
