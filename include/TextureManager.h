@@ -64,6 +64,18 @@ enum TextureId {
     TURTLE_2,
     TURTLE_SHELL_1,
     TURTLE_SHELL_2,
+    FLAG_TOP,
+    FLAG_RIGHT,
+    FLAG_LEFT,
+    FLAG_POLE,
+    CASTLE_1,
+    CASTLE_2,
+    CASTLE_3,
+    CASTLE_4,
+    CASTLE_5,
+    CASTLE_6,
+    CASTLE_7,
+    CASTLE_8,
 };
 
 class TextureManager {

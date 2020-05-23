@@ -67,6 +67,18 @@ private:
             Tiles::MOUNTAIN_5,
             Tiles::QUESTION_BLOCK_COIN,
             Tiles::TURTLE,
+            Tiles::FLAG_TOP,
+            Tiles::FLAG_LEFT,
+            Tiles::FLAG_RIGHT,
+            Tiles::FLAG_POLE,
+            Tiles::CASTLE_1,
+            Tiles::CASTLE_2,
+            Tiles::CASTLE_3,
+            Tiles::CASTLE_4,
+            Tiles::CASTLE_5,
+            Tiles::CASTLE_6,
+            Tiles::CASTLE_7,
+            Tiles::CASTLE_8,
     };
 };
 

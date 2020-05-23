@@ -77,6 +77,19 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(TURTLE_SHELL_2, new SDL_Rect{170, 237, TILE_SIZE, TILE_SIZE});
 
     textures.insert_or_assign(MARIO_DEAD, new SDL_Rect{102, 254, TILE_SIZE, TILE_SIZE});
+
+    textures.insert_or_assign(FLAG_TOP, new SDL_Rect{51, 34, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(FLAG_RIGHT, new SDL_Rect{51, 51, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(FLAG_LEFT, new SDL_Rect{34, 51, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(FLAG_POLE, new SDL_Rect{187, 119, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_1, new SDL_Rect{0, 68, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_2, new SDL_Rect{17, 68, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_3, new SDL_Rect{34, 68, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_4, new SDL_Rect{0, 85, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_5, new SDL_Rect{17, 85, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_6, new SDL_Rect{34, 85, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_7, new SDL_Rect{17, 102, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_8, new SDL_Rect{34, 102, TILE_SIZE, TILE_SIZE});
 }
 
 void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {

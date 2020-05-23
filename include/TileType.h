@@ -68,4 +68,19 @@ namespace Tiles {
     static TileType QUESTION_BLOCK_COIN{TextureId::QUESTION_BLOCK_1,
                                         VISIBLE | SOLID | BREAKABLE | QUESTION | COIN,
                                             TextureId::COIN_1};
+
+    static TileType FLAG_TOP{TextureId::FLAG_TOP, VISIBLE};
+    static TileType FLAG_RIGHT{TextureId::FLAG_RIGHT, VISIBLE};
+    static TileType FLAG_LEFT{TextureId::FLAG_LEFT, VISIBLE};
+    static TileType FLAG_POLE{TextureId::FLAG_POLE, VISIBLE};
+
+    static TileType CASTLE_1{TextureId::CASTLE_1, VISIBLE};
+    static TileType CASTLE_2{TextureId::CASTLE_2, VISIBLE};
+    static TileType CASTLE_3{TextureId::CASTLE_3, VISIBLE};
+    static TileType CASTLE_4{TextureId::CASTLE_4, VISIBLE};
+    static TileType CASTLE_5{TextureId::CASTLE_5, VISIBLE};
+    static TileType CASTLE_6{TextureId::CASTLE_6, VISIBLE};
+    static TileType CASTLE_7{TextureId::CASTLE_7, VISIBLE};
+    static TileType CASTLE_8{TextureId::CASTLE_8, VISIBLE};
+
 }
