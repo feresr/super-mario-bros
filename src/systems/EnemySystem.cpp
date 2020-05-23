@@ -132,6 +132,7 @@ void EnemySystem::tick(World* world) {
         );
         if (bottomTile && bottomTile->has<BreakableComponent>()) {
             if (bottomTile->get<BreakableComponent>()->hit) {
+                world->create()->assign<FloatingPointsComponent>("100", transform->getCenterX(), transform->y);
                 flipEnemy(entity);
             }
         }

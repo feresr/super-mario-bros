@@ -3,6 +3,7 @@
 int dirX = 0;
 bool jump = false;
 bool duck = false;
+bool sprint = false;
 int left = 0;
 int right = 0;
 int lookingLeft = 0;
@@ -216,6 +217,7 @@ void PlayerSystem::tick(World* world) {
     } else {
         if (player->has<BottomCollisionComponent>()) {
             kinetic->accX = (float) dirX * MARIO_ACCELERATION_X * 1.7f;
+            if (sprint) kinetic->accX *= 1.5;
             if (jump) {
                 player->get<KineticComponent>()->accY = -MARIO_JUMP_ACCELERATION;
                 auto jumpsound = world->create();
@@ -234,6 +236,7 @@ void PlayerSystem::tick(World* world) {
 
         } else {
             kinetic->accX = (float) (dirX) * (MARIO_ACCELERATION_X);
+            if (sprint) kinetic->accX *= 1.5;
             setAnimation(JUMPING);
         }
     }
@@ -329,6 +332,9 @@ void PlayerSystem::handleEvent(SDL_Event& event) {
                 case SDL_SCANCODE_A:
                     left = true;
                     break;
+                case SDL_SCANCODE_LSHIFT:
+                    sprint = true;
+                    break;
                 case SDL_SCANCODE_D:
                     right = true;
                     break;
@@ -346,6 +352,9 @@ void PlayerSystem::handleEvent(SDL_Event& event) {
             switch (event.key.keysym.scancode) {
                 case SDL_SCANCODE_A:
                     left = false;
+                    break;
+                case SDL_SCANCODE_LSHIFT:
+                    sprint = false;
                     break;
                 case SDL_SCANCODE_D:
                     right = false;
