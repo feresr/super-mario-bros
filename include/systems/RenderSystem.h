@@ -7,6 +7,8 @@
 #include <iostream>
 #include "Components.h"
 #include "TextureManager.h"
+#include <filesystem>
+#include <SDL_ttf.h>
 
 class RenderSystem : public System {
 
@@ -30,4 +32,8 @@ private:
     CameraComponent* camera{};
 
     void renderEntities(std::vector<Entity*> entities);
+
+    void renderText(std::vector<Entity*> entities);
+
+    TTF_Font * font;
 };

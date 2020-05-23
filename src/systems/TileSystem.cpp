@@ -49,7 +49,11 @@ void createCoin(World* world, Entity* block) {
     coin->assign<GravityComponent>();
     coin->assign<TileComponent>();
     coin->assign<KineticComponent>(0.0f, -20.0f);
-    coin->assign<CallbackComponent>([=]() { coin->clearComponents(); }, 20);
+    coin->assign<CallbackComponent>([=]() {
+        auto transform = coin->get<TransformComponent>();
+        world->create()->assign<FloatingPointsComponent>("100", transform->getCenterX(), transform->y);
+        coin->clearComponents();
+    }, 20);
 
     world->create()->assign<SoundComponent>(Sound::Id::COIN);
 }
@@ -126,5 +130,18 @@ void TileSystem::tick(World* world) {
         entity->remove<TopCollisionComponent>();
         entity->remove<LeftCollisionComponent>();
         entity->remove<RightCollisionComponent>();
+    }
+
+    for (auto points: world->find<FloatingPointsComponent>()) {
+        auto pointsComponent = points->get<FloatingPointsComponent>();
+        auto textLength = pointsComponent->text.length();
+        auto pointEntity = world->create();
+        pointEntity->assign<TextComponent>(pointsComponent->text);
+        auto w = textLength * 2;
+        pointEntity->assign<TransformComponent>(pointsComponent->x - w / 2, pointsComponent->y, w, 14);
+        pointEntity->assign<KineticComponent>(0, 0);
+        pointEntity->get<KineticComponent>()->speedY = -2.0f;
+        pointEntity->assign<CallbackComponent>([=]() { world->destroy(pointEntity); }, 50);
+        world->destroy(points);
     }
 }

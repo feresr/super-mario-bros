@@ -67,8 +67,9 @@ struct CollectibleComponent : public Component {
 
 struct SuperMarioComponent : public Component {
 };
+
 struct BlinkingComponent : public Component {
-    explicit BlinkingComponent(int blinkSpeed) : speed { blinkSpeed} {}
+    explicit BlinkingComponent(int blinkSpeed) : speed{blinkSpeed} {}
 
     const int speed;
     int current = 0;
@@ -246,6 +247,25 @@ struct TileComponent : public Component {
 };
 
 struct CrushedComponent : public Component {
+};
+
+struct FloatingPointsComponent : public Component {
+    explicit FloatingPointsComponent(std::string&& points, int x, int y) :
+            text{std::move(points)}, x{x}, y{y} {}
+    std::string text;
+    int x;
+    int y;
+};
+
+struct TextComponent : public Component {
+    explicit TextComponent(std::string& text) : text{std::move(text)} {}
+
+    std::string text;
+    SDL_Texture* texture = nullptr;
+
+    ~TextComponent() override {
+        SDL_DestroyTexture(texture);
+    }
 };
 
 struct TileMapComponent : public Component {

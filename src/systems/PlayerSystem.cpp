@@ -293,6 +293,10 @@ void PlayerSystem::tick(World* world) {
 
 void PlayerSystem::eatMushroom(World* world) {
     world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_EAT);
+    world->create()->assign<FloatingPointsComponent>("1000",
+                                                     player->get<TransformComponent>()->getCenterX(),
+                                                     player->get<TransformComponent>()->y
+    );
     if (player->has<SuperMarioComponent>()) return;
     player->assign<SuperMarioComponent>();
     player->assign<AnimationComponent>(

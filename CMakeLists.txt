@@ -7,6 +7,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 find_package(SDL2_mixer REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
 
@@ -25,13 +26,14 @@ add_executable(smb
         src/systems/CallbackSystem.cpp
         src/systems/EnemySystem.cpp
         src/AABB.cpp
-        src/SoundManager.cpp src/systems/SoundSystem.cpp)
+        src/SoundManager.cpp
+        src/systems/SoundSystem.cpp)
 
 
 set_property(TARGET smb PROPERTY CXX_STANDARD 17)
 set_target_properties(smb PROPERTIES OUTPUT_NAME smb-${CMAKE_BUILD_TYPE})
 target_include_directories(smb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(smb PRIVATE ${SDL2_TTF_LIBRARY} ${SDL2_MIXER_LIBRARY} ${SDL2} ${SDL2_IMAGE} )
+target_link_libraries(smb PRIVATE ${SDL2_MIXER_LIBRARY} ${SDL2} ${SDL2_IMAGE} ${SDL2_TTF})
 
 file(COPY assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 file(COPY assets/music DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/music)

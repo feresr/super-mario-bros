@@ -1,6 +1,4 @@
 #include "systems/RenderSystem.h"
-#include <filesystem>
-#include <Components.h>
 
 auto dstRect = SDL_Rect();
 
@@ -11,6 +9,7 @@ void RenderSystem::tick(World* world) {
     renderEntities(world->find<TileComponent, TransformComponent, TextureComponent>());
     renderEntities(world->find<EnemyComponent, TransformComponent, TextureComponent>());
     renderEntities(world->find<PlayerComponent, TransformComponent, TextureComponent>());
+    renderText(world->find<TextComponent, TransformComponent>());
 
     //Editor
     auto tileSetEntity = world->findFirst<TileSetComponent>();
@@ -36,10 +35,16 @@ void RenderSystem::onAddedToWorld(World* world) {
                                     GAME_RESOLUTION_WIDTH,
                                     GAME_RESOLUTION_HEIGHT);
     camera = entity->get<CameraComponent>();
+
+    TTF_Init();
+    font = TTF_OpenFont("assets/font.ttf", 25);
+    TTF_SetFontKerning(font, 0);
 }
 
 void RenderSystem::onRemovedFromWorld(World* world) {
     world->destroy(world->findFirst<CameraComponent>());
+    TTF_CloseFont(font);
+    TTF_Quit();
 }
 
 RenderSystem::RenderSystem(SDL_Window* window, int gameResolutionWidth, int gameResolutionHeight)
@@ -74,5 +79,26 @@ void RenderSystem::renderEntities(std::vector<Entity*> entities) {
         dstRect.h = texture->h > 0 ? texture->h : transform->h;
 
         textureManager->renderTexture(texture->id, dstRect, texture->flipH, texture->flipV);
+    }
+}
+
+void RenderSystem::renderText(std::vector<Entity*> entities) {
+    for (auto text : entities) {
+        auto textComponent = text->get<TextComponent>();
+        auto transformComponent = text->get<TransformComponent>();
+        if (!textComponent->texture) {
+            SDL_Color color = {255, 255, 255};
+            SDL_Surface* surface = TTF_RenderText_Solid(font, textComponent->text.c_str(), color);
+            textComponent->texture = SDL_CreateTextureFromSurface(renderer, surface);
+            SDL_FreeSurface(surface);
+        }
+
+        dstRect.x = transformComponent->left() - camera->left();
+        dstRect.y = transformComponent->top() - camera->top();
+
+        dstRect.w = transformComponent->w;
+        dstRect.h = transformComponent->h;
+
+        SDL_RenderCopy(renderer, textComponent->texture, NULL, &dstRect);
     }
 }
