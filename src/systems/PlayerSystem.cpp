@@ -269,7 +269,10 @@ void PlayerSystem::tick(World* world) {
             if (!breakable->has<QuestionBlockComponent>() &&
                 AABBCollision(breakable->get<TransformComponent>(), transform)) {
                 createDebris(world, breakable->get<TransformComponent>());
-                breakable->clearComponents();
+                breakable->remove<SolidComponent>();
+                breakable->remove<TextureComponent>();
+                breakable->assign<BreakableComponent>();
+                breakable->get<BreakableComponent>()->hit = true;
             }
         }
     }

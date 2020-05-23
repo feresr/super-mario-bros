@@ -52,7 +52,7 @@ void createCoin(World* world, Entity* block) {
     coin->assign<CallbackComponent>([=]() {
         auto transform = coin->get<TransformComponent>();
         world->create()->assign<FloatingPointsComponent>("100", transform->getCenterX(), transform->y);
-        coin->clearComponents();
+        world->destroy(coin);
     }, 20);
 
     world->create()->assign<SoundComponent>(Sound::Id::COIN);
