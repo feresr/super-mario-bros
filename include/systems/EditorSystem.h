@@ -20,7 +20,7 @@ struct InputState {
 class EditorSystem : public System {
 
 public:
-    explicit EditorSystem() = default;
+    explicit EditorSystem();
 
     void onAddedToWorld(World* world) override;
 

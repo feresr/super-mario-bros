@@ -7,8 +7,8 @@ constexpr int SNES_RESOLUTION_WIDTH = 256;
 constexpr int SNES_RESOLUTION_HEIGHT = 224;
 
 constexpr int TILE_SIZE = 16;
-constexpr int MAP_WIDTH = 100;
-constexpr int MAP_HEIGHT = 14;
+constexpr int DEFAULT_MAP_WIDTH = 230;
+constexpr int DEFAULT_MAP_HEIGHT = 14;
 
 constexpr int SKY_RED = 90;
 constexpr int SKY_GREEN = 147;

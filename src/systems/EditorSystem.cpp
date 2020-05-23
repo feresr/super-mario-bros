@@ -7,13 +7,31 @@ void EditorSystem::onAddedToWorld(World* world) {
     SDL_AddEventWatch(InputWatcher, &inputState);
 
     auto* entity = world->create();
-    entity->assign<TileSetComponent>(MAP_WIDTH, MAP_HEIGHT);
+    entity->assign<TileSetComponent>(DEFAULT_MAP_WIDTH, DEFAULT_MAP_HEIGHT);
     tileSet = entity->get<TileSetComponent>();
 
     cursor = world->create();
     cursor->assign<TextureComponent>(TextureId::EMPTY);
     cursor->assign<TileComponent>();
     cursor->assign<TransformComponent>(0, 0, TILE_SIZE, TILE_SIZE);
+
+    //Load current map
+    std::ifstream infile("assets/map-generated", std::ios::out | std::ios::binary);
+    if (infile) {
+        int mw;
+        int mh;
+        infile.read(reinterpret_cast<char*>(&mw), sizeof(uint16_t));
+        infile.read(reinterpret_cast<char*>(&mh), sizeof(uint16_t));
+        TileType texture;
+
+        for (int x = 0; x < DEFAULT_MAP_WIDTH; x++) {
+            for (int y = 0; y < DEFAULT_MAP_HEIGHT; y++) {
+                infile.read(reinterpret_cast<char*>(&texture), sizeof(TileType));
+                tileSet->set(x, y, texture);
+            }
+        }
+        infile.close();
+    }
 }
 
 void EditorSystem::onRemovedFromWorld(World* world) {
@@ -66,6 +84,10 @@ void EditorSystem::saveToDisk() {
     }
     std::cout << "[EditorSystem] Map saved to disk" << std::endl;
     outfile.close();
+}
+
+EditorSystem::EditorSystem() {
+
 }
 
 

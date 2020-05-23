@@ -38,7 +38,7 @@ void RenderSystem::onAddedToWorld(World* world) {
 
     TTF_Init();
     font = TTF_OpenFont("assets/font.ttf", 25);
-    TTF_SetFontKerning(font, 0);
+    TTF_SetFontKerning(font, 1);
 }
 
 void RenderSystem::onRemovedFromWorld(World* world) {
