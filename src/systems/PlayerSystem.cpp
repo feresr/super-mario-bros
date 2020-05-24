@@ -70,6 +70,17 @@ void createDebris(World* world, TransformComponent* brickTransform) {
 }
 
 void onGameOver(World* world, Entity* player) {
+    if (player->has<SuperMarioComponent>()) {
+        //player time ran out while being Super Mario
+        player->remove<SuperMarioComponent>();
+        auto texture = player->get<TextureComponent>();
+        auto transform = player->get<TransformComponent>();
+        transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
+        transform->y += SUPER_MARIO_COLLIDER_HEIGHT - SMALL_MARIO_COLLIDER_HEIGHT;
+        texture->h = TILE_SIZE;
+        texture->offSetY = -1;
+    }
+    player->assign<DeadComponent>();
     world->create()->assign<SoundComponent>(Sound::Id::DEATH);
     auto music = world->findFirst<MusicComponent>();
     if (music) world->destroy(music);
@@ -177,6 +188,10 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
 }
 
 void PlayerSystem::tick(World* world) {
+    if (world->findFirst<GameOverComponent>()) {
+        world->findFirst<GameOverComponent>()->remove<GameOverComponent>();
+        onGameOver(world, player);
+    }
     if (player->has<DeadComponent>()) return;
 
     auto transform = player->get<TransformComponent>();

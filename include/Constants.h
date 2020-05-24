@@ -17,7 +17,7 @@ constexpr int SKY_BLUE = 254;
 constexpr int EDITOR_CAMERA_PAN_SPEED = 3;
 
 // Instantiate ${CAMERA_WORLD_OFFSET} tiles off camera from the left and right
-constexpr int CAMERA_WORLD_OFFSET = 3 * TILE_SIZE;
+constexpr int CAMERA_WORLD_OFFSET = 4 * TILE_SIZE;
 
 constexpr float GRAVITY = .040;
 constexpr float FRICTION = .94;

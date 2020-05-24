@@ -114,6 +114,8 @@ struct FrozenComponent : public Component {
 
 struct DeadComponent : public Component {
 };
+struct GameOverComponent : public Component {
+};
 
 struct AnimationComponent : public Component {
     explicit AnimationComponent(

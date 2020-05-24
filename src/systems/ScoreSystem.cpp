@@ -109,7 +109,19 @@ void ScoreSystem::tick(World* world) {
     }
 
     time--;
-    timeLeftEntity->assign<TextComponent>(std::to_string(time / 60));
+    if (time >= 0) {
+        auto final = std::string{};
+        auto timeString = std::to_string(time/60);
+        auto zeros = 3 - timeString.length();
+        while (zeros > 0) {
+            zeros--;
+            final += '0';
+        }
+        final += timeString;
+        timeLeftEntity->assign<TextComponent>(std::move(final));
+        if (time <= 0) timeLeftEntity->assign<GameOverComponent>();
+    }
+
 }
 
 void ScoreSystem::handleEvent(SDL_Event& event) {

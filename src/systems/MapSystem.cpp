@@ -35,7 +35,9 @@ void MapSystem::tick(World* world) {
                 );
             }
 
-            if (!entity->has<TextComponent>()) world->destroy(entity);
+            if (entity->has<PlayerComponent>()) continue;
+            if (entity->has<TextComponent>()) continue;
+            world->destroy(entity);
         }
     }
 
@@ -46,7 +48,7 @@ void MapSystem::tick(World* world) {
         if (tile->x > camera->right() + CAMERA_WORLD_OFFSET) break;
         auto entity = world->create();
         entity->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);
-        if (tile->hasProperty(VISIBLE))  {
+        if (tile->hasProperty(VISIBLE)) {
             entity->assign<TextureComponent>(tile->textureId);
         }
         if (tile->hasProperty(MASS)) entity->assign<GravityComponent>();
