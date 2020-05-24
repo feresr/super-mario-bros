@@ -31,6 +31,7 @@ add_executable(smb
         src/systems/ScoreSystem.cpp
         src/scenes/GameScene.cpp
         src/scenes/EditorScene.cpp
+        src/scenes/IntroScene.cpp
         )
 
 

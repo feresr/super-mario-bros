@@ -32,7 +32,7 @@ void RenderSystem::tick(World* world) {
 
 void RenderSystem::onAddedToWorld(World* world) {
     auto* entity = world->create();
-    SDL_SetRenderDrawColor(renderer, SKY_RED, SKY_GREEN, SKY_BLUE, 255);
+    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
     entity->assign<CameraComponent>(GAME_RESOLUTION_WIDTH / 2,
                                     GAME_RESOLUTION_HEIGHT / 2,
                                     GAME_RESOLUTION_WIDTH,
@@ -109,4 +109,10 @@ void RenderSystem::renderText(std::vector<Entity*> entities) {
 
         SDL_RenderCopy(renderer, textComponent->texture, NULL, &dstRect);
     }
+}
+
+void RenderSystem::setBackgroundColor(int r, int g, int b) {
+    this->r = r;
+    this->g = g;
+    this->b = b;
 }

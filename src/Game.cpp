@@ -1,8 +1,6 @@
 
 #include "Game.h"
 
-bool restartGame = false;
-
 void Game::init(const char* title, int width, int height, bool fullscreen) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
@@ -19,13 +17,17 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     }
 
     isRunning = true;
-    currentScene = new GameScene(window);
+    currentScene = new IntroScene(window);
 }
 
 
 void Game::update() {
     currentScene->update();
-    if (restartGame) {}
+    if (dynamic_cast<IntroScene*>(currentScene)) {
+        SDL_Delay(3000);
+        delete currentScene;
+        currentScene = new GameScene(window);
+    }
 }
 
 bool Game::running() const { return isRunning; }

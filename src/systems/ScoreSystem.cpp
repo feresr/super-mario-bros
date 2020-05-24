@@ -4,9 +4,9 @@ void ScoreSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);
 
     auto paddingH = 22;
-    auto paddingV = 12;
-    auto textHeight = 10;
-    auto spacingV = -3;
+    auto paddingV = 16;
+    auto textHeight = 8;
+    auto spacingV = -0;
 
     auto availableWidth = SNES_RESOLUTION_WIDTH - paddingH * 2;
     auto columns = 4;
@@ -14,7 +14,7 @@ void ScoreSystem::onAddedToWorld(World* world) {
 
     //FIRST COLUMN (left aligned)
     auto marioEntity = world->create();
-    marioEntity->assign<TextComponent>("mario");
+    marioEntity->assign<TextComponent>("MARIO");
     marioEntity->assign<TransformComponent>(paddingH, paddingV, 40, textHeight);
 
     scoreEntity = world->create();
@@ -42,25 +42,25 @@ void ScoreSystem::onAddedToWorld(World* world) {
     coinIco->assign<TextComponent>("");
     coinIco->assign<TransformComponent>(
             paddingH + columnWidth + (columnWidth - w) / 2 - 4,
-            paddingV + textHeight + spacingV + 1, 5, 8
+            paddingV + textHeight + spacingV, 5, 8
     );
 
     // THIRD COLUMN (center aligned)
     auto worldEntity = world->create();
-    worldEntity->assign<TextComponent>("world");
+    worldEntity->assign<TextComponent>("WORLD");
     w = 40;
     worldEntity->assign<TransformComponent>(paddingH + columnWidth * 2 + (columnWidth - w) / 2,
                                             paddingV, w, textHeight);
 
     auto worldNumberEntity = world->create();
-    worldNumberEntity->assign<TextComponent>("1 1");
-    w = 20;
+    worldNumberEntity->assign<TextComponent>("1-1");
+    w = 24;
     worldNumberEntity->assign<TransformComponent>(paddingH + columnWidth * 2 + (columnWidth - w) / 2,
                                                   paddingV + textHeight + spacingV, w, textHeight);
 
     // FOURTH COLUMN (right aligned)
     auto timeEntity = world->create();
-    timeEntity->assign<TextComponent>("time");
+    timeEntity->assign<TextComponent>("TIME");
     timeEntity->assign<TransformComponent>(SNES_RESOLUTION_WIDTH - paddingH - 32, paddingV, 32, textHeight);
 
     timeLeftEntity = world->create();

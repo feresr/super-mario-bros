@@ -17,6 +17,8 @@ public:
 
     void onAddedToWorld(World* world) override;
 
+    void setBackgroundColor(int r, int g, int b);
+
     void tick(World* world) override;
 
     void onRemovedFromWorld(World* world) override;
@@ -35,5 +37,9 @@ private:
 
     void renderText(std::vector<Entity*> entities);
 
-    TTF_Font * font;
+    TTF_Font* font;
+
+    int r = SKY_RED;
+    int g = SKY_GREEN;
+    int b = SKY_BLUE;
 };

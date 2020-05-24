@@ -6,6 +6,7 @@
 #include "ecs/ecs.h"
 #include "scenes/GameScene.h"
 #include "scenes/EditorScene.h"
+#include "scenes/IntroScene.h"
 #include "Constants.h"
 
 class Game {
