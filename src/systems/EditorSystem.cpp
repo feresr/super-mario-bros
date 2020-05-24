@@ -22,6 +22,9 @@ void EditorSystem::onAddedToWorld(World* world) {
         int mh;
         infile.read(reinterpret_cast<char*>(&mw), sizeof(uint16_t));
         infile.read(reinterpret_cast<char*>(&mh), sizeof(uint16_t));
+
+        world->create()->assign<TileMapComponent>(mw, mh);
+
         TileType texture;
 
         for (int x = 0; x < DEFAULT_MAP_WIDTH; x++) {

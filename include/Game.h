@@ -4,18 +4,8 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "ecs/ecs.h"
-#include "systems/EditorSystem.h"
-#include "systems/RenderSystem.h"
-#include "systems/EditorSystem.h"
-#include "systems/PhysicsSystem.h"
-#include "systems/CallbackSystem.h"
-#include "systems/EnemySystem.h"
-#include "systems/TileSystem.h"
-#include "systems/MapSystem.h"
-#include "systems/AnimationSystem.h"
-#include "systems/PlayerSystem.h"
-#include "systems/SoundSystem.h"
-#include "systems/ScoreSystem.h"
+#include "scenes/GameScene.h"
+#include "scenes/EditorScene.h"
 #include "Constants.h"
 
 class Game {
@@ -36,6 +26,5 @@ private:
     bool isRunning;
     SDL_Window* window;
     SDL_Event event;
-    World world;
-    EditorSystem* editorSystem;
+    Scene* currentScene;
 };

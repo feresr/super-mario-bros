@@ -140,7 +140,7 @@ void TileSystem::tick(World* world) {
         auto textLength = pointsComponent->text.length();
         auto pointEntity = world->create();
         pointEntity->assign<TextComponent>(std::move(pointsComponent->text));
-        auto w = textLength * 2;
+        auto w = textLength * 3;
         pointEntity->assign<TransformComponent>((pointsComponent->x - w / 2) - camera->left(), pointsComponent->y, w, 14);
         pointEntity->assign<KineticComponent>(0, 0);
         pointEntity->get<KineticComponent>()->speedY = -2.0f;

@@ -8,6 +8,8 @@
 
 class PlayerSystem : public System {
 
+    std::function<void(void)> gameOverCallback;
+
     Entity* player;
     CameraComponent* camera;
 
@@ -30,9 +32,14 @@ class PlayerSystem : public System {
 
     void onRemovedFromWorld(World* world) override;
 
+    void onGameOver(World* world, Entity* player);
+
     ~PlayerSystem() override = default;
 
-private:
     void setAnimation(ANIMATION_STATE animationState);
+
     void eatMushroom(World* world);
+
+public:
+    PlayerSystem(std::function<void(void)> gameOverCallback) : gameOverCallback{gameOverCallback} {}
 };

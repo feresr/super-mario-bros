@@ -69,7 +69,7 @@ void createDebris(World* world, TransformComponent* brickTransform) {
     world->create()->assign<SoundComponent>(Sound::Id::BLOCK_BREAK);
 }
 
-void onGameOver(World* world, Entity* player) {
+void PlayerSystem::onGameOver(World* world, Entity* player) {
     if (player->has<SuperMarioComponent>()) {
         //player time ran out while being Super Mario
         player->remove<SuperMarioComponent>();
@@ -109,6 +109,8 @@ void onGameOver(World* world, Entity* player) {
         kinetic->speedX = 0.0f;
         kinetic->accY = 0.0f;
         kinetic->accX = 0.0f;
+
+        player->assign<CallbackComponent>([=]() { gameOverCallback(); }, 200);
     }, 50);
 }
 

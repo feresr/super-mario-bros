@@ -29,6 +29,8 @@ add_executable(smb
         src/SoundManager.cpp
         src/systems/SoundSystem.cpp
         src/systems/ScoreSystem.cpp
+        src/scenes/GameScene.cpp
+        src/scenes/EditorScene.cpp
         )
 
 

@@ -1,6 +1,8 @@
 
 #include "Game.h"
 
+bool restartGame = false;
+
 void Game::init(const char* title, int width, int height, bool fullscreen) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
@@ -17,24 +19,13 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     }
 
     isRunning = true;
-    world.registerSystem(new SoundSystem());
-    world.registerSystem(new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT));
-    world.registerSystem(new PlayerSystem());
-    world.registerSystem(new MapSystem());
-    world.registerSystem(new EnemySystem());
-    world.registerSystem(new CallbackSystem());
-    world.registerSystem(new AnimationSystem());
-    world.registerSystem(new ScoreSystem());
-    world.registerSystem(new TileSystem());
-    world.registerSystem(new PhysicsSystem());
+    currentScene = new GameScene(window);
 }
 
-void gameOver() {
-    SDL_Delay(800);
-}
 
 void Game::update() {
-    world.tick();
+    currentScene->update();
+    if (restartGame) {}
 }
 
 bool Game::running() const { return isRunning; }
@@ -46,17 +37,17 @@ void Game::handleEvents() {
             isRunning = false;
             return;
         }
-        world.handleEvent(event);
+        currentScene->handleEvents(event);
         switch (event.type) {
             case SDL_KEYUP:
                 switch (event.key.keysym.scancode) {
                     case SDL_SCANCODE_E:
-                        if (editorSystem) {
-                            world.unregisterSystem(editorSystem);
-                            editorSystem = nullptr;
+                        if (dynamic_cast<GameScene*>(currentScene)) {
+                            delete currentScene;
+                            currentScene = new EditorScene(window);
                         } else {
-                            editorSystem = new EditorSystem();
-                            world.registerSystem(editorSystem);
+                            delete currentScene;
+                            currentScene = new GameScene(window);
                         }
                         break;
                     default:
@@ -65,10 +56,10 @@ void Game::handleEvents() {
                 break;
         }
     }
-
 }
 
 void Game::clean() {
+    delete currentScene;
     if (window) SDL_DestroyWindow(window);
     SDL_Quit();
     std::cout << "Game cleaned" << std::endl;
