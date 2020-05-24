@@ -24,7 +24,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 void Game::update() {
     currentScene->update();
     if (dynamic_cast<IntroScene*>(currentScene)) {
-        SDL_Delay(3000);
+        SDL_Delay(500);
         delete currentScene;
         currentScene = new GameScene(window);
     }

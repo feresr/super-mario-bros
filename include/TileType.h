@@ -14,7 +14,9 @@ enum Properties {
     SPAWN = 64,
     COIN = 128,
     ENEMY = 256,
-    SPAWN_ONE_UP = 512
+    SPAWN_ONE_UP = 512,
+    POLE = 1024,
+    FLAG = 2048,
 };
 
 struct TileType {
@@ -71,9 +73,9 @@ namespace Tiles {
                                         TextureId::COIN_1};
 
     static TileType FLAG_TOP{TextureId::FLAG_TOP, VISIBLE};
-    static TileType FLAG_RIGHT{TextureId::FLAG_RIGHT, VISIBLE};
-    static TileType FLAG_LEFT{TextureId::FLAG_LEFT, VISIBLE};
-    static TileType FLAG_POLE{TextureId::FLAG_POLE, VISIBLE};
+    static TileType FLAG_RIGHT{TextureId::FLAG_RIGHT, VISIBLE | FLAG};
+    static TileType FLAG_LEFT{TextureId::FLAG_LEFT, VISIBLE | FLAG};
+    static TileType FLAG_POLE{TextureId::FLAG_POLE, VISIBLE | POLE};
 
     static TileType CASTLE_1{TextureId::CASTLE_1, VISIBLE};
     static TileType CASTLE_2{TextureId::CASTLE_2, VISIBLE};
@@ -81,10 +83,10 @@ namespace Tiles {
     static TileType CASTLE_4{TextureId::CASTLE_4, VISIBLE};
     static TileType CASTLE_5{TextureId::CASTLE_5, VISIBLE};
     static TileType CASTLE_6{TextureId::CASTLE_6, VISIBLE};
-    static TileType CASTLE_7{TextureId::CASTLE_7, VISIBLE};
+    static TileType CASTLE_7{TextureId::CASTLE_DOOR, VISIBLE};
     static TileType CASTLE_8{TextureId::CASTLE_8, VISIBLE};
 
     static TileType QUESITON_ONE_UP{TextureId::QUESTION_BLOCK_1,
-                                                      SOLID | BREAKABLE | QUESTION | SPAWN_ONE_UP,
-                                                      TextureId::ONE_UP};
+                                    SOLID | BREAKABLE | QUESTION | SPAWN_ONE_UP,
+                                    TextureId::ONE_UP};
 }

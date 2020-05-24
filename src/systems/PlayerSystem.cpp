@@ -200,20 +200,22 @@ void PlayerSystem::tick(World* world) {
     auto texture = player->get<TextureComponent>();
 
     if (player->has<FrozenComponent>()) {
-        if ((texture->id == TextureId::SUPER_MARIO_STAND ||
-             player->get<TextureComponent>()->id == TextureId::MARIO_GROWING) &&
-            transform->h != SUPER_MARIO_COLLIDER_HEIGHT) {
-            texture->h = TILE_SIZE * 2;
-            transform->h = SUPER_MARIO_COLLIDER_HEIGHT;
-            transform->y -= SUPER_MARIO_COLLIDER_HEIGHT - SMALL_MARIO_COLLIDER_HEIGHT;
-            texture->offSetY = -3;
-        }
-        if (texture->id == TextureId::MARIO_STAND
-            && transform->h != SMALL_MARIO_COLLIDER_HEIGHT) {
-            texture->h = TILE_SIZE;
-            texture->offSetY = -1;
-            transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
-            transform->y += SUPER_MARIO_COLLIDER_HEIGHT - SMALL_MARIO_COLLIDER_HEIGHT;
+        if (texture) {
+            if ((texture->id == TextureId::SUPER_MARIO_STAND ||
+                 player->get<TextureComponent>()->id == TextureId::MARIO_GROWING) &&
+                transform->h != SUPER_MARIO_COLLIDER_HEIGHT) {
+                texture->h = TILE_SIZE * 2;
+                transform->h = SUPER_MARIO_COLLIDER_HEIGHT;
+                transform->y -= SUPER_MARIO_COLLIDER_HEIGHT - SMALL_MARIO_COLLIDER_HEIGHT;
+                texture->offSetY = -3;
+            }
+            if (texture->id == TextureId::MARIO_STAND
+                && transform->h != SMALL_MARIO_COLLIDER_HEIGHT) {
+                texture->h = TILE_SIZE;
+                texture->offSetY = -1;
+                transform->h = SMALL_MARIO_COLLIDER_HEIGHT;
+                transform->y += SUPER_MARIO_COLLIDER_HEIGHT - SMALL_MARIO_COLLIDER_HEIGHT;
+            }
         }
         return;
     }
@@ -268,6 +270,7 @@ void PlayerSystem::tick(World* world) {
             if (enemy->get<EnemyComponent>()->type == Enemy::TURTLE_SHELL) continue; // ?
             if (!player->has<BlinkingComponent>()) {
                 if (player->has<SuperMarioComponent>()) {
+                    currentState = ANIMATION_STATE::STANDING;
                     shrink(world, player);
                 } else {
                     onGameOver(world, player);
@@ -299,6 +302,7 @@ void PlayerSystem::tick(World* world) {
     // Eat mushrooms
     for (auto collectible : world->find<CollectibleComponent, TransformComponent>()) {
         if (AABBCollision(collectible->get<TransformComponent>(), player->get<TransformComponent>())) {
+            currentState = ANIMATION_STATE::STANDING;
             eatMushroom(world, collectible->get<TextureComponent>()->id == TextureId::ONE_UP);
             world->destroy(collectible);
         }
@@ -347,7 +351,9 @@ void PlayerSystem::eatMushroom(World* world, bool oneup) {
             }, 6, false, false, false);
 
     player->assign<FrozenComponent>();
-    player->assign<CallbackComponent>([&]() { player->remove<FrozenComponent>(); }, 60);
+    player->assign<CallbackComponent>([&]() {
+        player->remove<FrozenComponent>();
+    }, 60);
 }
 
 void PlayerSystem::handleEvent(SDL_Event& event) {

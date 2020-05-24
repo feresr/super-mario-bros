@@ -65,6 +65,11 @@ struct SolidComponent : public Component {
 struct CollectibleComponent : public Component {
 };
 
+struct FlagPoleComponent : public Component {
+};
+struct FlagComponent : public Component {
+};
+
 struct SuperMarioComponent : public Component {
 };
 
@@ -88,9 +93,14 @@ private:
 };
 
 struct KineticComponent : public Component {
-    KineticComponent() {}
+    KineticComponent() = default;
 
-    KineticComponent(float accX, float accY) : speedX{accX}, speedY{accY} {}
+    KineticComponent(float speedX,
+                     float speedY,
+                     float accX = 0.0,
+                     float accY = 0.0
+    ) : speedX{speedX}, speedY{speedY}, accX{accX}, accY{accY} {}
+
 
     float speedX = 0;
     float speedY = 0;
@@ -241,7 +251,8 @@ private:
 };
 
 struct MusicComponent : public Component {
-    explicit MusicComponent() = default;
+    explicit MusicComponent(Music::Id music) : music{music} {};
+    Music::Id music;
 };
 
 struct SoundComponent : public Component {

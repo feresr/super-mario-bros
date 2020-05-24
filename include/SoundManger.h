@@ -13,7 +13,15 @@ namespace Sound {
         COIN,
         DEATH,
         SHRINK,
-        ONE_UP,
+        ONE_UP
+    };
+}
+
+namespace Music {
+    enum Id {
+        NONE,
+        BACKGROUND,
+        LEVEL_END
     };
 }
 
@@ -23,12 +31,13 @@ public:
     SoundManager();
 
     void playSound(Sound::Id sound);
-    void playMusic();
+    void playMusic(Music::Id sound);
     void stopMusic();
 
     ~SoundManager();
 
     std::unordered_map<Sound::Id, Mix_Chunk*> sounds;
+    std::unordered_map<Music::Id, Mix_Music*> musics;
 };
 
 

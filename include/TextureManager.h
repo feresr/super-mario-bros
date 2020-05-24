@@ -74,7 +74,7 @@ enum TextureId {
     CASTLE_4,
     CASTLE_5,
     CASTLE_6,
-    CASTLE_7,
+    CASTLE_DOOR,
     CASTLE_8,
     COIN_SMALL_1,
     COIN_SMALL_2,
@@ -84,6 +84,8 @@ enum TextureId {
     ONEHUNDRED,
     TWOHUNDRED,
     THOUSAND,
+    MARIO_FLAG_1,
+    MARIO_FLAG_2,
 };
 
 class TextureManager {

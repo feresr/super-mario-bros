@@ -86,9 +86,8 @@ void PhysicsSystem::tick(World* world) {
     for (auto entity : entities) entity->get<KineticComponent>()->accY += GRAVITY;
 
     // Kinetic-Kinetic collisions
-    entities = world->find<TransformComponent, KineticComponent>();
+    entities = world->find<TransformComponent, KineticComponent, SolidComponent>();
     for (auto entity : entities) {
-        if (!entity->has<SolidComponent>()) continue;
         if (entity->has<BlinkingComponent>()) continue;
         auto transform = entity->get<TransformComponent>();
         auto kinetic = entity->get<KineticComponent>();
@@ -140,6 +139,7 @@ void PhysicsSystem::tick(World* world) {
                     tileMapComponent->get(futureRight, futureTop),
             };
             for (auto tile : coordinates) {
+                if (tile == entity) continue;
                 if (!tile) continue;
                 if (!(tile->get<SolidComponent>())) continue;
                 switch (checkCollisionY(tile, transform, kinetic)) {
@@ -170,6 +170,7 @@ void PhysicsSystem::tick(World* world) {
             };
 
             for (auto tile : coordinates) {
+                if (tile == entity) continue;
                 if (!tile) continue;
                 if (!(tile->get<SolidComponent>())) continue;
                 switch (checkCollisionX(tile, transform, kinetic)) {

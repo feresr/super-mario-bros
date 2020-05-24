@@ -25,8 +25,7 @@ void MapSystem::tick(World* world) {
         auto transform = entity->get<TransformComponent>();
         if (transform->right() < camera->left() - CAMERA_WORLD_OFFSET
             || transform->left() > camera->right() + CAMERA_WORLD_OFFSET
-            || transform->top() > camera->bottom()
-                ) {
+            || transform->top() > camera->bottom()) {
             if (entity->has<TileComponent>()) {
                 tileMap->set(
                         (int) (transform->getCenterX() / TILE_SIZE),
@@ -37,6 +36,7 @@ void MapSystem::tick(World* world) {
 
             if (entity->has<PlayerComponent>()) continue;
             if (entity->has<TextComponent>()) continue;
+            if (entity->has<FlagPoleComponent>()) continue;
             world->destroy(entity);
         }
     }
@@ -72,7 +72,6 @@ void MapSystem::tick(World* world) {
         }
 
         if (tile->hasProperty(ENEMY)) {
-
             if (tile->textureId == TextureId::GOOMBA) {
                 entity->assign<WalkComponent>();
                 entity->assign<AnimationComponent>(std::vector<TextureId>{tile->textureId},
@@ -103,6 +102,17 @@ void MapSystem::tick(World* world) {
                     (int) (transform->getCenterY() / TILE_SIZE),
                     entity
             );
+        }
+
+        if (tile->hasProperty(POLE)) entity->assign<FlagPoleComponent>();
+        if (tile->hasProperty(FLAG)) {
+            entity->assign<FlagComponent>();
+            if (tile->textureId == TextureId::FLAG_RIGHT) {
+                auto pole = world->create();
+                pole->assign<TransformComponent>(tile->x, tile->y, tile->w, tile->h);
+                pole->assign<TileComponent>();
+                pole->assign<TextureComponent>(TextureId::FLAG_POLE);
+            }
         }
         if (tile->hasProperty(SOLID)) entity->assign<SolidComponent>();
         map.tiles.pop();

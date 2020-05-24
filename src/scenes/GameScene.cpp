@@ -10,6 +10,7 @@ GameScene::GameScene(SDL_Window* window) {
     world->registerSystem(new CallbackSystem());
     world->registerSystem(new AnimationSystem());
     world->registerSystem(new ScoreSystem());
+    world->registerSystem(new FlagSystem());
     world->registerSystem(new TileSystem());
     world->registerSystem(new PhysicsSystem());
 }

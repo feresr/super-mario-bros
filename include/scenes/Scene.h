@@ -11,6 +11,7 @@
 #include "systems/AnimationSystem.h"
 #include "systems/PlayerSystem.h"
 #include "systems/SoundSystem.h"
+#include "systems/FlagSystem.h"
 #include "systems/ScoreSystem.h"
 #include "Constants.h"
 

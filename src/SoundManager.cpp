@@ -1,11 +1,9 @@
 #include "SoundManger.h"
 
-Mix_Music* music;
 
 SoundManager::SoundManager() {
     //Initialize SDL_mixer
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024);
-    music = Mix_LoadMUS("assets/music/overworld.wav");
 
     sounds.insert_or_assign(Sound::Id::JUMP, Mix_LoadWAV("assets/music/jump.wav"));
     sounds.insert_or_assign(Sound::Id::BLOCK_HIT, Mix_LoadWAV("assets/music/blockhit.wav"));
@@ -18,7 +16,8 @@ SoundManager::SoundManager() {
     sounds.insert_or_assign(Sound::Id::SHRINK, Mix_LoadWAV("assets/music/shrink.wav"));
     sounds.insert_or_assign(Sound::Id::ONE_UP, Mix_LoadWAV("assets/music/oneup.wav"));
 
-
+    musics.insert_or_assign(Music::Id::BACKGROUND, Mix_LoadMUS("assets/music/overworld.wav"));
+    musics.insert_or_assign(Music::Id::LEVEL_END, Mix_LoadMUS("assets/music/levelend.wav"));
 }
 
 void SoundManager::playSound(Sound::Id sound) {
@@ -27,8 +26,12 @@ void SoundManager::playSound(Sound::Id sound) {
     Mix_PlayChannel(-1, chunk, 0);
 }
 
-void SoundManager::playMusic() {
-    if (!Mix_PlayingMusic()) Mix_PlayMusic(music, -1);
+void SoundManager::playMusic(Music::Id sound) {
+    stopMusic();
+    if (sound == Music::Id::NONE) return;
+    auto loops = -1;
+    if (sound == Music::Id::LEVEL_END) loops = 1;
+    Mix_PlayMusic(musics.at(sound), loops);
 }
 
 void SoundManager::stopMusic() {
@@ -38,5 +41,6 @@ void SoundManager::stopMusic() {
 SoundManager::~SoundManager() {
     Mix_PauseMusic();
     Mix_CloseAudio();
-    Mix_FreeMusic(music);
+    for (auto s : sounds) Mix_FreeChunk(s.second);
+    for (auto m : musics) Mix_FreeMusic(m.second);
 }

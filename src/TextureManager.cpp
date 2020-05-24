@@ -88,7 +88,7 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(CASTLE_4, new SDL_Rect{0, 85, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(CASTLE_5, new SDL_Rect{17, 85, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(CASTLE_6, new SDL_Rect{34, 85, TILE_SIZE, TILE_SIZE});
-    textures.insert_or_assign(CASTLE_7, new SDL_Rect{17, 102, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(CASTLE_DOOR, new SDL_Rect{17, 102, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(CASTLE_8, new SDL_Rect{34, 102, TILE_SIZE, TILE_SIZE});
 
     textures.insert_or_assign(COIN_SMALL_1, new SDL_Rect{119, 254, 5, 8});
@@ -101,6 +101,8 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(ONEHUNDRED, new SDL_Rect{153, 287, 11, 8});
     textures.insert_or_assign(TWOHUNDRED, new SDL_Rect{153, 279, 11, 8});
     textures.insert_or_assign(THOUSAND, new SDL_Rect{153, 287, 15, 8});
+    textures.insert_or_assign(MARIO_FLAG_1, new SDL_Rect{170, 170, TILE_SIZE, TILE_SIZE});
+    textures.insert_or_assign(MARIO_FLAG_2, new SDL_Rect{187, 170, TILE_SIZE, TILE_SIZE});
 }
 
 void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {

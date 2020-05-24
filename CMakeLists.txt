@@ -25,6 +25,7 @@ add_executable(smb
         src/systems/TileSystem.cpp
         src/systems/CallbackSystem.cpp
         src/systems/EnemySystem.cpp
+        src/systems/FlagSystem.cpp
         src/AABB.cpp
         src/SoundManager.cpp
         src/systems/SoundSystem.cpp
