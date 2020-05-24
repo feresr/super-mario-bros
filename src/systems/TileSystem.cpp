@@ -56,7 +56,7 @@ void createCoin(World* world, Entity* block) {
     coin->assign<KineticComponent>(0.0f, -20.0f);
     coin->assign<CallbackComponent>([=]() {
         auto transform = coin->get<TransformComponent>();
-        world->create()->assign<FloatingPointsComponent>("100", transform->getCenterX(), transform->y);
+        world->create()->assign<FloatingPointsComponent>(Points::ONEHOUNDRED, transform->getCenterX(), transform->y);
         world->create()->assign<AddScoreComponent>(100, true);
         world->destroy(coin);
     }, 20);
@@ -137,20 +137,5 @@ void TileSystem::tick(World* world) {
         entity->remove<TopCollisionComponent>();
         entity->remove<LeftCollisionComponent>();
         entity->remove<RightCollisionComponent>();
-    }
-
-
-    for (auto points: world->find<FloatingPointsComponent>()) {
-        auto camera = world->findFirst<CameraComponent>()->get<CameraComponent>();
-        auto pointsComponent = points->get<FloatingPointsComponent>();
-        auto textLength = pointsComponent->text.length();
-        auto pointEntity = world->create();
-        pointEntity->assign<TextComponent>(std::move(pointsComponent->text));
-        auto w = textLength * 3;
-        pointEntity->assign<TransformComponent>((pointsComponent->x - w / 2) - camera->left(), pointsComponent->y, w, 14);
-        pointEntity->assign<KineticComponent>(0, 0);
-        pointEntity->get<KineticComponent>()->speedY = -2.0f;
-        pointEntity->assign<CallbackComponent>([=]() { world->destroy(pointEntity); }, 50);
-        world->destroy(points);
     }
 }

@@ -111,7 +111,7 @@ void ScoreSystem::tick(World* world) {
     time--;
     if (time >= 0) {
         auto final = std::string{};
-        auto timeString = std::to_string(time/60);
+        auto timeString = std::to_string(time / 60);
         auto zeros = 3 - timeString.length();
         while (zeros > 0) {
             zeros--;
@@ -122,6 +122,36 @@ void ScoreSystem::tick(World* world) {
         if (time <= 0) timeLeftEntity->assign<GameOverComponent>();
     }
 
+    for (auto points: world->find<FloatingPointsComponent>()) {
+        auto camera = world->findFirst<CameraComponent>()->get<CameraComponent>();
+        auto pointsComponent = points->get<FloatingPointsComponent>();
+
+        auto pointEntity = world->create();
+
+        TextureId textureId;
+        switch (pointsComponent->points) {
+            case Points::ONEHOUNDRED:
+                textureId = TextureId::ONEHUNDRED;
+                break;
+            case Points::TWOHOUNDRED:
+                textureId = TextureId::TWOHUNDRED;
+                break;
+            case Points::ONETHOUSAND:
+                textureId = TextureId::THOUSAND;
+                break;
+            case Points::ONEUP:
+                textureId = TextureId::ONE_UP_LABEL;
+                break;
+        }
+        pointEntity->assign<TextureComponent>(textureId);
+        pointEntity->assign<TextComponent>("");
+        pointEntity->assign<TransformComponent>((pointsComponent->x - camera->left()),
+                                                pointsComponent->y, 0, 0);
+        pointEntity->assign<KineticComponent>(0, 0);
+        pointEntity->get<KineticComponent>()->speedY = -2.0f;
+        pointEntity->assign<CallbackComponent>([=]() { world->destroy(pointEntity); }, 50);
+        world->destroy(points);
+    }
 }
 
 void ScoreSystem::handleEvent(SDL_Event& event) {

@@ -80,6 +80,10 @@ enum TextureId {
     COIN_SMALL_2,
     COIN_SMALL_3,
     ONE_UP,
+    ONE_UP_LABEL,
+    ONEHUNDRED,
+    TWOHUNDRED,
+    THOUSAND,
 };
 
 class TextureManager {

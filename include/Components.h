@@ -256,11 +256,18 @@ struct TileComponent : public Component {
 struct CrushedComponent : public Component {
 };
 
-struct FloatingPointsComponent : public Component {
-    explicit FloatingPointsComponent(std::string&& points, int x, int y) :
-            text{std::move(points)}, x{x}, y{y} {}
+enum Points {
+    ONEHOUNDRED,
+    TWOHOUNDRED,
+    ONEUP,
+    ONETHOUSAND
+};
 
-    std::string text;
+struct FloatingPointsComponent : public Component {
+    explicit FloatingPointsComponent(Points points, int x, int y) :
+            points{points}, x{x}, y{y} {}
+
+    Points points;
     int x;
     int y;
 };

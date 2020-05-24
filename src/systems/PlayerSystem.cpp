@@ -314,17 +314,20 @@ void PlayerSystem::tick(World* world) {
 }
 
 void PlayerSystem::eatMushroom(World* world, bool oneup) {
-    world->create()->assign<FloatingPointsComponent>("1000",
-                                                     player->get<TransformComponent>()->getCenterX(),
-                                                     player->get<TransformComponent>()->y
-    );
-    world->create()->assign<AddScoreComponent>(1000);
-
     if (oneup) {
         world->create()->assign<SoundComponent>(Sound::Id::ONE_UP);
+        world->create()->assign<FloatingPointsComponent>(Points::ONEUP,
+                                                         player->get<TransformComponent>()->getCenterX(),
+                                                         player->get<TransformComponent>()->y
+        );
         return;
     } else {
         world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_EAT);
+        world->create()->assign<FloatingPointsComponent>(Points::ONETHOUSAND,
+                                                         player->get<TransformComponent>()->getCenterX(),
+                                                         player->get<TransformComponent>()->y
+        );
+        world->create()->assign<AddScoreComponent>(1000);
     }
 
     if (player->has<SuperMarioComponent>()) return;

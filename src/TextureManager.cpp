@@ -96,11 +96,18 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(COIN_SMALL_3, new SDL_Rect{124, 262, 5, 8});
 
     textures.insert_or_assign(ONE_UP, new SDL_Rect{136, 204, TILE_SIZE, TILE_SIZE});
+
+    textures.insert_or_assign(ONE_UP_LABEL, new SDL_Rect{184, 271, 16, 7});
+    textures.insert_or_assign(ONEHUNDRED, new SDL_Rect{153, 287, 11, 8});
+    textures.insert_or_assign(TWOHUNDRED, new SDL_Rect{153, 279, 11, 8});
+    textures.insert_or_assign(THOUSAND, new SDL_Rect{153, 287, 15, 8});
 }
 
 void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {
     auto txt = textures.find(textureId);
     if (txt != textures.end()) {
+        if (dstRect.w == 0) dstRect.w = txt->second->w;
+        if (dstRect.h == 0) dstRect.h = txt->second->h;
         SDL_RenderCopyEx(renderer, texture, txt->second, &dstRect, 0.0, nullptr,
                          (SDL_RendererFlip) (SDL_FLIP_NONE | (SDL_FLIP_HORIZONTAL * flipH) |
                                              (SDL_FLIP_VERTICAL * flipV)));
