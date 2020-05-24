@@ -27,12 +27,15 @@ void MapSystem::tick(World* world) {
             || transform->left() > camera->right() + CAMERA_WORLD_OFFSET
             || transform->top() > camera->bottom()
                 ) {
-            tileMap->set(
-                    (int) (transform->getCenterX() / TILE_SIZE),
-                    (int) (transform->getCenterY() / TILE_SIZE),
-                    nullptr
-            );
-            world->destroy(entity);
+            if (entity->has<TileComponent>()) {
+                tileMap->set(
+                        (int) (transform->getCenterX() / TILE_SIZE),
+                        (int) (transform->getCenterY() / TILE_SIZE),
+                        nullptr
+                );
+            }
+
+            if (!entity->has<TextComponent>()) world->destroy(entity);
         }
     }
 

@@ -76,6 +76,9 @@ enum TextureId {
     CASTLE_6,
     CASTLE_7,
     CASTLE_8,
+    COIN_SMALL_1,
+    COIN_SMALL_2,
+    COIN_SMALL_3,
 };
 
 class TextureManager {

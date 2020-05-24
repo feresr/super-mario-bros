@@ -9,6 +9,7 @@ void RenderSystem::tick(World* world) {
     renderEntities(world->find<TileComponent, TransformComponent, TextureComponent>());
     renderEntities(world->find<EnemyComponent, TransformComponent, TextureComponent>());
     renderEntities(world->find<PlayerComponent, TransformComponent, TextureComponent>());
+    renderEntities(world->find<TextComponent, TransformComponent, TextureComponent>(), false);
     renderText(world->find<TextComponent, TransformComponent>());
 
     //Editor
@@ -68,12 +69,17 @@ RenderSystem::~RenderSystem() {
     SDL_DestroyRenderer(renderer);
 }
 
-void RenderSystem::renderEntities(std::vector<Entity*> entities) {
+void RenderSystem::renderEntities(std::vector<Entity*> entities, bool followCamera) {
     for (auto entity : entities) {
         auto transform = entity->get<TransformComponent>();
         auto texture = entity->get<TextureComponent>();
-        dstRect.x = transform->left() - camera->left() + texture->offSetX;
-        dstRect.y = transform->top() - camera->top() + texture->offSetY;
+        if (followCamera) {
+            dstRect.x = transform->left() - camera->left() + texture->offSetX;
+            dstRect.y = transform->top() - camera->top() + texture->offSetY;
+        } else {
+            dstRect.x = transform->left() + texture->offSetX;
+            dstRect.y = transform->top() + texture->offSetY;
+        }
 
         dstRect.w = texture->w > 0 ? texture->w : transform->w;
         dstRect.h = texture->h > 0 ? texture->h : transform->h;
@@ -93,8 +99,8 @@ void RenderSystem::renderText(std::vector<Entity*> entities) {
             SDL_FreeSurface(surface);
         }
 
-        dstRect.x = transformComponent->left() - camera->left();
-        dstRect.y = transformComponent->top() - camera->top();
+        dstRect.x = transformComponent->left();
+        dstRect.y = transformComponent->top();
 
         dstRect.w = transformComponent->w;
         dstRect.h = transformComponent->h;

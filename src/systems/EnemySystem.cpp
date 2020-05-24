@@ -57,6 +57,7 @@ void turtleShellInteractions(World* world, Entity* shell) {
             auto transform = other->get<TransformComponent>();
             if (AABBCollision(shell->get<TransformComponent>(), other->get<TransformComponent>())) {
                 world->create()->assign<FloatingPointsComponent>("100", transform->getCenterX(), transform->y);
+                world->create()->assign<AddScoreComponent>(100);
                 flipEnemy(other);
                 shell->remove<LeftCollisionComponent>();
                 shell->remove<RightCollisionComponent>();
@@ -92,11 +93,13 @@ void EnemySystem::tick(World* world) {
                 enemy->assign<TextureComponent>(TextureId::GOOMBA_CRUSHED);
                 enemy->assign<TransformComponent>(*enemyTransform);
                 world->create()->assign<FloatingPointsComponent>("100", enemyTransform->getCenterX(), enemyTransform->y);
+                world->create()->assign<AddScoreComponent>(100);
             }
                 break;
             case Enemy::Type::TURTLE:
                 stepOnTurtle(enemy);
                 world->create()->assign<FloatingPointsComponent>("200", enemyTransform->getCenterX(), enemyTransform->y);
+                world->create()->assign<AddScoreComponent>(200);
                 break;
             case Enemy::Type::TURTLE_SHELL: {
                 if (enemy->get<KineticComponent>()->accX == 0) {
@@ -133,6 +136,7 @@ void EnemySystem::tick(World* world) {
         if (bottomTile && bottomTile->has<BreakableComponent>()) {
             if (bottomTile->get<BreakableComponent>()->hit) {
                 world->create()->assign<FloatingPointsComponent>("100", transform->getCenterX(), transform->y);
+                world->create()->assign<AddScoreComponent>(100);
                 flipEnemy(entity);
             }
         }

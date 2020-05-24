@@ -27,7 +27,9 @@ add_executable(smb
         src/systems/EnemySystem.cpp
         src/AABB.cpp
         src/SoundManager.cpp
-        src/systems/SoundSystem.cpp)
+        src/systems/SoundSystem.cpp
+        src/systems/ScoreSystem.cpp
+        )
 
 
 set_property(TARGET smb PROPERTY CXX_STANDARD 17)

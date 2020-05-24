@@ -24,6 +24,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     world.registerSystem(new EnemySystem());
     world.registerSystem(new CallbackSystem());
     world.registerSystem(new AnimationSystem());
+    world.registerSystem(new ScoreSystem());
     world.registerSystem(new TileSystem());
     world.registerSystem(new PhysicsSystem());
 }

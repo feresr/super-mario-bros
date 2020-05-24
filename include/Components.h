@@ -258,7 +258,7 @@ struct FloatingPointsComponent : public Component {
 };
 
 struct TextComponent : public Component {
-    explicit TextComponent(std::string& text) : text{std::move(text)} {}
+    explicit TextComponent(std::string&& text) : text{std::move(text)} {}
 
     std::string text;
     SDL_Texture* texture = nullptr;
@@ -266,6 +266,12 @@ struct TextComponent : public Component {
     ~TextComponent() override {
         SDL_DestroyTexture(texture);
     }
+};
+
+struct AddScoreComponent : public Component {
+    explicit AddScoreComponent(int score, bool addCoin = false) : score{score}, coin{addCoin} {}
+    int score = 0;
+    bool coin = false;
 };
 
 struct TileMapComponent : public Component {

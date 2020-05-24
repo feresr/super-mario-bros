@@ -220,8 +220,7 @@ void PlayerSystem::tick(World* world) {
             if (sprint) kinetic->accX *= 1.5;
             if (jump) {
                 player->get<KineticComponent>()->accY = -MARIO_JUMP_ACCELERATION;
-                auto jumpsound = world->create();
-                jumpsound->assign<SoundComponent>(Sound::Id::JUMP);
+                world->create()->assign<SoundComponent>(Sound::Id::JUMP);
             }
             if ((bool) std::abs(kinetic->speedX) || (bool) std::abs(kinetic->accX)) {
                 if ((kinetic->speedX > 0 && kinetic->accX < 0) ||
@@ -303,6 +302,7 @@ void PlayerSystem::eatMushroom(World* world) {
                                                      player->get<TransformComponent>()->getCenterX(),
                                                      player->get<TransformComponent>()->y
     );
+    world->create()->assign<AddScoreComponent>(1000);
     if (player->has<SuperMarioComponent>()) return;
     player->assign<SuperMarioComponent>();
     player->assign<AnimationComponent>(
@@ -386,5 +386,5 @@ void PlayerSystem::onAddedToWorld(World* world) {
     player->assign<GravityComponent>();
     player->assign<SolidComponent>();
     player->assign<KineticComponent>();
-    player->assign<TransformComponent>(40, 40, TILE_SIZE - 4, SMALL_MARIO_COLLIDER_HEIGHT);
+    player->assign<TransformComponent>(40, 140, TILE_SIZE - 4, SMALL_MARIO_COLLIDER_HEIGHT);
 }

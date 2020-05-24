@@ -31,7 +31,7 @@ private:
     TextureManager* textureManager{};
     CameraComponent* camera{};
 
-    void renderEntities(std::vector<Entity*> entities);
+    void renderEntities(std::vector<Entity*> entities, bool followCamera = true);
 
     void renderText(std::vector<Entity*> entities);
 

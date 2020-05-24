@@ -90,6 +90,10 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(CASTLE_6, new SDL_Rect{34, 85, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(CASTLE_7, new SDL_Rect{17, 102, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(CASTLE_8, new SDL_Rect{34, 102, TILE_SIZE, TILE_SIZE});
+
+    textures.insert_or_assign(COIN_SMALL_1, new SDL_Rect{119, 254, 5, 8});
+    textures.insert_or_assign(COIN_SMALL_2, new SDL_Rect{129, 254, 5, 8});
+    textures.insert_or_assign(COIN_SMALL_3, new SDL_Rect{124, 262, 5, 8});
 }
 
 void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {
