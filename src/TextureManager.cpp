@@ -94,6 +94,8 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     textures.insert_or_assign(COIN_SMALL_1, new SDL_Rect{119, 254, 5, 8});
     textures.insert_or_assign(COIN_SMALL_2, new SDL_Rect{129, 254, 5, 8});
     textures.insert_or_assign(COIN_SMALL_3, new SDL_Rect{124, 262, 5, 8});
+
+    textures.insert_or_assign(ONE_UP, new SDL_Rect{136, 204, TILE_SIZE, TILE_SIZE});
 }
 
 void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {

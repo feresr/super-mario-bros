@@ -56,7 +56,8 @@ void MapSystem::tick(World* world) {
         if (tile->hasProperty(QUESTION)) {
             entity->assign<QuestionBlockComponent>(
                     tile->hasProperty(SPAWN),
-                    tile->hasProperty(COIN)
+                    tile->hasProperty(COIN),
+                    tile->hasProperty(SPAWN_ONE_UP)
             );
             entity->assign<AnimationComponent>(
                     std::vector<TextureId>{

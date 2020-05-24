@@ -14,9 +14,14 @@ void TileSystem::onRemovedFromWorld(World* world) {
     tileMap = nullptr;
 }
 
-void createMushroom(World* world, Entity* block) {
+void createMushroom(World* world, Entity* block, bool oneup = false) {
     auto mushroom = world->create();
-    mushroom->assign<TextureComponent>(TextureId::MUSHROOM);
+    if (oneup) {
+        mushroom->assign<TextureComponent>(TextureId::ONE_UP);
+    } else {
+        mushroom->assign<TextureComponent>(TextureId::MUSHROOM);
+    }
+    world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_GROW);
     mushroom->get<TextureComponent>()->w = TILE_SIZE;
     mushroom->get<TextureComponent>()->offSetX = -4;
 
@@ -27,7 +32,7 @@ void createMushroom(World* world, Entity* block) {
             TILE_SIZE - 8,
             TILE_SIZE
     );
-    world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_GROW);
+
     mushroom->assign<GrowComponent>();
 }
 
@@ -103,7 +108,7 @@ void TileSystem::tick(World* world) {
 
         if (entity->has<QuestionBlockComponent>()) {
             entity->remove<AnimationComponent>();
-            entity->get<TextureComponent>()->id = TextureId::QUESTION_BLOCK_OFF;
+            entity->assign<TextureComponent>(TextureId::QUESTION_BLOCK_OFF);
         }
 
         if (!breakable->finished()) {
@@ -114,6 +119,7 @@ void TileSystem::tick(World* world) {
             if (entity->has<QuestionBlockComponent>()) {
                 if (entity->get<QuestionBlockComponent>()->spawn) createMushroom(world, entity);
                 if (entity->get<QuestionBlockComponent>()->coin) createCoin(world, entity);
+                if (entity->get<QuestionBlockComponent>()->oneup) createMushroom(world, entity, true);
                 entity->remove<QuestionBlockComponent>();
                 entity->remove<BreakableComponent>();
             }

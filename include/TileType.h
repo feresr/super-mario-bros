@@ -13,7 +13,8 @@ enum Properties {
     QUESTION = 32,
     SPAWN = 64,
     COIN = 128,
-    ENEMY = 256
+    ENEMY = 256,
+    SPAWN_ONE_UP = 512
 };
 
 struct TileType {
@@ -67,7 +68,7 @@ namespace Tiles {
 
     static TileType QUESTION_BLOCK_COIN{TextureId::QUESTION_BLOCK_1,
                                         VISIBLE | SOLID | BREAKABLE | QUESTION | COIN,
-                                            TextureId::COIN_1};
+                                        TextureId::COIN_1};
 
     static TileType FLAG_TOP{TextureId::FLAG_TOP, VISIBLE};
     static TileType FLAG_RIGHT{TextureId::FLAG_RIGHT, VISIBLE};
@@ -83,4 +84,7 @@ namespace Tiles {
     static TileType CASTLE_7{TextureId::CASTLE_7, VISIBLE};
     static TileType CASTLE_8{TextureId::CASTLE_8, VISIBLE};
 
+    static TileType QUESITON_ONE_UP{TextureId::QUESTION_BLOCK_1,
+                                                      SOLID | BREAKABLE | QUESTION | SPAWN_ONE_UP,
+                                                      TextureId::ONE_UP};
 }

@@ -79,6 +79,7 @@ private:
             Tiles::CASTLE_6,
             Tiles::CASTLE_7,
             Tiles::CASTLE_8,
+            Tiles::QUESITON_ONE_UP,
     };
 };
 

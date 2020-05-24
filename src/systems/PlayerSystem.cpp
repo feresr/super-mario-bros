@@ -299,7 +299,7 @@ void PlayerSystem::tick(World* world) {
     // Eat mushrooms
     for (auto collectible : world->find<CollectibleComponent, TransformComponent>()) {
         if (AABBCollision(collectible->get<TransformComponent>(), player->get<TransformComponent>())) {
-            eatMushroom(world);
+            eatMushroom(world, collectible->get<TextureComponent>()->id == TextureId::ONE_UP);
             world->destroy(collectible);
         }
     }
@@ -313,8 +313,12 @@ void PlayerSystem::tick(World* world) {
     player->remove<TopCollisionComponent>();
 }
 
-void PlayerSystem::eatMushroom(World* world) {
-    world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_EAT);
+void PlayerSystem::eatMushroom(World* world, bool oneup) {
+    if (oneup) {
+        world->create()->assign<SoundComponent>(Sound::Id::ONE_UP);
+    } else {
+        world->create()->assign<SoundComponent>(Sound::Id::MUSHROOM_EAT);
+    }
     world->create()->assign<FloatingPointsComponent>("1000",
                                                      player->get<TransformComponent>()->getCenterX(),
                                                      player->get<TransformComponent>()->y

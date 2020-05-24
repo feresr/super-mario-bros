@@ -38,7 +38,7 @@ class PlayerSystem : public System {
 
     void setAnimation(ANIMATION_STATE animationState);
 
-    void eatMushroom(World* world);
+    void eatMushroom(World* world,  bool oneup = false);
 
 public:
     PlayerSystem(std::function<void(void)> gameOverCallback) : gameOverCallback{gameOverCallback} {}

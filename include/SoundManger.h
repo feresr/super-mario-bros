@@ -13,6 +13,7 @@ namespace Sound {
         COIN,
         DEATH,
         SHRINK,
+        ONE_UP,
     };
 }
 

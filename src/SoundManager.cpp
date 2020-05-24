@@ -16,6 +16,7 @@ SoundManager::SoundManager() {
     sounds.insert_or_assign(Sound::Id::COIN, Mix_LoadWAV("assets/music/coin.wav"));
     sounds.insert_or_assign(Sound::Id::DEATH, Mix_LoadWAV("assets/music/death.wav"));
     sounds.insert_or_assign(Sound::Id::SHRINK, Mix_LoadWAV("assets/music/shrink.wav"));
+    sounds.insert_or_assign(Sound::Id::ONE_UP, Mix_LoadWAV("assets/music/oneup.wav"));
 
 
 }

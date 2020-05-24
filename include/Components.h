@@ -196,12 +196,17 @@ struct BottomCollisionComponent : public Component {
 };
 
 struct QuestionBlockComponent : public Component {
-    explicit QuestionBlockComponent(bool spawn = false, bool coin = false) : spawn{spawn}, coin{coin} {}
+    explicit QuestionBlockComponent(
+            bool spawn = false,
+            bool coin = false,
+            bool oneup = false
+    ) : spawn{spawn}, coin{coin}, oneup{oneup} {}
 
     QuestionBlockComponent() = default;
 
     bool spawn = false;
     bool coin = false;
+    bool oneup = false;
 };
 
 struct GrowComponent : public Component {
@@ -254,6 +259,7 @@ struct CrushedComponent : public Component {
 struct FloatingPointsComponent : public Component {
     explicit FloatingPointsComponent(std::string&& points, int x, int y) :
             text{std::move(points)}, x{x}, y{y} {}
+
     std::string text;
     int x;
     int y;
@@ -272,6 +278,7 @@ struct TextComponent : public Component {
 
 struct AddScoreComponent : public Component {
     explicit AddScoreComponent(int score, bool addCoin = false) : score{score}, coin{addCoin} {}
+
     int score = 0;
     bool coin = false;
 };
