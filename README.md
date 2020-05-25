@@ -1,6 +1,11 @@
 # Super Mario Bros
 
-Made for educational porpuses with no game engine only c++ and SDL2.
+Made for educational porpuses. 
+No game-engine, only C++ and SDL2.
+
+It uses an ECS architecture, I took some cues from: https://github.com/redxdev/ECS although my implementation is probably less efficent, I'm not as confident with C++ as I'd like to be.
+
+Contributions are welcomed!
 
 DEMO: https://youtu.be/HkLZ9ESYxCU
 
@@ -34,9 +39,9 @@ $ ./smb-
 
 ## Screenshots
 
-![alt text](https://raw.githubusercontent.com/feresr/super-mario-bros/master/readme/game.png?token=ABGBITFVQBBDPSBXSIQVUVK6ZMPS4)
-![alt text](https://github.com/feresr/super-mario-bros/blob/master/readme/loading.png)
-![alt text](https://github.com/feresr/super-mario-bros/blob/master/readme/editor.png)
+![Game screenshot](https://github.com/feresr/super-mario-bros/blob/master/readme/game.png)
+![Loading screenshot](https://github.com/feresr/super-mario-bros/blob/master/readme/loading.png)
+![Editor screenshot](https://github.com/feresr/super-mario-bros/blob/master/readme/editor.png)
 
 ## Level editor
 
