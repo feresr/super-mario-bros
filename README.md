@@ -49,6 +49,5 @@ $ ./smb-
 ## Level editor
 
 ![alt text](https://github.com/feresr/super-mario-bros/blob/master/readme/editor%20build.gif)
-![alt text](https://github.com/feresr/super-mario-bros/blob/master/readme/editor%20tiles.gif)
 
 
