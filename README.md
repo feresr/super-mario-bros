@@ -3,8 +3,7 @@
 Made for educational porpuses. 
 No game-engine, only C++ and SDL2.
 
-I've used an ECS architecture taking some cues from: https://github.com/redxdev/ECS
-My implementation is probably less efficent though, I'm not as confident with C++ as I'd like to be.
+I've used an ECS architecture taking cues from: https://github.com/redxdev/ECS
 
 - **Author**: Fernando Raviola
 - **Twitter**: @fernandoraviola
