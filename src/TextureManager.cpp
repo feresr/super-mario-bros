@@ -99,7 +99,7 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
 
     textures.insert_or_assign(ONE_UP_LABEL, new SDL_Rect{184, 271, 16, 7});
     textures.insert_or_assign(ONEHUNDRED, new SDL_Rect{153, 287, 11, 8});
-    textures.insert_or_assign(TWOHUNDRED, new SDL_Rect{153, 279, 11, 8});
+    textures.insert_or_assign(TWOHUNDRED, new SDL_Rect{153, 279, 12, 8});
     textures.insert_or_assign(THOUSAND, new SDL_Rect{153, 287, 15, 8});
     textures.insert_or_assign(MARIO_FLAG_1, new SDL_Rect{170, 170, TILE_SIZE, TILE_SIZE});
     textures.insert_or_assign(MARIO_FLAG_2, new SDL_Rect{187, 170, TILE_SIZE, TILE_SIZE});

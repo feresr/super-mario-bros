@@ -81,21 +81,20 @@ Direction checkCollisionX(Entity* solid, TransformComponent* transform, KineticC
 }
 
 void PhysicsSystem::tick(World* world) {
-    std::vector<Entity*> entities;
-    entities = world->find<GravityComponent, KineticComponent>();
-    for (auto entity : entities) entity->get<KineticComponent>()->accY += GRAVITY;
+    world->find<GravityComponent, KineticComponent>([&](Entity* entity) {
+        entity->get<KineticComponent>()->accY += GRAVITY;
+    });
 
     // Kinetic-Kinetic collisions
-    entities = world->find<TransformComponent, KineticComponent, SolidComponent>();
-    for (auto entity : entities) {
-        if (entity->has<BlinkingComponent>()) continue;
+    world->find<TransformComponent, KineticComponent, SolidComponent>([&](Entity* entity) {
+        if (entity->has<BlinkingComponent>()) return;
         auto transform = entity->get<TransformComponent>();
         auto kinetic = entity->get<KineticComponent>();
-        for (auto other : entities) {
-            if (entity == other) continue;
-            if (!other->has<SolidComponent>()) continue;
-            if (other->has<CollectibleComponent>()) continue;
-            if (other->has<BlinkingComponent>()) continue;
+        world->find<TransformComponent, KineticComponent, SolidComponent>([&](Entity* other) {
+            if (entity == other) return;
+            if (!other->has<SolidComponent>()) return;
+            if (other->has<CollectibleComponent>()) return;
+            if (other->has<BlinkingComponent>()) return;
             switch (checkCollisionY(other, transform, kinetic)) {
                 case Direction::TOP:
                     entity->assign<TopCollisionComponent>();
@@ -116,15 +115,16 @@ void PhysicsSystem::tick(World* world) {
                 default:
                     break;
             }
-        }
-    }
+        });
+    });
+
+
 
     // Check Kinetic-Tiles Collisions
     auto tileMapEntity = world->findFirst<TileMapComponent>();
     if (tileMapEntity) {
         auto tileMapComponent = tileMapEntity->get<TileMapComponent>();
-        auto kineticEntities = world->find<KineticComponent, TransformComponent, SolidComponent>();
-        for (auto entity : kineticEntities) {
+        world->find<KineticComponent, TransformComponent, SolidComponent>([&](Entity* entity) {
             auto transform = entity->get<TransformComponent>();
             auto kinetic = entity->get<KineticComponent>();
 
@@ -188,13 +188,12 @@ void PhysicsSystem::tick(World* world) {
                         break;
                 }
             }
-        }
+        });
     }
 
     // Apply Forces
-    entities = world->find<TransformComponent, KineticComponent>();
-    for (auto entity : entities) {
-        if (entity->has<FrozenComponent>()) continue;
+    world->find<TransformComponent, KineticComponent>([&](Entity* entity) {
+        if (entity->has<FrozenComponent>()) return;
         auto transform = entity->get<TransformComponent>();
         auto kinematic = entity->get<KineticComponent>();
 
@@ -213,5 +212,5 @@ void PhysicsSystem::tick(World* world) {
 
         if (kinematic->speedY < -MAX_SPEED_Y) kinematic->speedY = -MAX_SPEED_Y;
         if (kinematic->speedX < -MAX_SPEED_X) kinematic->speedX = -MAX_SPEED_X;
-    }
+    });
 }

@@ -5,8 +5,7 @@ void AnimationSystem::onAddedToWorld(World* world) {
 }
 
 void AnimationSystem::tick(World* world) {
-    auto entities = world->find<AnimationComponent, TextureComponent>();
-    for (auto entity : entities) {
+    world->find<AnimationComponent, TextureComponent>([&](Entity* entity) {
         auto animation = entity->get<AnimationComponent>();
         auto texture = entity->get<TextureComponent>();
         animation->counter++;
@@ -20,7 +19,7 @@ void AnimationSystem::tick(World* world) {
                 entity->remove<AnimationComponent>();
             }
         }
-    }
+    });
 }
 
 void AnimationSystem::handleEvent(SDL_Event& event) {

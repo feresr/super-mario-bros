@@ -114,8 +114,8 @@ public:
     }
 
     template<typename... Components>
+    [[deprecated("Replaced by find(std::function<>), which has better performance")]]
     std::vector<Entity*> find() {
-        // todo: Optimize, avoid creating a new vector an returning it by copy
         std::vector<Entity*> result;
         std::copy_if(
                 entities.begin(),
@@ -124,6 +124,11 @@ public:
                 [&](const Entity* s) { return s->has<Components...>(); }
         );
         return result;
+    }
+
+    template<typename... Components>
+    void find(const std::function<void(Entity*)>& callback) {
+        for (auto entity : entities) if (entity->has<Components...>()) callback(entity);
     }
 
     template<typename... Components>

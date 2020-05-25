@@ -19,9 +19,8 @@ void MapSystem::tick(World* world) {
     if (player)camera->x = std::max(camera->x, (int) player->get<TransformComponent>()->getCenterX());
     auto tileMap = world->findFirst<TileMapComponent>()->get<TileMapComponent>();
 
-
     // 2. Iterate over them and remove the ones that are outside the camera.
-    for (auto entity : world->find<TransformComponent>()) {
+    world->find<TransformComponent>([&](Entity* entity) {
         auto transform = entity->get<TransformComponent>();
         if (transform->right() < camera->left() - CAMERA_WORLD_OFFSET
             || transform->left() > camera->right() + CAMERA_WORLD_OFFSET
@@ -33,13 +32,13 @@ void MapSystem::tick(World* world) {
                         nullptr
                 );
             }
-
-            if (entity->has<PlayerComponent>()) continue;
-            if (entity->has<TextComponent>()) continue;
-            if (entity->has<FlagPoleComponent>()) continue;
+            if (entity->has<PlayerComponent>()) return;
+            if (entity->has<TextComponent>()) return;
+            if (entity->has<FlagPoleComponent>()) return;
             world->destroy(entity);
         }
-    }
+    });
+
 
     // 3. Iterate over the `map` in the constructor and instantiate entities
     // Remove them from the map so they don't get instantiated again.
