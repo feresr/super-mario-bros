@@ -1,6 +1,6 @@
 #include "systems/MapSystem.h"
 
-MapSystem::MapSystem() : map{"assets/map-generated"} {
+MapSystem::MapSystem() : map{"assets/world1-1"} {
 }
 
 void MapSystem::onAddedToWorld(World* world) {

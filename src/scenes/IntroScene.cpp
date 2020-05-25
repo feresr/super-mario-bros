@@ -28,6 +28,10 @@ IntroScene::IntroScene(SDL_Window* window) {
     auto three = world->create();
     three->assign<TextComponent>("3");
     three->assign<TransformComponent>(SNES_RESOLUTION_WIDTH / 2 - 4 + 20, SNES_RESOLUTION_HEIGHT / 2 + 6, 8, 8);
+
+    auto by = world->create();
+    by->assign<TextComponent>("BY @FERNANDORAVIOLA / @FERESR");
+    by->assign<TransformComponent>(SNES_RESOLUTION_WIDTH / 2 - 116, SNES_RESOLUTION_HEIGHT - TILE_SIZE, 232, 8);
 }
 
 void IntroScene::update() {

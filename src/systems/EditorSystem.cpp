@@ -16,7 +16,7 @@ void EditorSystem::onAddedToWorld(World* world) {
     cursor->assign<TransformComponent>(0, 0, TILE_SIZE, TILE_SIZE);
 
     //Load current map
-    std::ifstream infile("assets/map-generated", std::ios::out | std::ios::binary);
+    std::ifstream infile("assets/world1-1", std::ios::out | std::ios::binary);
     if (infile) {
         int mw;
         int mh;
@@ -74,7 +74,7 @@ void EditorSystem::tick(World* world) {
 
 void EditorSystem::saveToDisk() {
     std::ofstream outfile;
-    outfile.open("assets/map-generated", std::ios::out | std::ios::binary);
+    outfile.open("assets/world1-1", std::ios::out | std::ios::binary);
 
     outfile.write(reinterpret_cast<const char*>(&(tileSet->mapWidth)), sizeof(const uint16_t));
     outfile.write(reinterpret_cast<const char*>(&(tileSet->mapHeight)), sizeof(const uint16_t));
