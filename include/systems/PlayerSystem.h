@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 #include "ecs/ecs.h"
 #include "Components.h"
 #include "Constants.h"
@@ -10,8 +12,8 @@ class PlayerSystem : public System {
 
     std::function<void(void)> gameOverCallback;
 
-    Entity* player;
-    CameraComponent* camera;
+    Entity* player{};
+    CameraComponent* camera{};
 
     enum ANIMATION_STATE {
         BLINKING,
@@ -41,5 +43,5 @@ class PlayerSystem : public System {
     void eatMushroom(World* world,  bool oneup = false);
 
 public:
-    PlayerSystem(std::function<void(void)> gameOverCallback) : gameOverCallback{gameOverCallback} {}
+    explicit PlayerSystem(std::function<void(void)> gameOverCallback) : gameOverCallback{std::move(gameOverCallback)} {}
 };
