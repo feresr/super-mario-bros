@@ -20,21 +20,37 @@ struct Component {
 class Entity {
 public:
 
+    Entity() : components{new std::unordered_map<std::type_index, Component*>()} {};
+
+    Entity(const Entity& other) = delete;
+
+    Entity(Entity&& other) noexcept {
+        this->components = other.components;
+        other.components = nullptr;
+    }
+
+    Entity& operator=(Entity&& other) noexcept {
+        if (this == &other) return *this;
+        this->components = other.components;
+        other.components = nullptr;
+        return *this;
+    }
+
     template<typename ComponentType, typename... Args>
     void assign(Args&& ... arguments) {
         // std::forward will detect whether arguments is an lvalue or rvalue and perform a copy or move, respectively.
         auto* component = new ComponentType(std::forward<Args&&>(arguments)...);
         auto typeIndex = std::type_index(typeid(ComponentType));
-        components.insert_or_assign(typeIndex, component);
+        components->insert_or_assign(typeIndex, component);
     }
 
     template<typename ComponentType>
     bool remove() {
         auto index = std::type_index(typeid(ComponentType));
-        auto found = components.find(index);
-        if (found != components.end()) {
+        auto found = components->find(index);
+        if (found != components->end()) {
             delete found->second;
-            components.erase(found);
+            components->erase(found);
             return true;
         }
 
@@ -42,19 +58,20 @@ public:
     }
 
     bool clearComponents() {
-        components.clear();
+        components->clear();
         return true;
     }
 
     template<typename C>
     C* get() {
-        return static_cast<C*>(components[std::type_index(typeid(C))]);
+        return static_cast<C*>((*components)[std::type_index(typeid(C))]);
     }
 
     template<typename C>
     [[nodiscard]] bool has() const {
+        if (components->empty()) return false;
         auto index = std::type_index(typeid(C));
-        return components.find(index) != components.end();
+        return components->find(index) != components->end();
     }
 
     template<typename A, typename B, typename... OTHERS>
@@ -70,7 +87,7 @@ public:
     ~Entity();
 
 private:
-    std::unordered_map<std::type_index, Component*> components;
+    std::unordered_map<std::type_index, Component*>* components;
 };
 
 class System {

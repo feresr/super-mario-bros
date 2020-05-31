@@ -44,6 +44,6 @@ void World::handleEvent(SDL_Event& event) {
 }
 
 Entity::~Entity() {
-    for (auto component : components) delete component.second;
-    components.clear();
+    for (auto& component : *components) delete component.second;
+    components->clear();
 }
