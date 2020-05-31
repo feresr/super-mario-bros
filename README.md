@@ -10,7 +10,8 @@ I've used an ECS architecture taking cues from: https://github.com/redxdev/ECS
 
 Contributions are welcomed!
 
-DEMO: https://youtu.be/HkLZ9ESYxCU
+- [Article (medium.com)](https://medium.com/@FerRaviola/writing-super-mario-bros-in-c-e59dfc5743af)
+- [Video Demo (youtube.com)](https://youtu.be/HkLZ9ESYxCU)
 
 ## Controls
 
