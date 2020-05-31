@@ -47,14 +47,7 @@ public:
     template<typename ComponentType>
     bool remove() {
         auto index = std::type_index(typeid(ComponentType));
-        auto found = components->find(index);
-        if (found != components->end()) {
-            delete found->second;
-            components->erase(found);
-            return true;
-        }
-
-        return false;
+        return components->erase(index);
     }
 
     bool clearComponents() {
