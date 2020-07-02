@@ -1,5 +1,7 @@
 #include "systems/FlagSystem.h"
 
+#include <utility>
+
 void FlagSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);
 }
@@ -18,7 +20,8 @@ void FlagSystem::tick(World* world) {
     switch (state) {
         case NO_ANIMATION: {
             auto transform = world->findFirst<PlayerComponent>()->get<TransformComponent>();
-            auto tile = world->findFirst<TileMapComponent>()->get<TileMapComponent>()->get(transform->getCenterX() / TILE_SIZE, transform->getCenterY() / TILE_SIZE);
+            auto tile = world->findFirst<TileMapComponent>()->get<TileMapComponent>()->get(
+                    transform->getCenterX() / TILE_SIZE, transform->getCenterY() / TILE_SIZE);
             if (tile && tile->has<TextureComponent>() && tile->get<TextureComponent>()->id == TextureId::FLAG_POLE) {
                 state = TAKING_FLAG_DOWN;
                 world->create()->assign<MusicComponent>(Music::Id::LEVEL_END);
@@ -78,10 +81,10 @@ void FlagSystem::tick(World* world) {
                 player->get<TextureComponent>()->id = TextureId::EMPTY;
                 player->remove<AnimationComponent>();
                 state = NO_ANIMATION;
+                player->assign<CallbackComponent>([&]() { gameOverCallback(); }, 280);
             }
         }
             break;
-
     }
 }
 
@@ -91,4 +94,8 @@ void FlagSystem::handleEvent(SDL_Event& event) {
 
 void FlagSystem::onRemovedFromWorld(World* world) {
     System::onRemovedFromWorld(world);
+}
+
+FlagSystem::FlagSystem(std::function<void(void)> gameOverCallback) : gameOverCallback{std::move(gameOverCallback)} {
+
 }

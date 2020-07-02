@@ -1,5 +1,7 @@
 #include "scenes/IntroScene.h"
 
+
+
 IntroScene::IntroScene(SDL_Window* window) {
     world = new World();
     auto renderSystem = new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT);
@@ -35,8 +37,13 @@ IntroScene::IntroScene(SDL_Window* window) {
 }
 
 void IntroScene::update() {
+    timer++;
     Scene::update();
     world->tick();
+}
+
+bool IntroScene::isFinished() {
+    return timer >= INTRO_SCREEN_TIME;
 }
 
 

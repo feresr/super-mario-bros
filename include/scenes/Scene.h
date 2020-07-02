@@ -22,6 +22,8 @@ protected:
 public:
 
     virtual void update() {};
+
+    virtual bool isFinished() { return true; }
     virtual void handleEvents(SDL_Event& event) {
         world->handleEvent(event);
     };

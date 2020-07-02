@@ -11,10 +11,10 @@ void SoundSystem::tick(World* world) {
     if (music) soundManager->playMusic(music->get<MusicComponent>()->music);
 
     for (auto sound : world->find<SoundComponent>()) {
+        if (sound->get<SoundComponent>()->sound == Sound::DEATH) soundManager->stopMusic();
         soundManager->playSound(sound->get<SoundComponent>()->sound);
         world->destroy(sound);
     }
-
     world->destroy(music);
 }
 

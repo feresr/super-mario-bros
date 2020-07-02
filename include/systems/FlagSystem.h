@@ -6,6 +6,13 @@
 
 class FlagSystem : public System {
 
+public:
+    explicit FlagSystem(std::function<void(void)> gameOverCallback);
+
+private:
+
+    std::function<void(void)> gameOverCallback;
+
     void onAddedToWorld(World* world) override;
 
     void tick(World* world) override;

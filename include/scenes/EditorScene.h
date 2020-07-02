@@ -8,4 +8,6 @@ public:
 private:
     void update() override;
 
+public:
+    bool isFinished() override;
 };

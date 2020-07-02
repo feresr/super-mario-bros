@@ -14,6 +14,8 @@ constexpr int SKY_RED = 90;
 constexpr int SKY_GREEN = 147;
 constexpr int SKY_BLUE = 254;
 
+constexpr int INTRO_SCREEN_TIME = 130;
+
 constexpr int EDITOR_CAMERA_PAN_SPEED = 3;
 
 // Instantiate ${CAMERA_WORLD_OFFSET} tiles off camera from the left and right

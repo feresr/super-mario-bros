@@ -8,7 +8,7 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
     }
 
     Uint32 flags = fullscreen ? SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN : SDL_WINDOW_ALLOW_HIGHDPI;
-    window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, flags);
+    window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, flags);
 
     if (!window) {
         SDL_Log("Unable to create window SDL: %s", SDL_GetError());
@@ -22,12 +22,16 @@ void Game::init(const char* title, int width, int height, bool fullscreen) {
 
 
 void Game::update() {
-    currentScene->update();
-    if (dynamic_cast<IntroScene*>(currentScene)) {
-        SDL_Delay(2500);
-        delete currentScene;
-        currentScene = new GameScene(window);
+    if (currentScene->isFinished()) {
+        if (dynamic_cast<IntroScene*>(currentScene)) {
+            delete currentScene;
+            currentScene = new GameScene(window);
+        } else {
+            delete currentScene;
+            currentScene = new IntroScene(window);
+        }
     }
+    currentScene->update();
 }
 
 bool Game::running() const { return isRunning; }

@@ -38,4 +38,8 @@ void EditorScene::update() {
     world->tick();
 }
 
+bool EditorScene::isFinished() {
+    return false;
+}
+
 

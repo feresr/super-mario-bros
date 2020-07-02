@@ -3,9 +3,13 @@
 class GameScene : public Scene {
 
 public:
-    GameScene(SDL_Window* window);
+    explicit GameScene(SDL_Window* window);
 
 private:
+    bool gameOver = false;
     void update() override;
+
+public:
+    bool isFinished() override;
 
 };
