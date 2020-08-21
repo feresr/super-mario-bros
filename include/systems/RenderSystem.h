@@ -33,9 +33,8 @@ private:
     TextureManager* textureManager{};
     CameraComponent* camera{};
 
-    void renderEntities(std::vector<Entity*> entities, bool followCamera = true);
-
-    void renderText(std::vector<Entity*> entities);
+    void renderEntity(Entity* entity, bool followCamera = true);
+    void renderText(Entity* entities);
 
     TTF_Font* font;
 

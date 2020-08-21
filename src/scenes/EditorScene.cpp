@@ -2,10 +2,10 @@
 
 EditorScene::EditorScene(SDL_Window* window) {
     world = new World();
-    world->registerSystem(new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT));
-    world->registerSystem(new EditorSystem());
-    world->registerSystem(new TileSystem());
-    world->registerSystem(new PhysicsSystem());
+    world->registerSystem<RenderSystem>(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT);
+    world->registerSystem<EditorSystem>();
+    world->registerSystem<TileSystem>();
+    world->registerSystem<PhysicsSystem>();
 
 
     auto title = world->create();

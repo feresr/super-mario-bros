@@ -77,13 +77,19 @@ public:
         return has<A>() || has<B, OTHERS...>();
     }
 
-    ~Entity();
+    ~Entity() {
+        for (auto& component : *components) delete component.second;
+        components->clear();
+    }
 
 private:
     std::unordered_map<std::type_index, Component*>* components;
 };
 
 class System {
+
+    friend class World;
+
 public:
     virtual void onAddedToWorld(World* world) {}
 
@@ -94,6 +100,8 @@ public:
     virtual void onRemovedFromWorld(World* world) {}
 
     virtual ~System() = default;
+
+
 };
 
 class World {
@@ -102,18 +110,45 @@ public:
 
     World(const World& other) = delete;
 
-    Entity* create();
+    Entity* create() {
+        auto* e = new Entity();
+        entities.push_back(e);
+        return e;
+    }
 
-    void destroy(Entity* entity);
+    void destroy(Entity* entity) {
+        if (!entity) return;
+        entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
+        delete entity;
+    }
 
-    void registerSystem(System* system);
+    template <typename S, typename... Args>
+    S* registerSystem(Args&& ... arguments) {
+        auto system = new S(std::forward<Args&&>(arguments)...);
+        systems.push_back(system);
+        system->onAddedToWorld(this);
+        return system;
+    }
 
-    void unregisterSystem(System* system);
+    void unregisterSystem(System* system) {
+        if (!system) return;
+        systems.erase(std::remove(systems.begin(), systems.end(), system), systems.end());
+        system->onRemovedFromWorld(this);
+        delete system;
+    }
 
-    ~World();
+    ~World() {
+        for (auto system : systems) {
+            system->onRemovedFromWorld(this);
+            delete system;
+        }
+        systems.clear();
+
+        for (auto entity : entities) delete entity;
+        entities.clear();
+    }
 
     template<typename... Components>
-    //TODO this should return the component? to avoid world->findFirst<TileComponent>()->get<TileComponent>()
     Entity* findFirst() {
         auto found = std::find_if(
                 entities.begin(),
@@ -154,9 +189,13 @@ public:
         return result;
     }
 
-    void tick();
+    void tick() {
+        for (auto system : systems) system->tick(this);
+    }
 
-    void handleEvent(SDL_Event& event);
+    void handleEvent(SDL_Event& event) {
+        for (auto system : systems) system->handleEvent(event);
+    }
 
 private:
     std::vector<Entity*> entities;

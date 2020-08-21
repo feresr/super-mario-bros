@@ -26,8 +26,6 @@ class PlayerSystem : public System {
 
     ANIMATION_STATE currentState = STANDING;
 
-    void onAddedToWorld(World* world) override;
-
     void tick(World* world) override;
 
     void handleEvent(SDL_Event& event) override;
@@ -36,12 +34,14 @@ class PlayerSystem : public System {
 
     void onGameOver(World* world, Entity* player);
 
-    ~PlayerSystem() override = default;
-
     void setAnimation(ANIMATION_STATE animationState);
 
     void eatMushroom(World* world,  bool oneup = false);
 
 public:
     explicit PlayerSystem(std::function<void(void)> gameOverCallback) : gameOverCallback{std::move(gameOverCallback)} {}
+
+    void onAddedToWorld(World* world) override;
+
+    ~PlayerSystem() override = default;
 };

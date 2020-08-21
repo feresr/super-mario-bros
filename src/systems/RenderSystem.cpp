@@ -4,13 +4,14 @@ auto dstRect = SDL_Rect();
 
 void RenderSystem::tick(World* world) {
     SDL_RenderClear(renderer);
+    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
 
-    renderEntities(world->find<GrowComponent, TransformComponent, TextureComponent>());
-    renderEntities(world->find<TileComponent, TransformComponent, TextureComponent>());
-    renderEntities(world->find<EnemyComponent, TransformComponent, TextureComponent>());
-    renderEntities(world->find<PlayerComponent, TransformComponent, TextureComponent>());
-    renderEntities(world->find<TextComponent, TransformComponent, TextureComponent>(), false);
-    renderText(world->find<TextComponent, TransformComponent>());
+    world->find<GrowComponent, TransformComponent, TextureComponent>([&](Entity* entity) { renderEntity(entity); });
+    world->find<TileComponent, TransformComponent, TextureComponent>([&](Entity* entity) { renderEntity(entity); });
+    world->find<EnemyComponent, TransformComponent, TextureComponent>([&](Entity* entity) { renderEntity(entity); });
+    world->find<PlayerComponent, TransformComponent, TextureComponent>([&](Entity* entity) { renderEntity(entity); });
+    world->find<TextComponent, TransformComponent, TextureComponent>([&](Entity* entity) { renderEntity(entity, false); });
+    world->find<TextComponent, TransformComponent>([&](Entity* entity) { renderText(entity); });
 
     //Editor
     auto tileSetEntity = world->findFirst<TileSetComponent>();
@@ -32,7 +33,6 @@ void RenderSystem::tick(World* world) {
 
 void RenderSystem::onAddedToWorld(World* world) {
     auto* entity = world->create();
-    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
     entity->assign<CameraComponent>(GAME_RESOLUTION_WIDTH / 2,
                                     GAME_RESOLUTION_HEIGHT / 2,
                                     GAME_RESOLUTION_WIDTH,
@@ -71,44 +71,41 @@ RenderSystem::~RenderSystem() {
     SDL_DestroyRenderer(renderer);
 }
 
-void RenderSystem::renderEntities(std::vector<Entity*> entities, bool followCamera) {
-    for (auto entity : entities) {
-        auto transform = entity->get<TransformComponent>();
-        auto texture = entity->get<TextureComponent>();
-        if (followCamera) {
-            dstRect.x = transform->left() - camera->left() + texture->offSetX;
-            dstRect.y = transform->top() - camera->top() + texture->offSetY;
-        } else {
-            dstRect.x = transform->left() + texture->offSetX;
-            dstRect.y = transform->top() + texture->offSetY;
-        }
 
-        dstRect.w = texture->w > 0 ? texture->w : transform->w;
-        dstRect.h = texture->h > 0 ? texture->h : transform->h;
-
-        textureManager->renderTexture(texture->id, dstRect, texture->flipH, texture->flipV);
+void RenderSystem::renderEntity(Entity* entity, bool followCamera) {
+    auto transform = entity->get<TransformComponent>();
+    auto texture = entity->get<TextureComponent>();
+    if (followCamera) {
+        dstRect.x = transform->left() - camera->left() + texture->offSetX;
+        dstRect.y = transform->top() - camera->top() + texture->offSetY;
+    } else {
+        dstRect.x = transform->left() + texture->offSetX;
+        dstRect.y = transform->top() + texture->offSetY;
     }
+
+    dstRect.w = texture->w > 0 ? texture->w : transform->w;
+    dstRect.h = texture->h > 0 ? texture->h : transform->h;
+
+    textureManager->renderTexture(texture->id, dstRect, texture->flipH, texture->flipV);
 }
 
-void RenderSystem::renderText(std::vector<Entity*> entities) {
-    for (auto text : entities) {
-        auto textComponent = text->get<TextComponent>();
-        auto transformComponent = text->get<TransformComponent>();
-        if (!textComponent->texture) {
-            SDL_Color color = {255, 255, 255};
-            SDL_Surface* surface = TTF_RenderText_Solid(font, textComponent->text.c_str(), color);
-            textComponent->texture = SDL_CreateTextureFromSurface(renderer, surface);
-            SDL_FreeSurface(surface);
-        }
-
-        dstRect.x = transformComponent->left();
-        dstRect.y = transformComponent->top();
-
-        dstRect.w = transformComponent->w;
-        dstRect.h = transformComponent->h;
-
-        SDL_RenderCopy(renderer, textComponent->texture, NULL, &dstRect);
+void RenderSystem::renderText(Entity* text) {
+    auto textComponent = text->get<TextComponent>();
+    auto transformComponent = text->get<TransformComponent>();
+    if (!textComponent->texture) {
+        SDL_Color color = {255, 255, 255};
+        SDL_Surface* surface = TTF_RenderText_Solid(font, textComponent->text.c_str(), color);
+        textComponent->texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
     }
+
+    dstRect.x = transformComponent->left();
+    dstRect.y = transformComponent->top();
+
+    dstRect.w = transformComponent->w;
+    dstRect.h = transformComponent->h;
+
+    SDL_RenderCopy(renderer, textComponent->texture, nullptr, &dstRect);
 }
 
 void RenderSystem::setBackgroundColor(int r, int g, int b) {

@@ -5,6 +5,7 @@
 
 class AnimationSystem : public System {
 
+public:
     void onAddedToWorld(World* world) override;
 
     void tick(World* world) override;

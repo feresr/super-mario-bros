@@ -1,13 +1,11 @@
 #include "scenes/IntroScene.h"
 
 
-
 IntroScene::IntroScene(SDL_Window* window) {
     world = new World();
-    auto renderSystem = new RenderSystem(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT);
-    renderSystem->setBackgroundColor(0, 0, 0);
-    world->registerSystem(renderSystem);
-    world->registerSystem(new ScoreSystem());
+    world->registerSystem<RenderSystem>(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT)
+            ->setBackgroundColor(0, 0, 0);
+    world->registerSystem<ScoreSystem>();
 
     auto worldName = world->create();
     worldName->assign<TextComponent>("WORLD 1-1");
