@@ -17,11 +17,13 @@
 
 class Scene {
 protected:
-    World* world;
+    World* world = new World();
 
 public:
 
-    virtual void update() {};
+    virtual void update() {
+        world->tick();
+    };
 
     virtual bool isFinished() { return true; }
     virtual void handleEvents(SDL_Event& event) {

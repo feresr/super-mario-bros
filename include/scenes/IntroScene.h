@@ -3,13 +3,12 @@
 class IntroScene : public Scene {
 
 public:
-    IntroScene(SDL_Window* window);
+    explicit IntroScene(SDL_Window* window);
+
+    bool isFinished() override;
+
+    void update() override;
 
 private:
     int timer = 0;
-    void update() override;
-
-public:
-    bool isFinished() override;
-
 };

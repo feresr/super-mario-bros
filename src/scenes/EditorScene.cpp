@@ -1,12 +1,10 @@
 #include "scenes/EditorScene.h"
 
 EditorScene::EditorScene(SDL_Window* window) {
-    world = new World();
     world->registerSystem<RenderSystem>(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT);
     world->registerSystem<EditorSystem>();
     world->registerSystem<TileSystem>();
     world->registerSystem<PhysicsSystem>();
-
 
     auto title = world->create();
     title->assign<TextComponent>("MAP EDITOR MODE");
@@ -31,11 +29,6 @@ EditorScene::EditorScene(SDL_Window* window) {
     auto instructions5 = world->create();
     instructions5->assign<TextComponent>("- Press 'e' to exit the editor");
     instructions5->assign<TransformComponent>(10, 44, 80, 5);
-}
-
-void EditorScene::update() {
-    Scene::update();
-    world->tick();
 }
 
 bool EditorScene::isFinished() {

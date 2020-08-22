@@ -1,8 +1,6 @@
 #include "scenes/IntroScene.h"
 
-
 IntroScene::IntroScene(SDL_Window* window) {
-    world = new World();
     world->registerSystem<RenderSystem>(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT)
             ->setBackgroundColor(0, 0, 0);
     world->registerSystem<ScoreSystem>();
@@ -37,11 +35,8 @@ IntroScene::IntroScene(SDL_Window* window) {
 void IntroScene::update() {
     timer++;
     Scene::update();
-    world->tick();
 }
 
 bool IntroScene::isFinished() {
     return timer >= INTRO_SCREEN_TIME;
 }
-
-

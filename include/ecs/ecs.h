@@ -200,7 +200,4 @@ public:
 private:
     std::vector<Entity*> entities;
     std::vector<System*> systems;
-    // TODO: use std::vector<std::unique_ptr<System>> systems; to
-    // make the fact that World owns the systems more explicit
-    // https://stackoverflow.com/questions/45087944/how-to-indicate-c-ownership-of-pointer
 };

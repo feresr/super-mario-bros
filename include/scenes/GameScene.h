@@ -5,11 +5,9 @@ class GameScene : public Scene {
 public:
     explicit GameScene(SDL_Window* window);
 
+    bool isFinished() override;
+
 private:
     bool gameOver = false;
-    void update() override;
-
-public:
-    bool isFinished() override;
 
 };
