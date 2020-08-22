@@ -5,15 +5,15 @@ void CallbackSystem::onAddedToWorld(World* world) {
 }
 
 void CallbackSystem::tick(World* world) {
-    for (auto entities : world->find<CallbackComponent>()) {
-        auto callback = entities->get<CallbackComponent>();
-        if (callback->time <= 0) {
-            entities->remove<CallbackComponent>();
-            continue;
+    world->find<CallbackComponent>([](Entity* entity){
+        auto callback = entity->get<CallbackComponent>();
+        if (callback->time > 0) {
+            callback->time--;
+            if (callback->time == 0) callback->callback();
+        } else {
+            entity->remove<CallbackComponent>();
         }
-        callback->time--;
-        if (callback->time <= 0) callback->callback();
-    }
+    });
 }
 
 void CallbackSystem::handleEvent(SDL_Event& event) {

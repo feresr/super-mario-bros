@@ -177,8 +177,13 @@ public:
     }
 
     template<typename... Components>
+    void findAny(const std::function<void(Entity*)>& callback) {
+        for (auto entity : entities) if (entity->hasAny<Components...>()) callback(entity);
+    }
+
+    template<typename... Components>
     std::vector<Entity*> findAny() {
-        // todo: Optimize, avoid creating a new vector an returning it by copy
+        //todo: optimize, this should return an iterator and not a new vector
         std::vector<Entity*> result;
         std::copy_if(
                 entities.begin(),

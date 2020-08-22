@@ -95,13 +95,14 @@ void PlayerSystem::onGameOver(World* world, Entity* player) {
     kinetic->accY = 0.0f;
     kinetic->accX = 0.0f;
 
-    for (auto walkable : world->findAny<WalkComponent, KineticComponent>()) {
-        if (walkable == player) continue;
-        walkable->remove<WalkComponent>();
-        walkable->remove<KineticComponent>();
-        walkable->remove<AnimationComponent>();
-        walkable->remove<CallbackComponent>();
-    }
+    world->findAny<WalkComponent, KineticComponent>([=](Entity* walker) {
+        if (walker != player) {
+            walker->remove<WalkComponent>();
+            walker->remove<KineticComponent>();
+            walker->remove<AnimationComponent>();
+            walker->remove<CallbackComponent>();
+        }
+    });
 
     player->assign<CallbackComponent>([=]() {
         player->remove<SolidComponent>();
@@ -110,7 +111,7 @@ void PlayerSystem::onGameOver(World* world, Entity* player) {
         kinetic->accY = 0.0f;
         kinetic->accX = 0.0f;
 
-        player->assign<CallbackComponent>([=]() { gameOverCallback(); }, 200);
+        player->assign<CallbackComponent>([&]() { gameOverCallback(); }, 200);
     }, 50);
 }
 
