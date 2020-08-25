@@ -100,5 +100,5 @@ private:
 
     SDL_Renderer* renderer;
 
-    std::unordered_map<TextureId, SDL_Rect*> textures{};
+    std::unordered_map<TextureId, SDL_Rect*> atlasRects{};
 };
