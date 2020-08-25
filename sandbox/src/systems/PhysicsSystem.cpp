@@ -1,5 +1,5 @@
 #include "systems/PhysicsSystem.h"
-#include "Components.h"
+#include "GameComponents.h"
 #include "AABB.h"
 #include <unordered_set>
 #include "Constants.h"

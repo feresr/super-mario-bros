@@ -1,5 +1,5 @@
 #include "systems/EnemySystem.h"
-#include <Components.h>
+#include <GameComponents.h>
 #include <Constants.h>
 #include "AABB.h"
 

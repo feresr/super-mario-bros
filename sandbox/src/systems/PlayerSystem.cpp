@@ -1,6 +1,6 @@
 #include <Constants.h>
 #include "systems/PlayerSystem.h"
-#include "Components.h"
+#include "GameComponents.h"
 
 int dirX = 0;
 bool jump = false;

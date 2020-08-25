@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Components.h"
+#include "GameComponents.h"
 
 class TileSystem : public System {
 

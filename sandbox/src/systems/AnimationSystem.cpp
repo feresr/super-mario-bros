@@ -1,6 +1,6 @@
-#include <Engine.h>
+#include <Components.h>
 #include "systems/AnimationSystem.h"
-#include "Components.h"
+#include "GameComponents.h"
 
 void AnimationSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);

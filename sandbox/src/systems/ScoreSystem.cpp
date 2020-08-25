@@ -1,6 +1,6 @@
-#include <Engine.h>
-#include "systems/ScoreSystem.h"
 #include "Components.h"
+#include "systems/ScoreSystem.h"
+#include "GameComponents.h"
 #include "Constants.h"
 
 void ScoreSystem::onAddedToWorld(World* world) {

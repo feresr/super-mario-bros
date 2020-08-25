@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Constants.h>
-#include "Components.h"
+#include "GameComponents.h"
 
 struct InputState {
     int x{SNES_RESOLUTION_WIDTH / 2}, y{SNES_RESOLUTION_HEIGHT / 2};

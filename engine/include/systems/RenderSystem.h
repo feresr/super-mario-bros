@@ -1,7 +1,9 @@
 #pragma once
 
 #include "ecs.h"
-#include "Engine.h"
+#include "TextureManager.h"
+#include "Components.h"
+#include "SDL.h"
 
 namespace Engine {
 

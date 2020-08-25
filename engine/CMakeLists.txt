@@ -6,7 +6,7 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
 file(GLOB src ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-add_library(engine STATIC ${src})
+add_library(engine STATIC ${src}) #HAD TO DECLARE main as a function for it to work
 target_include_directories(engine PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/vendor/spdlog/include/)

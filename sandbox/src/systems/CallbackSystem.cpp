@@ -1,5 +1,5 @@
 #include "systems/CallbackSystem.h"
-#include "Components.h"
+#include "GameComponents.h"
 
 void CallbackSystem::onAddedToWorld(World* world) {
     System::onAddedToWorld(world);

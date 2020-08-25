@@ -1,7 +1,7 @@
 #pragma once
 
 #include <queue>
-#include "Engine.h"
+#include "GameComponents.h"
 #include "Components.h"
 #include <fstream>
 #include <Log.h>

@@ -1,6 +1,6 @@
 #include "systems/FlagSystem.h"
 
-#include "Components.h"
+#include "GameComponents.h"
 #include "Constants.h"
 #include "AABB.h"
 
