@@ -1,5 +1,5 @@
 #include "Scene.h"
-#include <iostream>
+#include <Log.h>
 
 void Scene::update() {
     world->tick();
@@ -7,7 +7,7 @@ void Scene::update() {
 
 
 Scene::~Scene() {
-    std::cout << "Scene deleted" << std::endl;
+    ENGINE_INFO("Scene deleted");
     delete world;
 }
 

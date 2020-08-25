@@ -1,5 +1,6 @@
 #include "Application.h"
 #include <SDL.h>
+#include <Log.h>
 
 Engine::Application* Engine::Application::instance = nullptr;
 
@@ -29,7 +30,7 @@ Engine::Application::~Application() {
     delete scene;
     if (window) SDL_DestroyWindow(window);
     SDL_Quit();
-    std::cout << "Game cleaned" << std::endl;
+    ENGINE_INFO("GAME CLEANED");
 }
 
 

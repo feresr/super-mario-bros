@@ -1,12 +1,12 @@
 #include <SDL_image.h>
+#include <Log.h>
 #include "TextureManager.h"
 #include "Constants.h"
-#include "iostream"
 
 TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     SDL_Surface* tempSurface = IMG_Load("assets/tileset.png");
     if (!tempSurface) {
-        std::cout << "[Texture manager] Unable to load texture: " << IMG_GetError() << std::endl;
+        ENGINE_ERROR("[Texture manager] Unable to load texture: {0}", IMG_GetError());
         throw std::invalid_argument("Unable to load texture");
     }
     textureAtlas = SDL_CreateTextureFromSurface(renderer, tempSurface);

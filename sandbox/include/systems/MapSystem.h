@@ -4,7 +4,7 @@
 #include "Engine.h"
 #include "Components.h"
 #include <fstream>
-#include "iostream"
+#include <Log.h>
 #include "Constants.h"
 
 struct Tile {
@@ -23,9 +23,12 @@ public:
     Map() = delete;
 
     explicit Map(std::string&& mapPath) {
-        std::cout << "Parsing" << std::endl;
+        ENGINE_INFO("Parsing map: {0}", mapPath);
         std::ifstream infile(mapPath, std::ios::out | std::ios::binary);
-        if (!infile) throw std::invalid_argument("Map path not found: " + mapPath);
+        if (!infile) {
+            ENGINE_ERROR("Map not found: {0}", mapPath);
+            throw std::invalid_argument("Map path not found: " + mapPath);
+        }
 
         TileType texture;
 

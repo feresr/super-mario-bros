@@ -1,7 +1,7 @@
 #include <Engine.h>
-#include "iostream"
 #include "systems/EditorSystem.h"
 #include <fstream>
+#include <Log.h>
 
 int InputWatcher(void* userData, SDL_Event* event);
 
@@ -62,10 +62,10 @@ void EditorSystem::tick(World* world) {
         auto existing = tileSet->get(tileX, tileY).properties != NONE;
         if (existing) {
             tileSet->clear(tileX, tileY);
-            std::cout << "[Editor] Tile removed" << std::endl;
+            ENGINE_INFO("[Editor] Tile removed");
         } else {
             tileSet->set(tileX, tileY, tileTypes[selectedTileType]);
-            std::cout << "[Editor] Tile added" << std::endl;
+            ENGINE_INFO("[Editor] Tile added");
         }
     }
 
@@ -87,7 +87,7 @@ void EditorSystem::saveToDisk() {
             outfile.write(reinterpret_cast<char*>(&tile), sizeof(TileType));
         }
     }
-    std::cout << "[EditorSystem] Map saved to disk" << std::endl;
+    ENGINE_INFO("[Texture manager] Map saved to disk: {0}");
     outfile.close();
 }
 
