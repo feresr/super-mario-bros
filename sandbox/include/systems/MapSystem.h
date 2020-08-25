@@ -13,7 +13,7 @@ struct Tile {
     uint32_t properties;
 
     [[nodiscard]] bool hasProperty(Properties property) const {
-        return properties & property;
+        return properties & (1 << (property - 1));
     }
 };
 

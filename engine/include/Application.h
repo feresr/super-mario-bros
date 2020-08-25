@@ -15,7 +15,7 @@ namespace Engine {
 
         virtual ~Application();
 
-        virtual void handleEvent(SDL_Event& event);
+        virtual void handleEvent(SDL_Event& event) = 0;
 
         static Application& get() { return *instance; }
 
