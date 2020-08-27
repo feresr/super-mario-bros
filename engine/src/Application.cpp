@@ -15,7 +15,7 @@ Engine::Application::Application(const std::string& name,
     window = SDL_CreateWindow(name.c_str(),
                               SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                               width, height,
-                              flags);
+                              flags | SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
     if (!window) {
         SDL_Log("Unable to create window SDL: %s", SDL_GetError());
         SDL_Quit();
@@ -45,8 +45,9 @@ void Engine::Application::run() {
             delete scene;
             scene = OnNextScene();
         }
-        while (SDL_PollEvent(&event)) handleEvent(event);
         scene->update();
+        while (SDL_PollEvent(&event)) handleEvent(event);
+        SDL_GL_SwapWindow(window);
         frameTime = SDL_GetTicks() - frameStart;
         if (frameTime < FRAME_DURATION) SDL_Delay(FRAME_DURATION - frameTime);
     }

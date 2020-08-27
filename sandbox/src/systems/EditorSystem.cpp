@@ -72,6 +72,22 @@ void EditorSystem::tick(World* world) {
     cursor->get<Engine::TextureComponent>()->id = tileTypes[selectedTileType].editor_texture;
     cursor->get<Engine::TransformComponent>()->x = ((inputState.x + camera->left()) / TILE_SIZE) * TILE_SIZE;
     cursor->get<Engine::TransformComponent>()->y = ((inputState.y + camera->top()) / TILE_SIZE) * TILE_SIZE;
+
+    //Editor
+//    auto tileSetEntity = world->findFirst<TileSetComponent>();
+//    if (tileSetEntity) {
+//        auto tileSetComponent = tileSetEntity->get<TileSetComponent>();
+//        for (int x = 0; x < tileSetComponent->mapWidth; x++) {
+//            for (int y = 0; y < tileSetComponent->mapHeight; y++) {
+//                if (!tileSetComponent->get(x, y).texture) continue;
+//                dstRect.x = x * TILE_SIZE - camera->left();
+//                dstRect.y = y * TILE_SIZE - camera->top();
+//                dstRect.w = TILE_SIZE;
+//                dstRect.h = TILE_SIZE;
+//                textureManager->renderTexture(tileSetComponent->get(x, y).editor_texture, dstRect);
+//            }
+//        }
+//    }
 }
 
 void EditorSystem::saveToDisk() {

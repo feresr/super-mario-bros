@@ -3,7 +3,7 @@
 #include "Scene.h"
 #include "iostream"
 
-int main(int argc, char** argv);
+int main(int argc, char *argv[]);
 
 namespace Engine {
 
@@ -38,7 +38,7 @@ namespace Engine {
 
         static Application* instance;
 
-        friend int::main(int argc, char** argv);
+        friend int::main(int argc, char *argv[]);
     };
 
     // To be defined by client

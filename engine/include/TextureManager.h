@@ -2,6 +2,8 @@
 
 #include <SDL_render.h>
 #include <unordered_map>
+#include "Shader.h"
+#include "SpriteRenderer.h"
 
 enum TextureId {
     EMPTY,
@@ -88,17 +90,15 @@ enum TextureId {
 class TextureManager {
 
 public:
-    explicit TextureManager(SDL_Renderer* renderer);
+    explicit TextureManager();
 
     void renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH = false, bool flipV = false);
-
-    SDL_Texture* textureAtlas;
 
     ~TextureManager();
 
 private:
 
-    SDL_Renderer* renderer;
+    SpriteRenderer* spriteRenderer;
 
     std::unordered_map<TextureId, SDL_Rect*> atlasRects{};
 };

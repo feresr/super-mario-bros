@@ -23,8 +23,6 @@ namespace Engine {
         ~RenderSystem() override;
 
     private:
-        SDL_Renderer* renderer;
-
         const int GAME_RESOLUTION_WIDTH;
         const int GAME_RESOLUTION_HEIGHT;
         TextureManager* textureManager{};
@@ -33,6 +31,8 @@ namespace Engine {
         void renderEntity(Entity* entity, bool followCamera = true);
 
         void renderText(Entity* entities);
+
+        SDL_GLContext glContext;
 
         int r = 0;
         int g = 0;

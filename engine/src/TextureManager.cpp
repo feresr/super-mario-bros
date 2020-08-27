@@ -1,16 +1,25 @@
-#include <SDL_image.h>
-#include <Log.h>
+
+#include <ResourceManager.h>
 #include "TextureManager.h"
 #include "Constants.h"
+#include "glad/glad.h"
 
-TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
-    SDL_Surface* tempSurface = IMG_Load("assets/tileset.png");
-    if (!tempSurface) {
-        ENGINE_ERROR("[Texture manager] Unable to load texture: {0}", IMG_GetError());
-        throw std::invalid_argument("Unable to load texture");
-    }
-    textureAtlas = SDL_CreateTextureFromSurface(renderer, tempSurface);
-    SDL_FreeSurface(tempSurface);
+TextureManager::TextureManager() {
+
+    ResourceManager::LoadShader("shaders/sprite.vsh", "shaders/sprite.fsh", nullptr, "shader");
+    //configure shader
+    glm::mat4 projection = glm::ortho(0.0f,
+                                      static_cast<float>(256),
+                                      static_cast<float>(224), 0.0f, -1.f, 1.f);
+    auto shader = ResourceManager::GetShader("shader")
+            .Use()
+            .SetInteger("image", 0)
+            .SetMatrix4("projection", projection);
+
+    spriteRenderer = new SpriteRenderer(shader);
+    ResourceManager::LoadTexture("assets/tileset.png", true, "tileset");
+
+    //SDL_FreeSurface(tempSurface);
 
     // small mario
     atlasRects.insert_or_assign(MARIO_STAND, new SDL_Rect{0, 254, TILE_SIZE, TILE_SIZE});
@@ -19,6 +28,7 @@ TextureManager::TextureManager(SDL_Renderer* renderer) : renderer{renderer} {
     atlasRects.insert_or_assign(MARIO_RUN_3, new SDL_Rect{51, 254, TILE_SIZE, TILE_SIZE});
     atlasRects.insert_or_assign(MARIO_JUMP, new SDL_Rect{85, 254, TILE_SIZE, TILE_SIZE});
     atlasRects.insert_or_assign(MARIO_DRIFT, new SDL_Rect{68, 254, TILE_SIZE, TILE_SIZE});
+
     //big mario
     atlasRects.insert_or_assign(MARIO_GROWING, new SDL_Rect{136, 271, TILE_SIZE, TILE_SIZE * 2});
     atlasRects.insert_or_assign(SUPER_MARIO_STAND, new SDL_Rect{0, 221, TILE_SIZE, TILE_SIZE * 2});
@@ -112,13 +122,22 @@ void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool 
     if (textureRect != atlasRects.end()) {
         if (dstRect.w == 0) dstRect.w = textureRect->second->w;
         if (dstRect.h == 0) dstRect.h = textureRect->second->h;
-        SDL_RenderCopyEx(renderer, textureAtlas, textureRect->second, &dstRect, 0.0, nullptr,
-                         (SDL_RendererFlip) (SDL_FLIP_NONE | (SDL_FLIP_HORIZONTAL * flipH) |
-                                             (SDL_FLIP_VERTICAL * flipV)));
+
+
+        spriteRenderer->DrawSprite(ResourceManager::GetTexture("tileset"),
+                                   glm::vec2(dstRect.x, dstRect.y),
+                                   glm::vec2(dstRect.w, dstRect.h),
+                                   glm::vec2(textureRect->second->x, textureRect->second->y),
+                                   0.0f,
+                                   glm::vec3(1.0,1.0,1.0),
+                                   flipH,
+                                   flipV
+        );
     }
 }
 
 TextureManager::~TextureManager() {
     std::unordered_map<TextureId, SDL_Rect*>::iterator it;
     for (it = atlasRects.begin(); it != atlasRects.end(); ++it) delete it->second;
+    delete spriteRenderer;
 }

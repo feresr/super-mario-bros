@@ -1,5 +1,8 @@
 #include "systems/RenderSystem.h"
 #include <SDL_ttf.h>
+#include "iostream"
+
+#include "glad/glad.h"
 
 auto dstRect = SDL_Rect();
 
@@ -7,30 +10,13 @@ TTF_Font* font;
 
 namespace Engine {
     void RenderSystem::tick(World* world) {
-        SDL_RenderClear(renderer);
-        SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+        glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //Todo: Render in correct order (z index). Use Layers
         //Todo: ender items that don't follow the camera (Te TextComponent, TransformComponent, TextureComponent
         world->find<TransformComponent, TextureComponent>([&](Entity* entity) { renderEntity(entity); });
         world->find<TextComponent, TransformComponent>([&](Entity* entity) { renderText(entity); });
-
-        //Editor
-        /*auto tileSetEntity = world->findFirst<TileSetComponent>();
-        if (tileSetEntity) {
-            auto tileSetComponent = tileSetEntity->get<TileSetComponent>();
-            for (int x = 0; x < tileSetComponent->mapWidth; x++) {
-                for (int y = 0; y < tileSetComponent->mapHeight; y++) {
-                    if (!tileSetComponent->get(x, y).texture) continue;
-                    dstRect.x = x * TILE_SIZE - camera->left();
-                    dstRect.y = y * TILE_SIZE - camera->top();
-                    dstRect.w = TILE_SIZE;
-                    dstRect.h = TILE_SIZE;
-                    textureManager->renderTexture(tileSetComponent->get(x, y).editor_texture, dstRect);
-                }
-            }
-        }*/
-        SDL_RenderPresent(renderer);
     }
 
     void RenderSystem::onAddedToWorld(World* world) {
@@ -52,27 +38,44 @@ namespace Engine {
         TTF_Quit();
     }
 
-    RenderSystem::RenderSystem(SDL_Window* window, int gameResolutionWidth, int gameResolutionHeight)
-            : GAME_RESOLUTION_WIDTH{gameResolutionWidth}, GAME_RESOLUTION_HEIGHT{gameResolutionHeight} {
-        Uint32 render_flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
-        renderer = SDL_CreateRenderer(window, -1, render_flags);
+    RenderSystem::RenderSystem(SDL_Window* window,
+                               int gameResolutionWidth,
+                               int gameResolutionHeight)
+            : GAME_RESOLUTION_WIDTH{gameResolutionWidth},
+              GAME_RESOLUTION_HEIGHT{gameResolutionHeight}{
 
-        if (!renderer) {
+
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+        SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 3);
+        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 3);
+        SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 3);
+        SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+        glContext = SDL_GL_CreateContext(window);
+
+        if (!glContext) {
             SDL_Log("Could not create SDL renderer: %s", SDL_GetError());
             SDL_DestroyWindow(window);
             SDL_Quit();
             throw std::runtime_error("Could not initialize RenderSystem");
         }
-        textureManager = new TextureManager{renderer};
-        SDL_SetTextureBlendMode(textureManager->textureAtlas, SDL_BLENDMODE_BLEND);
-        SDL_RenderSetLogicalSize(renderer, GAME_RESOLUTION_WIDTH, GAME_RESOLUTION_HEIGHT);
+        SDL_GL_MakeCurrent(window, glContext);
+        if (!gladLoadGL()) std::cout << "Failed to initialize GLAD" << std::endl;
+
+        textureManager = new TextureManager{};
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     RenderSystem::~RenderSystem() {
         delete textureManager;
-        SDL_DestroyRenderer(renderer);
+        SDL_GL_DeleteContext(glContext);
     }
-
 
     void RenderSystem::renderEntity(Entity* entity, bool followCamera) {
         auto transform = entity->get<TransformComponent>();
@@ -92,12 +95,13 @@ namespace Engine {
     }
 
     void RenderSystem::renderText(Entity* text) {
+        //TODO: fix text rendering on OpenGL
         auto textComponent = text->get<TextComponent>();
         auto transformComponent = text->get<TransformComponent>();
         if (!textComponent->texture) {
             SDL_Color color = {255, 255, 255};
             SDL_Surface* surface = TTF_RenderText_Solid(font, textComponent->text.c_str(), color);
-            textComponent->texture = SDL_CreateTextureFromSurface(renderer, surface);
+            //textComponent->texture = SDL_CreateTextureFromSurface(renderer, surface);
             SDL_FreeSurface(surface);
         }
 
@@ -107,7 +111,7 @@ namespace Engine {
         dstRect.w = transformComponent->w;
         dstRect.h = transformComponent->h;
 
-        SDL_RenderCopy(renderer, textComponent->texture, nullptr, &dstRect);
+        //SDL_RenderCopy(renderer, textComponent->texture, nullptr, &dstRect);
     }
 
     void RenderSystem::setBackgroundColor(int r, int g, int b) {
@@ -115,4 +119,5 @@ namespace Engine {
         this->g = g;
         this->b = b;
     }
+
 }

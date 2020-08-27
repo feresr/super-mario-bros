@@ -6,7 +6,7 @@
 
 using namespace Engine;
 EditorScene::EditorScene(SDL_Window* window) {
-    world->registerSystem<RenderSystem>(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT);
+    //world->registerSystem<RenderSystem>(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT);
     world->registerSystem<EditorSystem>();
     world->registerSystem<TileSystem>();
     world->registerSystem<PhysicsSystem>();
