@@ -13,8 +13,10 @@
 
 GameScene::GameScene(SDL_Window* window) {
     world->registerSystem<Engine::SoundSystem>();
-    world->registerSystem<Engine::RenderSystem>(window, SNES_RESOLUTION_WIDTH, SNES_RESOLUTION_HEIGHT)
-            ->setBackgroundColor(SKY_RED, SKY_GREEN, SKY_BLUE);
+    world->registerSystem<Engine::RenderSystem>(window,
+                                                SNES_RESOLUTION_WIDTH,
+                                                SNES_RESOLUTION_HEIGHT,
+                                                glm::vec3{SKY_RED, SKY_GREEN, SKY_BLUE});
     world->registerSystem<PlayerSystem>([&]() { this->gameOver = true; });
     world->registerSystem<MapSystem>();
     world->registerSystem<EnemySystem>();

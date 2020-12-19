@@ -10,7 +10,8 @@ namespace Engine {
     class RenderSystem : public System {
 
     public:
-        explicit RenderSystem(SDL_Window* window, int gameResolutionWidth, int gameResolutionHeight);
+        explicit RenderSystem(SDL_Window* window, int gameResolutionWidth, int gameResolutionHeight,
+                              glm::vec3 clearColor = {});
 
         void onAddedToWorld(World* world) override;
 
@@ -34,8 +35,6 @@ namespace Engine {
 
         SDL_GLContext glContext;
 
-        int r = 0;
-        int g = 0;
-        int b = 0;
+        glm::vec3 clearColor;
     };
 }

@@ -1,4 +1,7 @@
 #include <Constants.h>
+#include <iostream>
+#include <ResourceManager.h>
+#include <SDL_timer.h>
 #include "systems/PlayerSystem.h"
 #include "GameComponents.h"
 
@@ -193,6 +196,33 @@ void PlayerSystem::setAnimation(ANIMATION_STATE state) {
 }
 
 void PlayerSystem::tick(World* world) {
+
+    auto midpointX = SNES_RESOLUTION_WIDTH / 2.0f;
+    auto midpointY = (SNES_RESOLUTION_HEIGHT - 50) / 2.0f;
+
+
+    auto cameraPosition = glm::vec3{midpointX + cos((SDL_GetTicks() * .001f)) * 80.0f,
+                                    midpointY + sin((SDL_GetTicks() * .001f)) * 50.0f, -380.3f};
+    //auto cameraPosition = glm::vec3{0.0f, 0.0f, 270.3f};
+    glm::mat4 view = glm::lookAt(
+            cameraPosition,
+            glm::vec3{256.0f / 2, 224.0f / 2, 0.0f}, //glm::vec3{256.0f / 2.0f, 224.0f / 2.0f, 0.0f} ,
+            glm::vec3(0.0f, 01.0f, 0.0f)
+    );
+
+    glm::mat4 projection = glm::perspective(glm::radians(-45.0f),
+                                            static_cast<float>(256) / static_cast<float>(224),
+                                            200.0f, 800.0f
+    );
+
+
+    auto shader = ResourceManager::GetShader("shader")
+            .Use()
+            .SetInteger("image", 0)
+            .SetMatrix4("view", view)
+            .SetMatrix4("projection", projection);
+
+
     if (world->findFirst<GameOverComponent>()) {
         world->findFirst<GameOverComponent>()->remove<GameOverComponent>();
         onGameOver(world, player);
@@ -422,5 +452,5 @@ void PlayerSystem::onAddedToWorld(World* world) {
     player->assign<GravityComponent>();
     player->assign<SolidComponent>();
     player->assign<KineticComponent>();
-    player->assign<Engine::TransformComponent>(40, 140, TILE_SIZE - 4, SMALL_MARIO_COLLIDER_HEIGHT);
+    player->assign<Engine::TransformComponent>(40, 140, TILE_SIZE - 4, SMALL_MARIO_COLLIDER_HEIGHT, -30.0f);
 }

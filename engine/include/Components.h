@@ -10,6 +10,7 @@ namespace Engine {
 
         //TODO: redundant int to float conversion?
         TransformComponent(int x, int y, int w, int h) : x(x), y(y), w(w), h(h) {};
+        TransformComponent(int x, int y, int w, int h, float zindex) : x(x), y(y), w(w), h(h), z{zindex} {};
 
         [[nodiscard]] float right() const {
             return x + w;
@@ -52,7 +53,7 @@ namespace Engine {
         }
 
         float w, h;
-        float x, y;
+        float x, y, z{0};
 
         ~TransformComponent() override = default;
     };
@@ -105,6 +106,7 @@ namespace Engine {
 
     struct SoundComponent : public Component {
         explicit SoundComponent(Sound::Id sound) : sound{sound} {}
+
         Engine::Sound::Id sound{};
     };
 

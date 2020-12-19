@@ -10,7 +10,7 @@ TTF_Font* font;
 
 namespace Engine {
     void RenderSystem::tick(World* world) {
-        glClearColor(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+        glClearColor(clearColor.x / 255.0f, clearColor.y / 255.0f, clearColor.z / 255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //Todo: Render in correct order (z index). Use Layers
@@ -40,9 +40,11 @@ namespace Engine {
 
     RenderSystem::RenderSystem(SDL_Window* window,
                                int gameResolutionWidth,
-                               int gameResolutionHeight)
+                               int gameResolutionHeight,
+                               glm::vec3 clearColor)
             : GAME_RESOLUTION_WIDTH{gameResolutionWidth},
-              GAME_RESOLUTION_HEIGHT{gameResolutionHeight}{
+              GAME_RESOLUTION_HEIGHT{gameResolutionHeight},
+              clearColor{clearColor} {
 
 
         SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -68,6 +70,7 @@ namespace Engine {
         if (!gladLoadGL()) std::cout << "Failed to initialize GLAD" << std::endl;
 
         textureManager = new TextureManager{};
+        glEnable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
@@ -91,7 +94,11 @@ namespace Engine {
         dstRect.w = texture->w > 0 ? texture->w : transform->w;
         dstRect.h = texture->h > 0 ? texture->h : transform->h;
 
-        textureManager->renderTexture(texture->id, dstRect, texture->flipH, texture->flipV);
+        textureManager->renderTexture(texture->id,
+                                      dstRect,
+                                      transform->z,
+                                      texture->flipH,
+                                      texture->flipV);
     }
 
     void RenderSystem::renderText(Entity* text) {
@@ -115,9 +122,7 @@ namespace Engine {
     }
 
     void RenderSystem::setBackgroundColor(int r, int g, int b) {
-        this->r = r;
-        this->g = g;
-        this->b = b;
+        clearColor = glm::vec3{r, g, b};
     }
 
 }

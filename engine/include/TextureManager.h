@@ -92,7 +92,7 @@ class TextureManager {
 public:
     explicit TextureManager();
 
-    void renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH = false, bool flipV = false);
+    void renderTexture(TextureId textureId, SDL_Rect& dstRect, float index, bool flipH = false, bool flipV = false);
 
     ~TextureManager();
 

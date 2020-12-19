@@ -8,14 +8,12 @@ TextureManager::TextureManager() {
 
     ResourceManager::LoadShader("shaders/sprite.vsh", "shaders/sprite.fsh", nullptr, "shader");
     //configure shader
-    glm::mat4 projection = glm::ortho(0.0f,
-                                      static_cast<float>(256),
-                                      static_cast<float>(224), 0.0f, -1.f, 1.f);
-    auto shader = ResourceManager::GetShader("shader")
-            .Use()
-            .SetInteger("image", 0)
-            .SetMatrix4("projection", projection);
+//    glm::mat4 projection = glm::ortho(0.0f,
+//                                      static_cast<float>(256),
+//                                      static_cast<float>(224), 0.0f, -2.f, 2.f);
 
+    auto shader = ResourceManager::GetShader("shader")
+            .Use();
     spriteRenderer = new SpriteRenderer(shader);
     ResourceManager::LoadTexture("assets/tileset.png", true, "tileset");
 
@@ -117,22 +115,26 @@ TextureManager::TextureManager() {
     atlasRects.insert_or_assign(MARIO_FLAG_2, new SDL_Rect{187, 170, TILE_SIZE, TILE_SIZE});
 }
 
-void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, bool flipH, bool flipV) {
+void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, float index, bool flipH, bool flipV) {
     auto textureRect = atlasRects.find(textureId);
     if (textureRect != atlasRects.end()) {
         if (dstRect.w == 0) dstRect.w = textureRect->second->w;
         if (dstRect.h == 0) dstRect.h = textureRect->second->h;
 
 
-        spriteRenderer->DrawSprite(ResourceManager::GetTexture("tileset"),
-                                   glm::vec2(dstRect.x, dstRect.y),
-                                   glm::vec2(dstRect.w, dstRect.h),
-                                   glm::vec2(textureRect->second->x, textureRect->second->y),
-                                   0.0f,
-                                   glm::vec3(1.0,1.0,1.0),
-                                   flipH,
-                                   flipV
-        );
+        while(index <= 0) {
+            spriteRenderer->DrawSprite(ResourceManager::GetTexture("tileset"),
+                                       glm::vec3(dstRect.x, dstRect.y, index),
+                                       glm::vec2(dstRect.w, dstRect.h),
+                                       glm::vec2(textureRect->second->x, textureRect->second->y),
+                                       0.0f,
+                                       glm::vec3(1.0, 1.0, 1.0),
+                                       flipH,
+                                       flipV
+            );
+            index++;
+        }
+
     }
 }
 
