@@ -54,7 +54,7 @@ void MapSystem::tick(World* world) {
         if (tile->hasProperty(BREAKABLE)) entity->assign<BreakableComponent>();
         if (tile->hasProperty(QUESTION)) {
 
-            entity->get<Engine::TransformComponent>()->z = -36.0;
+            entity->get<Engine::TransformComponent>()->z = 0.25;
 
             entity->assign<QuestionBlockComponent>(
                     tile->hasProperty(SPAWN),
@@ -74,7 +74,7 @@ void MapSystem::tick(World* world) {
         }
 
         if (tile->hasProperty(ENEMY)) {
-            entity->get<Engine::TransformComponent>()->z = -20.0;
+            entity->get<Engine::TransformComponent>()->z = 0.25;
             if (tile->textureId == TextureId::GOOMBA) {
                 entity->assign<WalkComponent>();
                 entity->assign<AnimationComponent>(std::vector<TextureId>{tile->textureId},
@@ -118,9 +118,6 @@ void MapSystem::tick(World* world) {
             }
         }
         if (tile->hasProperty(SOLID)) entity->assign<SolidComponent>();
-
-        entity->get<Engine::TransformComponent>()->z =  -60;
-
         map.tiles.pop();
         delete tile;
     }

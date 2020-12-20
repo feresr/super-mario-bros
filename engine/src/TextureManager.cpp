@@ -8,12 +8,14 @@ TextureManager::TextureManager() {
 
     ResourceManager::LoadShader("shaders/sprite.vsh", "shaders/sprite.fsh", nullptr, "shader");
     //configure shader
-//    glm::mat4 projection = glm::ortho(0.0f,
-//                                      static_cast<float>(256),
-//                                      static_cast<float>(224), 0.0f, -2.f, 2.f);
+    glm::mat4 projection = glm::ortho(0.0f,
+                                      static_cast<float>(256),
+                                      static_cast<float>(224), 0.0f, -4.f, 4.f);
 
     auto shader = ResourceManager::GetShader("shader")
-            .Use();
+            .Use()
+            .SetInteger("image", 0)
+            .SetMatrix4("projection", projection);
     spriteRenderer = new SpriteRenderer(shader);
     ResourceManager::LoadTexture("assets/tileset.png", true, "tileset");
 
@@ -121,20 +123,15 @@ void TextureManager::renderTexture(TextureId textureId, SDL_Rect& dstRect, float
         if (dstRect.w == 0) dstRect.w = textureRect->second->w;
         if (dstRect.h == 0) dstRect.h = textureRect->second->h;
 
-
-        while(index <= 0) {
-            spriteRenderer->DrawSprite(ResourceManager::GetTexture("tileset"),
-                                       glm::vec3(dstRect.x, dstRect.y, index),
-                                       glm::vec2(dstRect.w, dstRect.h),
-                                       glm::vec2(textureRect->second->x, textureRect->second->y),
-                                       0.0f,
-                                       glm::vec3(1.0, 1.0, 1.0),
-                                       flipH,
-                                       flipV
-            );
-            index++;
-        }
-
+        spriteRenderer->DrawSprite(ResourceManager::GetTexture("tileset"),
+                                   glm::vec3(dstRect.x, dstRect.y, index),
+                                   glm::vec2(dstRect.w, dstRect.h),
+                                   glm::vec2(textureRect->second->x, textureRect->second->y),
+                                   0.0f,
+                                   glm::vec3(1.0, 1.0, 1.0),
+                                   flipH,
+                                   flipV
+        );
     }
 }
 

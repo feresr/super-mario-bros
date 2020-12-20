@@ -13,8 +13,7 @@ namespace Engine {
         glClearColor(clearColor.x / 255.0f, clearColor.y / 255.0f, clearColor.z / 255.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //Todo: Render in correct order (z index). Use Layers
-        //Todo: ender items that don't follow the camera (Te TextComponent, TransformComponent, TextureComponent
+        //Todo: Render items that don't follow the camera (Te TextComponent, TransformComponent, TextureComponent
         world->find<TransformComponent, TextureComponent>([&](Entity* entity) { renderEntity(entity); });
         world->find<TextComponent, TransformComponent>([&](Entity* entity) { renderText(entity); });
     }

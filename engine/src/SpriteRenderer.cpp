@@ -49,9 +49,7 @@ SpriteRenderer::SpriteRenderer(Shader& shader) : shader{shader} {
     initRenderData();
 }
 
-SpriteRenderer::~SpriteRenderer() {
-
-}
+SpriteRenderer::~SpriteRenderer() = default;
 
 void SpriteRenderer::DrawSprite(Texture2D& texture,
                                 glm::vec3 position,
@@ -75,8 +73,6 @@ void SpriteRenderer::DrawSprite(Texture2D& texture,
     glm::mat4 model = glm::mat4(1.0f);
 
     model = glm::translate(model, position);
-    //model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0, 0.0, 1.0f));
-    //model = glm::translate(model, glm::vec3(-.5f * size.x, -.5 * size.y, 0.0));
     model = glm::scale(model, glm::vec3(glm::vec2(size.x, size.y), 1.0f));
     if (flipH) {
         model = glm::scale(model, glm::vec3(-1.0f, 1.0f, 1.0f));

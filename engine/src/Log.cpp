@@ -13,8 +13,8 @@ namespace Engine {
         clientLogger->set_level(spdlog::level::level_enum::trace);
     }
 
-    Log::Log() {}
+    Log::Log() = default;
 
-    Log::~Log() {}
+    Log::~Log() = default;
 
 }
