@@ -1,5 +1,5 @@
 # Find path to the include (header) files #########
-find_path(SDL2_TTF_INCLUDE_DIR SDL_TTF.h PATH_SUFFIXES SDL2 include/SDL2 include)
+find_path(SDL2_TTF_INCLUDE_DIR SDL_ttf.h PATH_SUFFIXES SDL2 include/SDL2 include)
 set(SDL2_TTF_INCLUDE_DIRS ${SDL2_TTF_INCLUDE_DIR})
 
 # Find path to the library (static) ###############
@@ -15,7 +15,7 @@ endif ()
 list(APPEND CMAKE_PREFIX_PATH "/usr/local/opt/bzip2/bin/")
 
 
-find_library(SDL2_TTF_LIBRARY NAMES SDL2_TTF PATH_SUFFIXES lib ${VC_LIB_PATH_SUFFIX})
+find_library(SDL2_TTF_LIBRARY NAMES SDL2_ttf PATH_SUFFIXES lib ${VC_LIB_PATH_SUFFIX})
 
 # SDL2_TTF intrinsic dependencies
 find_library(FREETYPE freetype PATH_SUFFIXES lib ${VC_LIB_PATH_SUFFIX})
