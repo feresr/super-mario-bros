@@ -41,6 +41,27 @@ $ cd ../bin/
 $ ./smb-
 ```
 
+## Webassembly
+
+Either install [emsdk](https://emscripten.org/docs/getting_started/downloads.html) and run
+```
+$ mkdir build
+$ cd build
+$ emcmake cmake ..
+$ make
+```
+or build with [Docker](https://www.docker.com/)
+```
+$ docker run --rm -v $(pwd):/src -u $(id -u):$(id -g) emscripten/emsdk emcmake cmake -S . -B build
+$ docker run --rm -v $(pwd):/src -u $(id -u):$(id -g) emscripten/emsdk cmake --build build
+```
+Start a webserver in the bin folder
+```
+$ cd bin
+$ python -m SimpleHTTPServer 8000
+$ open http://localhost:8000/smb-.html
+```
+
 ## Screenshots
 
 ![Game screenshot](https://github.com/feresr/super-mario-bros/blob/master/readme/game.png)
