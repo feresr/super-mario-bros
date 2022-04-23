@@ -8,3 +8,6 @@ vendor/*
 
 # Ignore Mac specific files
 .DS_Store
+
+# Ignore VSCODE settings
+.vscode
