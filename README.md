@@ -1,6 +1,6 @@
 # Super Mario Bros
 
-Made for educational porpuses. 
+Made for educational purposes. 
 No game-engine, only C++ and SDL2.
 
 I've used an ECS architecture taking cues from: https://github.com/redxdev/ECS
