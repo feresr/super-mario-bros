@@ -1,6 +1,8 @@
 #pragma once
 constexpr int FPS = 60;
-constexpr int ZOOM = 4;
+//constexpr int ZOOM = 4;
+constexpr int ZOOM = 2;
+
 constexpr int FRAME_DURATION = 1000 / FPS;
 
 constexpr int SNES_RESOLUTION_WIDTH = 256;

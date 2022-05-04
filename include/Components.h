@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <functional>
 
 #include "ecs/ecs.h"
 #include "SDL.h"
