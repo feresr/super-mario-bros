@@ -10,8 +10,10 @@ I've used an ECS architecture taking cues from: https://github.com/redxdev/ECS
 
 Contributions are welcomed!
 
+- Try it online! (wasm): https://feresr.github.io/smb/smb-.html
 - [Article (medium.com)](https://medium.com/@FerRaviola/writing-super-mario-bros-in-c-e59dfc5743af)
 - [Video Demo (youtube.com)](https://youtu.be/HkLZ9ESYxCU)
+
 
 ## Controls
 
@@ -41,7 +43,7 @@ $ cd ../bin/
 $ ./smb-
 ```
 
-## Webassembly
+## Webassembly (thanks @parwenaker!)
 
 Either install [emsdk](https://emscripten.org/docs/getting_started/downloads.html) and run
 ```
